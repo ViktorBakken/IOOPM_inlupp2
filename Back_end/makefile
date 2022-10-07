@@ -31,10 +31,10 @@ linked_test.o = linked_list_test.o linked_list.o Generic_func_Data_types/common.
 
 
 hash_table_test:$(hash_table_test.o)
-	$(cc) $(hash_table_test.o) $(flag) $(CUnit) -o hash_table_test
+	$(cc) $(flag) $(CUnit) -o $@
 
 linked_test: $(linked_test.o)
-	$(cc) $(linked_test.o) $(flag) $(CUnit) -o linked_test
+	$(cc) $(linked_test.o) $(flag) $(CUnit) -o $@
 
 
 
