@@ -1,6 +1,8 @@
 #include "store.h"
 #include "Back_end/back_end.h"
-#include "Back_end/Generic_func_Data_types/common.h"
+#include "db.h"
+#include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
+
 
 #define ERR_non_unique "Error item is non unique!"
 
@@ -68,8 +70,11 @@ void add_merchandise(ioopm_warehouse_t *warehouse, string name, string descripti
     {
     }
 
+    ask_question;
+
     int main(int argc, char const *argv[])
     {
-
+        
+        // event_loop();
         return 0;
     }

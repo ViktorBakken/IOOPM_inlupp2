@@ -23,5 +23,5 @@ char *magick(char *arr1[], char *arr2[], char *arr3[], int length);
 
 void list_db(item_t *items, int no_items);
 
-void edit_db(item_t *items, int no_items)
+void edit_db(item_t *items, int no_items);
 

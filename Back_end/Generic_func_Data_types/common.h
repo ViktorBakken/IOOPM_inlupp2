@@ -20,7 +20,6 @@ union elem
 
 //define macros
 #define no_buckets 17
-#define string char *
 
 //Empty elem_t element
 /// @brief Creates an empty elem_t element
@@ -154,20 +153,6 @@ struct list
     link_t *head;
     size_t size;
     ioopm_eq_function eq_fn;
-};
-
-typedef struct item ioopm_item_t;
-struct item {
-    string name;
-    string desc;
-    size_t price; 
-    ioopm_list_t *llsl;  //linked list stock location! 
-};
-
-typedef struct warehouse ioopm_warehouse_t;
-struct warehouse {
-    ioopm_hash_table_t *HTn;    //hash table names! 
-    ioopm_hash_table_t *HTsl;   //hash table stock location!
 };
 
 typedef struct iterator ioopm_list_iterator_t;

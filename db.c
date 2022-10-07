@@ -1,22 +1,13 @@
 
 #include "utils.h"
+#include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
 
-struct item
-{
-    char *name;
-    char *desc;
-    int price;
-    char *shelf;
-};
-
-typedef struct item item_t;
-
-void print_item(item_t *item) {
+void print_item(ioopm_item_t *item) {
     printf(" Name: %s \n Desc: %s \n Price: %d.%d SEK \n Shelf: %s \n", item->name, item->desc, (item->price) / 100, (item->price) % 100, item->shelf);
 }
 
-item_t make_item(char *n, char *d, int p, char *s) {
-    item_t item = {.name = n, .desc = d, .price = p, .shelf = s};
+ioopm_item_t make_item(char *n, char *d, int p, char *s) {
+    ioopm_item_t item = {.name = n, .desc = d, .price = p, .shelf = s};
     return item;
 }
 
@@ -35,7 +26,7 @@ char *ask_question_shelf(char *question) {
   return ask_question(question, is_shelf, (convert_func) strdup).string_value;
 }
 
-item_t input_item() {
+ioopm_item_t input_item() {
     char *name = ask_question_string("What is the name of the item? ");
     char *desc = ask_question_string("Give a description of the item: ");
     int price = ask_question_int("What is the items price? ");
@@ -57,14 +48,14 @@ char *magick( char *arr1[], char *arr2[], char *arr3[], int num) {
     return strdup(buf);
 }
 
-void list_db(item_t *items, int no_items) {
+void list_db(ioopm_item_t *items, int no_items) {
     for(int i = 1; i <= no_items; i++) {
         printf("%d. %s\n", i, items->name);
         ++items;
     }
 }
 
-void edit_db(item_t *items) {
+void edit_db(ioopm_item_t *items) {
     int num = ask_question_int("Which item would you like to edit? ");
     items += (num-1);
     print_item(items);
@@ -97,7 +88,7 @@ char ask_question_menu() {
     return toupper(answer.int_value);
 }
 
-void add_item_to_db(item_t *items, int *no_items) {
+void add_ioopm_item_to_db(ioopm_item_t *items, int *no_items) {
     if(*no_items < 16) {
         items += *no_items;
         *items = input_item();
@@ -107,7 +98,7 @@ void add_item_to_db(item_t *items, int *no_items) {
     }
 }
 
-void remove_item_from_db(item_t *items, int *no_items) {
+void remove_item_from_db(ioopm_item_t *items, int *no_items) {
     list_db(items, *no_items);
     int num = ask_question_int("Which item would you like to remove? ");
     items += (num-1);
@@ -118,12 +109,12 @@ void remove_item_from_db(item_t *items, int *no_items) {
     --*no_items;
 }
 
-void event_loop(item_t *items, int *no_items) {
+void event_loop(ioopm_item_t *items, int *no_items, ioopm_warehouse_t *warehouse) {
     int loop = 1;
     while(loop) {
         char choice = ask_question_menu();
         if(choice == 'L') {
-            add_item_to_db(items, no_items);
+            add_ioopm_item_to_db(items, no_items);
         }else if(choice == 'T') {
             remove_item_from_db(items, no_items);
         }else if(choice == 'R') {
@@ -152,7 +143,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        item_t db[16]; // Array med plats för 16 varor
+        ioopm_item_t db[16]; // Array med plats för 16 varor
         int db_siz = 0; // Antalet varor i arrayen just nu
 
         int items = atoi(argv[1]); // Antalet varor som skall skapas
@@ -162,7 +153,7 @@ int main(int argc, char *argv[])
         for (int i = 0; i < items; ++i)
         {
             // Läs in en vara, lägg till den i arrayen, öka storleksräknaren
-            item_t item = input_item();
+            ioopm_item_t item = input_item();
             db[db_siz] = item;
             ++db_siz;
         }
@@ -183,7 +174,7 @@ int main(int argc, char *argv[])
                             random() % 10 + '0',
                             random() % 10 + '0',
                             '\0' };
-            item_t item = make_item(name, desc, price, shelf);
+            ioopm_item_t item = make_item(name, desc, price, shelf);
 
             db[db_siz] = item;
             ++db_siz;

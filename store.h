@@ -9,7 +9,7 @@
 
 /**
  * @file store.h
- * @author Viktor Bakken och
+ * @author Viktor Bakken och Loran Daqouri
  * @date 05-10-2022
  * @brief our store code
  */
