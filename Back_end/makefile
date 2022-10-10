@@ -1,4 +1,4 @@
-progr = 
+progr = hash_table_test
 
 cc = gcc
 flag = -g -Wall -Wextra
@@ -23,18 +23,18 @@ linked_test.o = linked_list_test.o linked_list.o Generic_func_Data_types/common.
 # %: %.o
 # 	$(cc) $^ $(flag) $(CUnit) -o $@
 
-# %.o: $(%.c)
+# %.o: $(wildcard %.c)
 # 	$(cc) $^ $(flag) -c
 
-# %_test.o: $(%_test.c)
+# %_test.o: $(wildcard %_test.c)
 #  	$(cc) $^ $(flag) $(CUnit) -c
 
 
-hash_table_test:$(hash_table_test.o)
-	$(cc) $(flag) $(CUnit) -o $@
+# hash_table_test:$(hash_table_test.o)
+# 	$(cc) $(flag) $(CUnit) -o $@
 
-linked_test: $(linked_test.o)
-	$(cc) $(linked_test.o) $(flag) $(CUnit) -o $@
+# linked_test: $(linked_test.o)
+# 	$(cc) $(linked_test.o) $(flag) $(CUnit) -o $@
 
 
 
@@ -66,8 +66,11 @@ $(progr)_special_comp: $($(progr).c)
 	make clr $(clr_flags) && $(cc) $($(progr).c) $(flag) $(flagExtra) $(CUnit)
 
 gprof: $(progr)_special_comp
-	./a.out && gprof -b a.out gmon.out > analysis.txt && less analysis.txt
+	./a.out && gprof -b a.out gmon.out > analysis.txt && more analysis.txt
 
+callgrind: $(progr)_special_comp
+	valgrind --tool=callgrind --callgrind-out-file=callgrind_test.out ./a.out 	
+	kcachegrind callgrind_test.out
 
 lcov: $(progr)_special_comp
 	./a.out && lcov --capture --directory . --output-file coverage.info && genhtml coverage.info --output-directory out 

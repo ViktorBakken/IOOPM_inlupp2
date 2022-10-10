@@ -381,3 +381,15 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_list_functio
     }
 }
 
+ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
+{
+    if (list) // Handling the NULL list case
+    {
+        ioopm_list_iterator_t *iter = calloc(1, sizeof(ioopm_list_iterator_t));
+        iter->current = list->head;
+        iter->list = list;
+        return iter;
+    }
+    perror(ERR_NULL_List);
+    return NULL;
+}

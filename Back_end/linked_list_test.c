@@ -1,6 +1,6 @@
 #include <CUnit/Basic.h>
 #include "linked_list.h"
-
+#include "iterator.h"
 
 
 //make all values to the link's index + the extra value (for testing apply_to_all)
@@ -319,6 +319,27 @@ static void test_get_containts()
   ioopm_linked_list_destroy(ll);
 }
 
+static void test_iterator()
+{
+  ioopm_list_t *ll = ioopm_linked_list_create(ioopm_elem_int_eq);
+
+  //Normal Case
+  ioopm_list_iterator_t *iter = ioopm_list_iterator(ll);
+  elem_t iter_ll = ioopm_iterator_current(iter);
+  CU_ASSERT(ioopm_elem_is_empty(iter_ll));
+
+  //Special Case
+  ioopm_list_iterator_t *iter_NULL = ioopm_list_iterator(NULL);
+  CU_ASSERT(iter_NULL == NULL);
+
+
+
+  ioopm_iterator_destroy(iter);
+  ioopm_iterator_destroy(iter_NULL);
+  ioopm_linked_list_destroy(ll);
+}
+
+
 static int init_suite(void)
 {
   // Change this function if you want to do something *before* you
@@ -375,6 +396,7 @@ int main()
       (CU_add_test(my_test_suite, "Basic get and contains", test_get_containts) == NULL) ||
       (CU_add_test(my_test_suite, "Basic apply_to_all test", test_apply_to_all) == NULL) ||
       (CU_add_test(my_test_suite, "Basic any/all test", test_list_any_all) == NULL) ||
+      (CU_add_test(my_test_suite, "Basic iterator test", test_iterator) == NULL) ||
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

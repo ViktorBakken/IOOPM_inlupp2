@@ -32,7 +32,7 @@ static void bucket_destroy(entry_t *entry) // recursively destroys a bucket (inp
 //     free(entry);
 //     entry = next_entry;
 //   }
-//   free(entry);
+//   free(entry
 // }
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
