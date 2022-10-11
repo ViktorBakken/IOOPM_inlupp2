@@ -1,7 +1,5 @@
+#include "db.h"
 
-#include "Back_end/Generic_func_Data_types/utils.h"
-#include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
-#include "Back_end/back_end.h"
 
 void print_item(ioopm_item_t *item) // TODO update for new item_t
 {
@@ -97,6 +95,7 @@ void edit_db(ioopm_item_t *items)
     print_item(items);
     *items = input_item();
 }
+
 //använder
 bool is_menu_char(char *c)
 {

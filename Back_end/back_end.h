@@ -13,3 +13,5 @@ char **ioopm_merchandice_array(ioopm_hash_table_t *HTn);
 
 ioopm_warehouse_t ioopm_create_warehouse();
 
+void add_merchandise(ioopm_warehouse_t *warehouse, string name, string description, size_t price);
+

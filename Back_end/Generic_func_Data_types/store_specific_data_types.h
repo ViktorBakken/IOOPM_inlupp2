@@ -2,6 +2,9 @@
 #include "common.h"
 
 #define string char *
+#define empty_item_t (ioopm_item_t){.desc="",.llsl=NULL, .name=""}
+bool ioopm_elem_item_eq(elem_t elem1, elem_t elem2);
+
 
 typedef struct item ioopm_item_t;
 struct item {

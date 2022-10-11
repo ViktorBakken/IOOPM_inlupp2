@@ -9,11 +9,11 @@ clr_flags = -k -s -i
 
 hash_table_test_name = a-hash_table_test a-hash_table a-linked_list a-common
 hash_table_test.c = hash_table_test.c hash_table.c linked_list.c Generic_func_Data_types/common.c
-hash_table_test.o = hash_table_test.o hash_table.o linked_list.o Generic_func_Data_types/common.o
+hash_table_test.o = hash_table_test.o hash_table.o linked_list.o common.o
 
 linked_test_name = a-linked_list_test a-linked_list a-common
-linked_test.c = linked_list_test.c linked_list.c Generic_func_Data_types/common.c
-linked_test.o = linked_list_test.o linked_list.o Generic_func_Data_types/common.o 
+linked_test.c = linked_list_test.c linked_list.c iterator.c Generic_func_Data_types/common.c
+linked_test.o = linked_list_test.o linked_list.o iterator.o common.o 
 
 
 
@@ -30,11 +30,11 @@ linked_test.o = linked_list_test.o linked_list.o Generic_func_Data_types/common.
 #  	$(cc) $^ $(flag) $(CUnit) -c
 
 
-# hash_table_test:$(hash_table_test.o)
-# 	$(cc) $(flag) $(CUnit) -o $@
+hash_table_test:$(hash_table_test.o)
+	$(cc) $(flag) $(CUnit) -o $@
 
-# linked_test: $(linked_test.o)
-# 	$(cc) $(linked_test.o) $(flag) $(CUnit) -o $@
+linked_test: $(linked_test.o)
+	$(cc) $(linked_test.o) $(flag) $(CUnit) -o $@
 
 
 
