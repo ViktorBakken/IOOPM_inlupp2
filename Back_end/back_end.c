@@ -24,7 +24,7 @@ char **ioopm_merchandice_array(ioopm_hash_table_t *HTn) // NEED TO FREE keys
     return keys;
 }
 
-ioopm_item_t remove_merchandise(ioopm_warehouse_t warehouse, char *key) // TODO NEED TO FREE
+ioopm_item_t remove_merchandise_back_end(ioopm_warehouse_t warehouse, char *key) // TODO NEED TO FREE
 {
    
     ioopm_item_t *tmp_ptr = ioopm_hash_table_remove(warehouse.HTn, ioopm_str_to_elem(key)).value.p;

@@ -32,7 +32,7 @@ char *ask_question_shelf(char *question)
     return ask_question(question, is_shelf, (convert_func)strdup).string_value;
 }
 
-ioopm_item_t input_item()
+ioopm_item_t ioopm_input_item()
 {
     char *name = ask_question_string("What is the name of the item? ");
     char *desc = ask_question_string("Give a description of the item: ");
