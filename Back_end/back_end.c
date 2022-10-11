@@ -24,13 +24,15 @@ char **ioopm_merchandice_array(ioopm_hash_table_t *HTn) // NEED TO FREE keys
     return keys;
 }
 
-ioopm_item_t remove_merchandise(ioopm_warehouse_t *warehouse, char *key) // TODO NEED TO FREE tmp
+ioopm_item_t remove_merchandise(ioopm_warehouse_t warehouse, char *key) // TODO NEED TO FREE
 {
-    ioopm_item_t tmp = ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(key)).value;
+   
+    ioopm_item_t *tmp_ptr = ioopm_hash_table_remove(warehouse.HTn, ioopm_str_to_elem(key)).value.p;
+    ioopm_item_t tmp = *tmp_ptr;
     size_t size = ioopm_linked_list_size(tmp.llsl);
     for (size_t i = 0; i < size; i++)
     {
-        ioopm_hash_table_remove(warehouse->HTsl, tmp.llsl[i]);
+        ioopm_hash_table_remove(warehouse.HTsl, ioopm_ptr_to_elem(&tmp.llsl[i]));
     }
 
     return tmp;
@@ -45,5 +47,11 @@ ioopm_warehouse_t ioopm_create_warehouse()
 
 size_t ioopm_ht_size(ioopm_hash_table_t *HTn)
 {
-  return ioopm_hash_table_size(HTn);
+    return ioopm_hash_table_size(HTn);
+}
+
+void ioopm_warehouse_destroy(ioopm_warehouse_t warehouse)
+{
+    ioopm_hash_table_destroy(warehouse.HTn);
+    ioopm_hash_table_destroy(warehouse.HTsl);
 }

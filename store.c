@@ -2,6 +2,7 @@
 #include "Back_end/back_end.h"
 #include "db.h"
 #include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -16,7 +17,7 @@ ioopm_item_t add_merchandise(ioopm_warehouse_t warehouse, string name, string de
     
     if (merchandice_unique(name))
     {
-        item_t tmp = input_item();
+        ioopm_item_t tmp = ioopm_input_item();
         return tmp;
     }
     else
@@ -24,23 +25,23 @@ ioopm_item_t add_merchandise(ioopm_warehouse_t warehouse, string name, string de
         perror(ERR_non_unique);
     }
     
-    return;
+    return empty_item_t;
 }
 
 
-item_t remove_merchandise(ioopm_warehouse_t ,size_t index) // TODO
+ioopm_item_t remove_merchandise(ioopm_warehouse_t ,size_t index) // TODO
 {
     // if (merchandice_unique(name))
     // {
     //     ioopm_elem_str_eq()
-    //     item_t tmp = warehouse.Htn;
+    //     ioopm_item_t tmp = warehouse.Htn;
     //     return tmp;
     // }
     // else
     // {
     //     perror(ERR_non_unique);
     // }
-    return NULL;
+    return empty_item_t;
 }
 
 
@@ -97,7 +98,7 @@ void quit() // TODO
 }
 
 
-void event_loop(ioopm_item_t *items, int *no_items, ioopm_warehouse_t *warehouse) // TODO update for new item_t
+void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for new ioopm_item_t
 {
     int loop = 1;
     while (loop)
@@ -164,10 +165,12 @@ void event_loop(ioopm_item_t *items, int *no_items, ioopm_warehouse_t *warehouse
 
 int main(int argc, char const *argv[])
 {
-    ioopm_item_t *item = input_item();
-    ioopm_warehouse_t *warehouse = ioopm_create_warehouse();
-    int no_items = ioopm_hash_table_size();
+    ioopm_item_t item = ioopm_input_item();
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
+    int no_items = ioopm_hash_table_size(warehouse.HTn);
 
-    event_loop(items,0,warehouse);
+    event_loop(no_items, warehouse);
+
+    
     return 0;
 }

@@ -88,12 +88,12 @@ void list_db(ioopm_hash_table_t *HTn, int no_items)
         }
     }
 }
-void edit_db(ioopm_item_t *items)
+void edit_db(ioopm_item_t *items, int no_items)
 {
-    int num = ask_question_int("Which item would you like to edit? ");
-    items += (num - 1);
-    print_item(items);
-    *items = input_item();
+    // int num = ask_question_int("Which item would you like to edit? ");
+    // items += (num - 1);
+    // print_item(items);
+    // *items = input_item();
 }
 
 //använder
