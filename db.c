@@ -70,7 +70,7 @@ void list_db(ioopm_hash_table_t *HTn, int no_items)
     qsort(merchandise, no_items, sizeof(char *), cmpstringp); // taken from freq-count.c
 
     for (int i = 0; i <= no_items; i++)
-    {
+    { 
         printf("%d. %s", i+1, merchandise[i]);
         if (i % 20 == 0 && i != 0)
         {
@@ -94,6 +94,16 @@ void edit_db(ioopm_item_t *items, int no_items)
     // items += (num - 1);
     // print_item(items);
     // *items = input_item();
+}
+
+void showstock_db(ioopm_warehouse_t *warehouse, ioopm_item_t *item){
+    ioopm_list_t *locations = item->llsl;
+    char **locationarray = ioopm_llsl_array(locations);
+    qsort(locationarray, ioopm_linked_list_size(locations), sizeof(char *), cmpstringp);
+
+    for(int i = 0; i < ioopm_linked_list_size(locations); i++){
+        printf("%d. %s: %d", i+1, locationarray[i], item->llsl->size);
+    }
 }
 
 //använder

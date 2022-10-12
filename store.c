@@ -29,18 +29,19 @@ ioopm_item_t add_merchandise(ioopm_warehouse_t warehouse, string name, string de
 }
 
 
-ioopm_item_t remove_merchandise(ioopm_warehouse_t ,size_t index) // TODO
+ioopm_item_t remove_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
 {
-    // if (merchandice_unique(name))
-    // {
-    //     ioopm_elem_str_eq()
-    //     ioopm_item_t tmp = warehouse.Htn;
-    //     return tmp;
-    // }
-    // else
-    // {
-    //     perror(ERR_non_unique);
-    // }
+    if (merchandice_unique(name))
+    {
+        //ioopm_elem_str_eq()
+        ioopm_item_t tmp = ioopm_input_item();
+        tmp.llsl = NULL;
+        return tmp;
+    }
+    else
+    {
+        perror(ERR_non_unique);
+    }
     return empty_item_t;
 }
 
@@ -50,23 +51,54 @@ void list_merchandise() // TODO
     //list_db();
 }
 
-void edit_merchandise() // TODO
+void edit_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
 {
-
-
-
-
+    ioopm_item_t tmp = ioopm_input_item();
+    char *answername = ask_question_string("Do you wish to change the name?: ");
+    if(strcmp(answername, "yes")){
+        char *answername2 = ask_question_string("What name would you like to name it?: ");
+        if(merchandice_unique(answername2)){
+            tmp.name = answername2;
+        }else{
+            puts("That name of a item already exists!");
+        }
+    }else{
+        char *answerdesc = ask_question_string("Do you wish to change the description?: ");
+        if(strcmp(answerdesc, "yes")){
+            char *answerdesc2 = ask_question_string("What shall the new description be?: ");
+            tmp.desc = answerdesc2;
+        }else{
+            char *answerprice = ask_question_string("Would you like to change the price?: ");
+            if(strcmp(answerprice, "yes")){
+                size_t newprice = ask_question_int("What would you like to put the new price on?: ");
+                tmp.price = newprice;
+            }
+        }
+    }
 }
 
 void show_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO
 {
-    string name = item->name;
-    string stock_and_number;
+
+    //showstock_db();
+/*    
+    for(int i = 0; i < ioopm_linked_list_size(locations); i++){
+        elem_t local = ioopm_linked_list_get(locations, i);
+        printf("%s", local.s);
+    }
+*/
+
+
     
 }
 
-void replenish_stock(string location, size_t amount) // TODO
+
+void replenish_stock() // TODO
 {
+
+    ioopm_item_t tmp = ioopm_input_item();
+
+    if(location == tmp.llsl)
 }
 
 void create_cart() // TODO
@@ -169,6 +201,7 @@ int main(int argc, char const *argv[])
     ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     int no_items = ioopm_hash_table_size(warehouse.HTn);
 
+    //event_loop(no_items, warehouse,)
     event_loop(no_items, warehouse);
 
     
