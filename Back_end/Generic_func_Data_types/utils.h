@@ -15,6 +15,7 @@ typedef union {
   float float_value;
   char *string_value;
 } answer_t;
+
 typedef int(*int_fold_func)(int, int);
 typedef bool(*check_func)(char *);
 typedef answer_t(*convert_func)(char *);

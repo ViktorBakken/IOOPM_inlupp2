@@ -8,31 +8,29 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include <assert.h>
 
 #define ERR_non_unique "Error item is non unique!"
 
-ioopm_item_t add_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
+ioopm_item_t add_merchandise(ioopm_hash_table_t *HTn)
 {
+    ioopm_item_t new_item = ioopm_input_item();
 
-    if (merchandice_unique(warehouse.HTn, name))
+    if (merchandice_unique(HTn, new_item.name))
     {
-        ioopm_item_t tmp = ioopm_input_item();
-        return tmp;
+        ioopm_add_merchandise_backend(HTn, &new_item);
+        return new_item;
     }
     else
     {
         perror(ERR_non_unique);
+        assert(false);
     }
 
     return empty_item_t;
 }
 
-void list_merchandise() // TODO
-{
-    // list_db();
-}
-
-ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp) // TODO
+ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
 {
     char *answername = ask_question_string("Do you wish to change the name?: ");
     if (strcmp(answername, "yes"))
@@ -67,106 +65,55 @@ ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp) //
     }
 }
 
-void show_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO
 {
+    list_db(warehouse->HTn, ioopm_hash_table_size(warehouse->HTn));
+    ioopm_item_t choosen_item = ioopm_choose_item_from_list(warehouse->HTn);
+    int amount = ask_question_int("How much of this item?: ");
+    string shelf_name = ioopm_random_shelf();
 
-    //showstock_db();
-/*    
-    for(int i = 0; i < ioopm_linked_list_size(locations); i++){
-        elem_t local = ioopm_linked_list_get(locations, i);
-        printf("%s", local.s);
+    if (is_shelf(shelf_name)) /*|| uniqe_shelf_location)*/
+    {
+        // add to the specefic stock
     }
-*/
 
-
-    
-}
-
-
-void replenish_stock() // TODO
-{
-
-    
-}
-
-void create_cart() // TODO
-{
-    ioopm_hash_table_t *cart = create_cart_backend();
-}
-
-void remove_cart(ioopm_hash_table_t *cart) // TODO
-{
-    remove_cart_backend(cart);
-    
-}
-
-void add_to_cart(ioopm_warehouse_t warehouse, ioopm_hash_table_t *cart, int index, int amount) // TODO
-{
-    list_db(warehouse.HTn, ioopm_ht_size(warehouse.HTn));
-   /* int index = ask_question_int("Choose a item based on index: ");
-    ioopm_list_t *keys = ioopm_hash_table_keys(warehouse.HTn);
-    elem_t choice = ioopm_linked_list_get(keys, index);
-    ioopm_option_t option = ioopm_hash_table_lookup(warehouse.HTn, choice);
-    ioopm_item_t *tmp = option.value.p;
-    ioopm_list_t *stocktmp = tmp->llsl;
-*/
-    ioopm_item_t item = ioopm_choose_item_from_list(warehouse.HTn);
-
-
-    ioopm_add_to_cart(cart,item.name,amount);
-
-}
-
-void remove_from_cart(ioopm_hash_table_t *cart) // TODO
-{
-    remove_cart_backend(cart);
-}
-
-int calculate_cost(ioopm_hash_table_t *cart, ioopm_warehouse_t warehouse) // TODO
-{
-    int total;
-    ioopm_list_t *keys = ioopm_hash_table_keys(cart);
-    for(int i = 0; i < ioopm_linked_list_size(keys); i++){
-        elem_t choice = ioopm_linked_list_get(keys, i);
-        ioopm_option_t option = ioopm_hash_table_lookup(warehouse.HTn, choice);
-        ioopm_option_t amount = ioopm_hash_table_lookup(cart, choice);
-        ioopm_item_t *tmp = option.value.p;
-        total = tmp->price * amount.value.i;
+    else
+    {
+        // puts("Not a valid shelf name");
     }
-    return total;
-}
-
-void checkout(ioopm_hash_table_t *cart) // TODO
-{
-
 }
 
 void quit() // TODO
 {
 }
 
-void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for new ioopm_item_t
+void event_loop(int no_items, ioopm_warehouse_t warehouse)
 {
+    ioopm_item_t item;
     while (true)
     {
         char choice = ask_question_menu();
         if (choice == 'L')
         {
-            // add_merchandise(items, no_items, "", 0);
+            add_merchandise(warehouse.HTn);
+            no_items++;
+
         }
         else if (choice == 'T')
         {
-            ioopm_item_t tmp = ioopm_choose_item_from_list(warehouse.HTn);
-            ioopm_remove_merchandise(&warehouse, tmp.name);
+            item = ioopm_choose_item_from_list(warehouse.HTn);
+            ioopm_remove_merchandise(&warehouse, item.name);
+            no_items--;
         }
         else if (choice == 'R')
         {
-            ioopm_item_t tmp = ioopm_choose_item_from_list(warehouse.HTn);
-            edit_merchandise(warehouse, &tmp);
+            item = ioopm_choose_item_from_list(warehouse.HTn);
+            edit_merchandise(warehouse, &item);
         }
         else if (choice == 'V')
         {
-            // show_stock(warehouse, item);
+            item = ioopm_choose_item_from_list(warehouse.HTn);
+            show_stock_db(item);
         }
         else if (choice == 's')
         {
@@ -188,10 +135,10 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for ne
         {
             // add_to_cart();
         }
-        else if (choice == 't')
-        {
-            // remove_cart();
-        }
+        // else if (choice == 't')
+        // {
+        //     // remove_cart();
+        // }
         else if (choice == 'n')
         {
             // remove_from_cart();
@@ -213,11 +160,10 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for ne
 
 int main(int argc, char const *argv[])
 {
-    // ioopm_item_t item = ioopm_input_item();
     ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     int no_items = ioopm_hash_table_size(warehouse.HTn);
 
-    //event_loop(no_items, warehouse,)
+    // event_loop(no_items, warehouse,)
     event_loop(no_items, warehouse);
 
     return 0;

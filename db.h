@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h> 
 
 
 ioopm_item_t ioopm_make_item(char *name, char *descp, int price, char *shelf);
@@ -17,17 +18,21 @@ void ioopm_print_item(ioopm_item_t *item);
 
 bool is_shelf(char *shelf);
 
+string ioopm_random_shelf();
+
 char* ioopm_ask_question_shelf(char *question);
 
 ioopm_item_t ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
 
 ioopm_item_t ioopm_input_item();
 
-char *magick(char *arr1[], char *arr2[], char *arr3[], int length);
+// char *magick(char *arr1[], char *arr2[], char *arr3[], int length);
 
 void list_db(ioopm_hash_table_t *HTn, int no_items);
 
 void edit_db(ioopm_item_t *items, int no_items);
+
+void show_stock_db(ioopm_item_t item);
 
 char ask_question_menu();
 
