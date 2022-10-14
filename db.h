@@ -19,6 +19,8 @@ bool is_shelf(char *shelf);
 
 char* ioopm_ask_question_shelf(char *question);
 
+ioopm_item_t ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
+
 ioopm_item_t ioopm_input_item();
 
 char *magick(char *arr1[], char *arr2[], char *arr3[], int length);

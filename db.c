@@ -1,18 +1,19 @@
 #include "db.h"
 
 
+
 void print_item(ioopm_item_t *item) // TODO update for new item_t
 {
     // printf(" Name: %s \n Desc: %s \n Price: %d.%d SEK \n Shelf: %s \n", item->name, item->desc, (item->price) / 100, (item->price) % 100, item->shelf);
 }
 
-ioopm_item_t make_item(char *n, char *d, size_t p, ioopm_list_t *s)
+ioopm_item_t make_item(string n, string d, size_t p, ioopm_list_t *s)
 {
     ioopm_item_t item = {.name = n, .desc = d, .price = p, .llsl = s};
     return item;
 }
 
-bool is_shelf(char *shelf)
+bool is_shelf(string shelf)
 {
 
     // if (isalpha(shelf[0]) && (string_length(shelf) > 1))
@@ -27,21 +28,22 @@ bool is_shelf(char *shelf)
     // return false;
 }
 
-char *ask_question_shelf(char *question)
+string ask_question_shelf(string question)
 {
     return ask_question(question, is_shelf, (convert_func)strdup).string_value;
 }
 
+
 ioopm_item_t ioopm_input_item()
 {
-    char *name = ask_question_string("What is the name of the item? ");
-    char *desc = ask_question_string("Give a description of the item: ");
+    string name = ask_question_string("What is the name of the item? ");
+    string desc = ask_question_string("Give a description of the item: ");
     int price = ask_question_int("What is the items price? ");
-    char *shelf = ask_question_shelf("What shelf can you find the item on? ");
+    string shelf = ask_question_shelf("What shelf can you find the item on? ");
     return make_item(name, desc, price, shelf);
 }
 
-char *magick(char *arr1[], char *arr2[], char *arr3[], int num)
+string magick(string arr1[], string arr2[], string arr3[], int num)
 {
     char buf[255] = {0};
     int rand1 = random() % num;
@@ -56,22 +58,28 @@ char *magick(char *arr1[], char *arr2[], char *arr3[], int num)
     return strdup(buf);
 }
 
-static int cmpstringp(const void *p1, const void *p2) // taken from freq-count.c
-{
-    return strcmp(*(char *const *)p1, *(char *const *)p2);
+
+
+void showstock_db(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t no_items){
+    ioopm_list_t *locations = item->llsl;
+    string *locationarray = ioopm_llsl_array(locations);
+
+    for(int i = 0; i < ioopm_linked_list_size(locations); i++){
+        printf("%d. %s: %d", i+1, locationarray[i], item->llsl->size);
+    }
 }
 
 void list_db(ioopm_hash_table_t *HTn, int no_items)
 {
-    char *answer;
+    string answer;
 
-    char **merchandise = ioopm_merchandice_array(HTn);
+    string *merchandise = ioopm_merchandice_array(HTn);
 
-    qsort(merchandise, no_items, sizeof(char *), cmpstringp); // taken from freq-count.c
+    qsort(merchandise, no_items, sizeof(string ), cmpstringp); // taken from freq-count.c
 
     for (int i = 0; i <= no_items; i++)
-    { 
-        printf("%d. %s", i+1, merchandise[i]);
+    {
+        printf("%d. %s", i + 1, merchandise[i]);
         if (i % 20 == 0 && i != 0)
         {
             answer = tolower(ask_question_string("List more items?"));
@@ -98,7 +106,7 @@ void edit_db(ioopm_item_t *items, int no_items)
 
 void showstock_db(ioopm_warehouse_t *warehouse, ioopm_item_t *item){
     ioopm_list_t *locations = item->llsl;
-    char **locationarray = ioopm_llsl_array(locations);
+    string *locationarray = ioopm_llsl_array(locations);
     qsort(locationarray, ioopm_linked_list_size(locations), sizeof(char *), cmpstringp);
 
     for(int i = 0; i < ioopm_linked_list_size(locations); i++){
@@ -118,8 +126,8 @@ bool is_menu_char(char *c)
         return true;
     }
 }
-//använder
-char *print_menu()
+// använder
+string print_menu()
 {
     return "[L]ägga till en vara        \n"
            "[T]a bort en vara           \n"
@@ -138,12 +146,12 @@ char *print_menu()
            "[A]vsluta                   \n";
 }
 
-char string_to_char(char *s)
+char string_to_char(string s)
 {
     return *s;
 }
 
-//använder
+// använder
 char ask_question_menu()
 {
     answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)string_to_char);
@@ -152,8 +160,6 @@ char ask_question_menu()
 
 void add_ioopm_item_to_db(ioopm_item_t *items, int *no_items) // TODO update for new item_t
 {
-
-    
 
     // if (*no_items < 16)
     // {
@@ -182,35 +188,35 @@ void remove_item_from_db(ioopm_item_t *items, int *no_items) // TODO update for 
 // använder
 // void event_loop(ioopm_item_t *items, int *no_items, ioopm_warehouse_t *warehouse) // TODO update for new item_t
 // {
-    // int loop = 1;
-    // while (loop)
-    // {
-    //     char choice = ask_question_menu();
-    //     if (choice == 'L')
-    //     {
-    //         add_ioopm_item_to_db(items, no_items);
-    //     }
-    //     else if (choice == 'T')
-    //     {
-    //         remove_item_from_db(items, no_items);
-    //     }
-    //     else if (choice == 'R')
-    //     {
-    //         edit_db(items);
-    //     }
-    //     else if (choice == 'G')
-    //     {
-    //         puts("Not yet implemented");
-    //     }
-    //     else if (choice == 'H')
-    //     {
-    //         list_db(items, *no_items);
-    //     }
-    //     else if (choice == 'A')
-    //     {
-    //         loop = 0;
-    //     }
-    // }
+// int loop = 1;
+// while (loop)
+// {
+//     char choice = ask_question_menu();
+//     if (choice == 'L')
+//     {
+//         add_ioopm_item_to_db(items, no_items);
+//     }
+//     else if (choice == 'T')
+//     {
+//         remove_item_from_db(items, no_items);
+//     }
+//     else if (choice == 'R')
+//     {
+//         edit_db(items);
+//     }
+//     else if (choice == 'G')
+//     {
+//         puts("Not yet implemented");
+//     }
+//     else if (choice == 'H')
+//     {
+//         list_db(items, *no_items);
+//     }
+//     else if (choice == 'A')
+//     {
+//         loop = 0;
+//     }
+// }
 // }
 
 // int main(int argc, char *argv[])

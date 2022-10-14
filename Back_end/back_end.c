@@ -4,7 +4,35 @@
 bool merchandice_unique(ioopm_hash_table_t *HTn, string name)
 {
     return ioopm_hash_table_has_key(HTn, ioopm_str_to_elem(name));
-    
+}
+
+ioopm_item_t ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
+{
+    size_t index = ask_question_int("Whiche item?"); //TODO add more security
+    string *merchandise = ioopm_merchandice_array(HTn);
+    int size = ioopm_hash_table_size(HTn);
+    qsort(merchandise, size, sizeof(string), cmpstringp); // taken from freq-count.c
+
+    void *tmp = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(merchandise[index])).value).p;
+    ioopm_item_t *tmp_item = tmp;
+    return *tmp_item;
+}
+
+string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
+{
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(llsl);
+    char **keys = calloc(llsl->size, sizeof(char *));
+
+    for (size_t i = 0; i < llsl->size; i++)
+    {
+        keys[i] = ioopm_iterator_current(iter).s;
+        if (i < llsl->size - 1)
+        {
+            ioopm_iterator_next(iter);
+        }
+    }
+    ioopm_iterator_destroy(iter);
+    return keys;
 }
 
 string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // NEED TO FREE keys
