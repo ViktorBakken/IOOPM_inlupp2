@@ -4,7 +4,7 @@
 bool merchandice_unique(ioopm_hash_table_t *HTn, string name)
 {
     return ioopm_hash_table_has_key(HTn, ioopm_str_to_elem(name));
-    ;
+    
 }
 
 string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // NEED TO FREE keys
@@ -68,4 +68,17 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t warehouse)
 {
     ioopm_hash_table_destroy(warehouse.HTn);
     ioopm_hash_table_destroy(warehouse.HTsl);
+}
+
+ioopm_hash_table_t *create_cart_backend(){
+    ioopm_hash_table_t *cart = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_item_eq, ioopm_string_hash);
+    return cart;
+}
+
+void remove_cart_backend(ioopm_hash_table_t *cart){
+    ioopm_hash_table_destroy(cart);
+}
+
+void ioopm_add_to_cart(ioopm_hash_table_t *cart, ioopm_item_t item, int amount){
+    ioopm_hash_table_insert(cart, ioopm_ptr_to_elem(item.name), ioopm_int_to_elem(amount));
 }

@@ -53,7 +53,17 @@ void list_merchandise() // TODO
 
 void edit_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
 {
-    ioopm_item_t tmp = ioopm_input_item();
+    list_db(warehouse.HTn, ioopm_ht_size(warehouse.HTn));
+    int index = ask_question_int("Choose a item based on index: ");
+    ioopm_list_t *keys = ioopm_hash_table_keys(warehouse.HTn);
+    elem_t choice = ioopm_linked_list_get(keys, index);
+    ioopm_option_t option = ioopm_hash_table_lookup(warehouse.HTn, choice);
+    ioopm_item_t *tmp = option.value.p;
+    ioopm_list_t *stocktmp = tmp->llsl;
+
+    ioopm_remove_merchandise(warehouse.HTn,tmp->name);
+    ioopm_add_merchandise(warehouse.HTn, tmp->name, tmp->desc, tmp->price); // CHEAT
+
     char *answername = ask_question_string("Do you wish to change the name?: ");
     if(strcmp(answername, "yes")){
         char *answername2 = ask_question_string("What name would you like to name it?: ");
@@ -96,33 +106,59 @@ void show_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO
 void replenish_stock() // TODO
 {
 
-    ioopm_item_t tmp = ioopm_input_item();
-
-    if(location == tmp.llsl)
+    
 }
 
 void create_cart() // TODO
 {
+    ioopm_hash_table_t *cart = create_cart_backend();
 }
 
-void remove_cart() // TODO
+void remove_cart(ioopm_hash_table_t *cart) // TODO
 {
+    remove_cart_backend(cart);
+    
 }
 
-void add_to_cart() // TODO
+void add_to_cart(ioopm_warehouse_t warehouse, ioopm_hash_table_t *cart, int index, int amount) // TODO
 {
+    list_db(warehouse.HTn, ioopm_ht_size(warehouse.HTn));
+   /* int index = ask_question_int("Choose a item based on index: ");
+    ioopm_list_t *keys = ioopm_hash_table_keys(warehouse.HTn);
+    elem_t choice = ioopm_linked_list_get(keys, index);
+    ioopm_option_t option = ioopm_hash_table_lookup(warehouse.HTn, choice);
+    ioopm_item_t *tmp = option.value.p;
+    ioopm_list_t *stocktmp = tmp->llsl;
+*/
+    ioopm_item_t *item = ioopm_choose_item_from_list(warehouse.HTn);
+
+
+    ioopm_add_to_cart(cart,item->name,amount);
+
 }
 
-void remove_from_cart() // TODO
+void remove_from_cart(ioopm_hash_table_t *cart) // TODO
 {
+    remove_cart_backend(cart);
 }
 
-void calculate_cost() // TODO
+int calculate_cost(ioopm_hash_table_t *cart, ioopm_warehouse_t warehouse) // TODO
 {
+    int total;
+    ioopm_list_t *keys = ioopm_hash_table_keys(cart);
+    for(int i = 0; i < ioopm_linked_list_size(keys); i++){
+        elem_t choice = ioopm_linked_list_get(keys, i);
+        ioopm_option_t option = ioopm_hash_table_lookup(warehouse.HTn, choice);
+        ioopm_option_t amount = ioopm_hash_table_lookup(cart, choice);
+        ioopm_item_t *tmp = option.value.p;
+        total = tmp->price * amount.value.i;
+    }
+    return total;
 }
 
-void checkout() // TODO
+void checkout(ioopm_hash_table_t *cart) // TODO
 {
+
 }
 
 void quit() // TODO
