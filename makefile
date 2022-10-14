@@ -16,8 +16,8 @@ store: $(object.o)
 %.o : $(object.c) $(object.h)
 	$(cc) $^ $(flag) -c
 
-%_test.o : $(object.c)
-	$(cc) $^ $(flag) object_test.c $(CUnit) -c
+# %_test.o : $(object.c)
+# 	$(cc) $^ $(flag) object_test.c $(CUnit) -c
 
 run: store
 	./store
@@ -33,4 +33,4 @@ clr:
 	rm -r hash_table_test linked_test *.out *.o *.gch vgcore.* *.gcov *.gcda *.gcno *.gcda *.info  *.s
 	rm -r out
 
-.PHONY: clear clr run test_all
+.PHONY: clr run test_all

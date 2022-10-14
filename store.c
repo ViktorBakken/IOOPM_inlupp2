@@ -15,7 +15,7 @@
 ioopm_item_t add_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
 {
     
-    if (merchandice_unique(name))
+    if (merchandice_unique(warehouse.HTn, name))
     {
         ioopm_item_t tmp = ioopm_input_item();
         return tmp;
@@ -48,7 +48,7 @@ ioopm_item_t remove_merchandise(ioopm_warehouse_t warehouse, string name, string
 
 void list_merchandise() // TODO
 {
-    //list_db();
+    // list_db();
 }
 
 void edit_merchandise(ioopm_warehouse_t warehouse, string name, string description, size_t price) // TODO
@@ -132,8 +132,7 @@ void quit() // TODO
 
 void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for new ioopm_item_t
 {
-    int loop = 1;
-    while (loop)
+    while (true)
     {
         char choice = ask_question_menu();
         if (choice == 'L')
@@ -142,7 +141,8 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for ne
         }
         else if (choice == 'T')
         {
-            //remove_merchandise();
+            //TODO fixa så att användaren kan välja vilket item som ska försvinna!
+            ioopm_remove_merchandise(&warehouse, empty_item_t);
         }
         else if (choice == 'R')
         {
@@ -190,14 +190,14 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse) // TODO update for ne
         }
         else if (choice == 't')
         {
-            //list_merchandise();
+            list_db(warehouse.HTn, no_items);
         }
     }
 }
 
 int main(int argc, char const *argv[])
 {
-    ioopm_item_t item = ioopm_input_item();
+    // ioopm_item_t item = ioopm_input_item();
     ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     int no_items = ioopm_hash_table_size(warehouse.HTn);
 
