@@ -12,13 +12,25 @@ bool merchandice_unique(ioopm_hash_table_t *HTn, char *name);
 /// @brief adds a item to a hashtable
 /// @param HTn given hashtable
 /// @param new_item the item to be added
-/// @return 
 void ioopm_add_merchandise_backend(ioopm_hash_table_t *HTn, ioopm_item_t *new_item);
+
+/// @brief creates a item_t from given input
+/// @param HTn Given hashtable
+/// @param index the number of the wanted item_t
+/// @return A item_t containing the inputs
+ioopm_item_t ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index);
 
 /// @brief convert a hash table to an array
 /// @param llsl is the linked list to be converted
 /// @return array containing the converted linked list
 string *ioopm_llsl_array(ioopm_list_t *llsl);
+
+/// @brief creates a item_t from given input
+/// @param name The name of the item
+/// @param descr The description of the item
+/// @param price The price of the item
+/// @return A item_t containing the inputs
+ioopm_item_t make_item_backend(string name, string descr, size_t price);
 
 /// @brief convert a hash table to an array
 /// @param HTn is the hashtable to be converted
@@ -46,3 +58,8 @@ ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key);
 /// @param warehouse the warehouse to be destroyed
 void ioopm_warehouse_destroy(ioopm_warehouse_t warehouse);
 
+ioopm_hash_table_t *create_cart_backend(void);
+
+void remove_cart_backend(ioopm_hash_table_t *cart);
+
+void ioopm_add_to_cart(ioopm_hash_table_t *cart, ioopm_item_t *item, size_t amount);

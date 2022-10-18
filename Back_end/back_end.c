@@ -1,3 +1,4 @@
+
 #include "back_end.h"
 #include <stdbool.h>
 
@@ -16,6 +17,11 @@ bool merchandice_unique(ioopm_hash_table_t *HTn, string name)
 {
     return !ioopm_hash_table_has_key(HTn, ioopm_str_to_elem(name));
 }
+
+bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name){
+    return !ioopm_hash_table_has_key(HTsl, ioopm_str_to_elem(shelf_name));
+}
+
 
 string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // NEED TO FREE keys
 {
@@ -67,9 +73,8 @@ size_t ioopm_ht_size(ioopm_hash_table_t *HTn)
     return ioopm_hash_table_size(HTn);
 }
 
-ioopm_item_t ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
+ioopm_item_t ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index)
 {
-    size_t index = ask_question_int("Whiche item?"); // TODO add more security
     string *merchandise = ioopm_merchandice_array(HTn);
     int size = ioopm_hash_table_size(HTn);
     qsort(merchandise, size, sizeof(string), cmpstringp); // taken from freq-count.c
@@ -97,6 +102,13 @@ string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
     return keys;
 }
 
+ioopm_item_t make_item_backend(string name, string descr, size_t price)
+{
+    ioopm_list_t *llsl = ioopm_linked_list_create(ioopm_elem_str_eq);
+    ioopm_item_t item = {.name = name, .desc = descr, .price = price, .llsl = llsl};
+    return item;
+}
+
 // Warehouse
 ioopm_warehouse_t ioopm_create_warehouse()
 {
@@ -112,7 +124,7 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t warehouse)
 }
 
 // Cart
-ioopm_hash_table_t *create_cart_backend()
+ioopm_hash_table_t *create_cart_backend(void)
 {
     ioopm_hash_table_t *cart = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_item_eq, ioopm_string_hash);
     return cart;
@@ -123,7 +135,10 @@ void remove_cart_backend(ioopm_hash_table_t *cart)
     ioopm_hash_table_destroy(cart);
 }
 
-void ioopm_add_to_cart(ioopm_hash_table_t *cart, ioopm_item_t item, int amount)
+void ioopm_add_to_cart(ioopm_hash_table_t *cart, ioopm_item_t *item, size_t amount)
 {
-    ioopm_hash_table_insert(cart, ioopm_ptr_to_elem(item.name), ioopm_int_to_elem(amount));
+    
+    if(item->llsl->size >= amount){
+        ioopm_hash_table_insert(cart, ioopm_ptr_to_elem(item->name), ioopm_int_to_elem(amount));
+    }
 }
