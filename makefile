@@ -4,6 +4,8 @@ flagExtra = --coverage -pg
 CUnit = -lcunit
 
 clr_flags = -k -s -i
+
+# Which directory is the file stored at
 store_plac = store.c
 db_plac = db.c
 back_end_plac = Back_end/back_end.c 
@@ -16,7 +18,7 @@ utils_plac = Back_end/Generic_func_Data_types/utils.c
 store_specific_data_types_plac = Back_end/Generic_func_Data_types/store_specific_data_types.c 
 
 
-
+#The dependecies of each file
 db_depend = $(db_plac) $(back_end_plac) $(utils_plac) $(store_specific_data_types_plac)
 back_end_depend = $(back_end_plac) $(hash_table_plac) $(linked_list_plac) $(iterator_plac) $(common_plac) $(store_specific_data_types_plac)
 iterator_depend = $(iterator_plac) $(common_plac)
@@ -27,6 +29,7 @@ utils_depend = $(utils_plac)
 common_depend = $(common_plac)
 store_specific_data_types_depend = $(store_specific_data_types_plac)
 
+#Dependencies for store.c and their .o files
 object.c = $(store_plac) $(db_plac) $(back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
 # object.h = store.h db.h    Back_end/back_end.h  Back_end/iterator.h Back_end/hash_table.h Back_end/linked_list.h  Back_end/shopping_cart.h   Back_end/Generic_func_Data_types/common.h Back_end/Generic_func_Data_types/utils.h Back_end/Generic_func_Data_types/store_specific_data_types.h
 object.o = store.o db.o back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
@@ -86,7 +89,11 @@ clr:
 	rm -r hash_table_test linked_test *.out *.o *.gch vgcore.* *.gcov *.gcda *.gcno *.gcda *.info  *.s
 	rm -r out
 
-gdb: 
+gdb: store
 	gdb ./store
 
-.PHONY: clr run test_all
+valgr: store
+	valgrind --leak-check=full  --track-origins=yes  --show-leak-kinds=all ./store
+
+
+.PHONY: clr run test_all gdb clr

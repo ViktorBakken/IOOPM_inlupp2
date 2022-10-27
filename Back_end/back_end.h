@@ -4,10 +4,17 @@
 #include "hash_table.h"
 #include "linked_list.h"
 #include "iterator.h"
+#include "shopping_cart.h"
 
 /// @brief Checks if a merchandise already exist
 /// @param name the name of the item to be checked
 bool merchandice_unique(ioopm_hash_table_t *HTn, char *name);
+
+/// @brief Checks if a cart is unique
+/// @param cart to be checked if it is unique
+/// @param id the carts id/name
+/// @return true or false depending on if its unique or not
+bool cart_unique(ioopm_hash_table_t *cart, int id);
 
 /// @brief adds a item to a hashtable
 /// @param HTn given hashtable
@@ -18,7 +25,7 @@ void ioopm_add_merchandise_backend(ioopm_hash_table_t *HTn, ioopm_item_t *new_it
 /// @param HTn Given hashtable
 /// @param index the number of the wanted item_t
 /// @return A item_t containing the inputs
-ioopm_item_t ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index);
+ioopm_item_t *ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index);
 
 /// @brief convert a hash table to an array
 /// @param llsl is the linked list to be converted
@@ -30,7 +37,7 @@ string *ioopm_llsl_array(ioopm_list_t *llsl);
 /// @param descr The description of the item
 /// @param price The price of the item
 /// @return A item_t containing the inputs
-ioopm_item_t make_item_backend(string name, string descr, size_t price);
+ioopm_item_t *make_item_backend(string name, string descr, size_t price);
 
 /// @brief convert a hash table to an array
 /// @param HTn is the hashtable to be converted
@@ -56,10 +63,37 @@ ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key);
 
 /// @brief destroys a given warehouse
 /// @param warehouse the warehouse to be destroyed
-void ioopm_warehouse_destroy(ioopm_warehouse_t warehouse);
+void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
 
+/// @brief ability to choose a cart
+/// @param carts is the "list" of carts to list items from one specefic
+/// @param id the id of the cart choosen
+void *choose_cart(ioopm_hash_table_t *carts, int id);
+
+/// @brief creates a cart
+/// @return the cart created
 ioopm_hash_table_t *create_cart_backend(void);
+
+/// @brief destroy the hashtable cart inside shoppingcart
+/// @param cart the cart ot be removed
+void destroy_cart_backend(ioopm_hash_table_t *cart);
+
+/// @brief 
+/// @param carts 
+void ioopm_destroy_cart_list(ioopm_hash_table_t *carts);
+
+/// @brief makes a list of all carts
+/// @return a list of all the carts
+ioopm_hash_table_t *ioopm_create_cart_list(void);
+
+void ioopm_new_cart_backend(ioopm_hash_table_t *carts, void *new_cart, int id);
 
 void remove_cart_backend(ioopm_hash_table_t *cart);
 
-void ioopm_add_to_cart(ioopm_hash_table_t *cart, ioopm_item_t *item, size_t amount);
+/// @brief Adds an item to a given cart 
+/// @param cart where the item is addedd to 
+/// @param item the item to be added
+/// @param name the name of the item
+void ioopm_add_to_cart(ioopm_hash_table_t *cart, void *item, string name);
+
+void ioopm_remove_from_cart(ioopm_hash_table_t *cart, string name);

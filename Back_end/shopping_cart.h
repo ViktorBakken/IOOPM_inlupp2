@@ -6,13 +6,15 @@
 
 typedef struct cart ioopm_shopping_cart_t;
 
-ioopm_shopping_cart_t create_cart(int id);
+void create_cart(ioopm_hash_table_t *carts, int id);
 
 void remove_cart(ioopm_shopping_cart_t *cart);
 
-void add_to_cart(ioopm_warehouse_t warehouse, ioopm_shopping_cart_t *cart, int index, int amount);
+void ioopm_destroy_cart(elem_t unused_key, elem_t *value, void *unused_extra);
 
-void remove_from_cart(ioopm_shopping_cart_t *cart);
+void add_to_cart(ioopm_hash_table_t *cart, size_t amount, ioopm_item_t *item);
+
+void remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem);
 
 int calculate_cost(ioopm_shopping_cart_t *cart, ioopm_warehouse_t warehouse);
 
