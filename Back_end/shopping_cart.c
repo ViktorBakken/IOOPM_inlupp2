@@ -44,6 +44,14 @@ void add_to_cart(ioopm_warehouse_t warehouse, ioopm_shopping_cart_t *cart, int i
 */
     ioopm_item_t item = ioopm_choose_item_from_list(warehouse.HTn);
 
+
+
+    // loop over the inputs
+    if(item.llsl->size >= amount){
+        ioopm_hash_table_insert(cart->cart, ioopm_ptr_to_elem(item.name), ioopm_int_to_elem(amount));
+    }
+     
+
     
 
     // ioopm_add_to_cart(cart,item.name, amount);
@@ -75,6 +83,10 @@ int calculate_cost(ioopm_shopping_cart_t *cart, ioopm_warehouse_t warehouse)
 
 void checkout(ioopm_shopping_cart_t *cart) // TODO
 {
+
+    // the id?
+    ioopm_hash_table_remove(cart,);
+
 
 }
 
