@@ -4,6 +4,7 @@
         "back_end.h": "c",
         "linked_list.h": "c",
         "common.h": "c",
-        "store_specific_data_types.h": "c"
+        "store_specific_data_types.h": "c",
+        "typeinfo": "c"
     }
 }
