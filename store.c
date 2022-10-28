@@ -63,23 +63,28 @@ ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
             }
         }
     }
+    puts("Should not be able to get here!");
+    assert(false);
 }
 
 void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO
 {
+    (void) item;
+
     list_db(warehouse->HTn, ioopm_hash_table_size(warehouse->HTn));
     ioopm_item_t choosen_item = ioopm_choose_item_from_list(warehouse->HTn);
+    
     int amount = ask_question_int("How much of this item?: ");
-    string shelf_name = ioopm_random_shelf();
+    string shelf_name;
+    for(int i = 0; i < amount; i++){
+        shelf_name = ioopm_random_shelf();
 
-    if (is_shelf(shelf_name)) /*|| uniqe_shelf_location)*/
-    {
-        // add to the specefic stock
-    }
-
-    else
-    {
-        // puts("Not a valid shelf name");
+        if (shelf_unique(warehouse->HTsl, shelf_name)) /*|| uniqe_shelf_location)*/
+        {
+            // add to the specefic stock
+            ioopm_linked_list_prepend(choosen_item.llsl, ioopm_str_to_elem(shelf_name));
+            
+        }
     }
 }
 
@@ -158,7 +163,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
     }
 }
 
-int main(int argc, char const *argv[])
+int main(void)
 {
     ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     int no_items = ioopm_hash_table_size(warehouse.HTn);

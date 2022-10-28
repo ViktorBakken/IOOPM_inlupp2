@@ -8,8 +8,6 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-extern char *strdup(const char *);
-
 typedef union { 
   int   int_value;
   float float_value;
@@ -29,4 +27,6 @@ void print(char *str);
 void println(char *str);
 bool not_empty(char *str);
 answer_t ask_question(char *question, check_func check, convert_func convert);
+answer_t conv_int_answer(char *str);
+answer_t conv_str_answer(char *str);
 #endif 

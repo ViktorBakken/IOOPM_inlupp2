@@ -1,11 +1,11 @@
-#pragma once/// @brief Insert at the end of a linked list in O(1) time
+#pragma once /// @brief Insert at the end of a linked list in O(1) time
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
 
-//elem_t def
+// elem_t def
 typedef union elem elem_t;
 union elem
 {
@@ -17,11 +17,10 @@ union elem
   void *p;
 };
 
-
-//define macros
+// define macros
 #define no_buckets 17
 
-//Empty elem_t element
+// Empty elem_t element
 /// @brief Creates an empty elem_t element
 /// @returns An empty elem_t element
 elem_t ioopm_create_empty_elem();
@@ -29,26 +28,23 @@ elem_t ioopm_create_empty_elem();
 /// @brief Checks if elem_t  element is empty
 bool ioopm_elem_is_empty(elem_t elem);
 
+// Predicate functions: For use in all/any functions for list and hash table respectively
+typedef bool (*ioopm_list_predicate)(size_t index, elem_t value, void *extra);
+typedef bool (*ioopm_hash_predicate)(elem_t key, elem_t value, void *extra);
 
-//Predicate functions: For use in all/any functions for list and hash table respectively
-typedef bool(*ioopm_list_predicate )(size_t index, elem_t value, void *extra);
-typedef bool(*ioopm_hash_predicate )(elem_t key, elem_t value, void *extra);
+// Apply functions: For use in apply_all functions for list and hash table respectively
+typedef void (*ioopm_apply_hash_function)(elem_t key, elem_t *value, void *extra);
+typedef void (*ioopm_apply_list_function)(size_t index, elem_t *value, void *extra);
 
-//Apply functions: For use in apply_all functions for list and hash table respectively
-typedef void(*ioopm_apply_hash_function )(elem_t key, elem_t *value, void *extra);
-typedef void(*ioopm_apply_list_function )(size_t index, elem_t *value, void *extra);
+// Eq function: (see commmon.c) used in various functions to compare the values of two elements.
+// Depending on which you use when creating list/hashtable dictates which types it uses.
+typedef bool (*ioopm_eq_function)(elem_t a, elem_t b);
 
-//Eq function: (see commmon.c) used in various functions to compare the values of two elements.
-//Depending on which you use when creating list/hashtable dictates which types it uses.
-typedef bool(*ioopm_eq_function)(elem_t a, elem_t b);
+// Hashtable also needs hash function for the key value's type.
+typedef int (*ioopm_hash_function)(elem_t key);
+typedef elem_t (*to_elem_func)(void *ptr);
 
-//Hashtable also needs hash function for the key value's type.
-typedef int(*ioopm_hash_function)(elem_t key);
-typedef elem_t(*to_elem_func)(void *ptr);
-
-
-
-//Compare elements func
+// Compare elements func
 /// @brief Compares the ints of two elem_t elements. Used for hash_table_create
 /// @param elem1 first elem_t with an int
 /// @param elem2 second elem_t with an int
@@ -79,8 +75,7 @@ bool ioopm_elem_float_eq(elem_t elem1, elem_t elem2);
 /// @returns true if they are equal, false if not
 bool ioopm_elem_uint_eq(elem_t elem1, elem_t elem2);
 
-
-//Hashing func
+// Hashing func
 /// @brief Hashes the string from an elem_t element over no_buckets
 /// @param key key to hash
 /// @returns int made from the hash
@@ -96,8 +91,7 @@ int ioopm_int_hash(elem_t key);
 /// @returns int made from the hash
 int ioopm_uint_hash(elem_t key);
 
-
-//Convert to elem_t
+// Convert to elem_t
 /// @brief Converts an int to a elem_t element
 /// @param i the int to be converted
 /// @returns an elem_t element with the value inserted
@@ -118,14 +112,13 @@ elem_t ioopm_str_to_elem(char *str);
 /// @returns an elem_t element with the value inserted
 elem_t ioopm_uint_to_elem(unsigned int uint);
 
-
-//Struct/Union def
-    //Hash_Table
+// Struct/Union def
+// Hash_Table
 typedef struct entry entry_t;
 struct entry
 {
-  elem_t key;       // holds the key
-  elem_t value;   // holds the value
+  elem_t key;    // holds the key
+  elem_t value;  // holds the value
   entry_t *next; // points to the next entry (possibly NULL)
 };
 
@@ -138,27 +131,25 @@ struct hash_table
   ioopm_hash_function hash_function;
 };
 
-
-    //linked_list
+// linked_list
 typedef struct link link_t;
 struct link
 {
-    elem_t value;
-    struct link *next;
+  elem_t value;
+  struct link *next;
 };
 
-typedef struct list ioopm_list_t; 
+typedef struct list ioopm_list_t;
 struct list
 {
-    link_t *head;
-    size_t size;
-    ioopm_eq_function eq_fn;
+  link_t *head;
+  size_t size;
+  ioopm_eq_function eq_fn;
 };
 
 typedef struct iterator ioopm_list_iterator_t;
-struct iterator 
+struct iterator
 {
-    link_t *current;
-    ioopm_list_t *list;
+  link_t *current;
+  ioopm_list_t *list;
 };
-
