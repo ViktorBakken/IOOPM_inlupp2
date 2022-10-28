@@ -6,13 +6,18 @@
 #include "iterator.h"
 #include "shopping_cart.h"
 
+/// @brief Destroys a mechandice list
+/// @param merchandise The list to be destroyed
+/// @param size The size of the list
+void ioopm_merchandise_list_destroy(string *merchandise, size_t size);
+
 /// @brief Checks if a merchandise already exist
 /// @param name the name of the item to be checked
 bool merchandice_unique(ioopm_hash_table_t *HTn, char *name);
 
 /// @brief Checks if a cart is unique
 /// @param cart to be checked if it is unique
-/// @param id the carts id/name
+/// @param id the all_carts id/name
 /// @return true or false depending on if its unique or not
 bool cart_unique(ioopm_hash_table_t *cart, int id);
 
@@ -66,9 +71,9 @@ ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key);
 void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
 
 /// @brief ability to choose a cart
-/// @param carts is the "list" of carts to list items from one specefic
+/// @param all_carts is the "list" of all_carts to list items from one specefic
 /// @param id the id of the cart choosen
-void *choose_cart(ioopm_hash_table_t *carts, int id);
+void *choose_cart(ioopm_hash_table_t *all_carts, int id);
 
 /// @brief creates a cart
 /// @return the cart created
@@ -78,22 +83,19 @@ ioopm_hash_table_t *create_cart_backend(void);
 /// @param cart the cart ot be removed
 void destroy_cart_backend(ioopm_hash_table_t *cart);
 
-/// @brief 
-/// @param carts 
-void ioopm_destroy_cart_list(ioopm_hash_table_t *carts);
 
-/// @brief makes a list of all carts
-/// @return a list of all the carts
+// void ioopm_destroy_item(elem_t unused_key, elem_t *value, void *unused_extra);
+
+/// @brief 
+/// @param all_carts 
+void ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts);
+
+/// @brief makes a list of all all_carts
+/// @return a list of all the all_carts
 ioopm_hash_table_t *ioopm_create_cart_list(void);
 
-void ioopm_new_cart_backend(ioopm_hash_table_t *carts, void *new_cart, int id);
+void ioopm_new_cart_backend(ioopm_hash_table_t *all_carts, void *new_cart, int id);
 
 void remove_cart_backend(ioopm_hash_table_t *cart);
-
-/// @brief Adds an item to a given cart 
-/// @param cart where the item is addedd to 
-/// @param item the item to be added
-/// @param name the name of the item
-void ioopm_add_to_cart(ioopm_hash_table_t *cart, void *item, string name);
 
 void ioopm_remove_from_cart(ioopm_hash_table_t *cart, string name);

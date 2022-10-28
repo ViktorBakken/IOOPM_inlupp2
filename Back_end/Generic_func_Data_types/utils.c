@@ -78,16 +78,6 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
 {
     int buf_siz = 255;
     char buf[buf_siz];
-    // do
-    // {
-    //     println(question);
-    //     read_string(buf, buf_siz);
-    //     if (check(buf))
-    //     {
-    //         break;
-    //     }
-
-    // } while (true);
 
     println(question);
 

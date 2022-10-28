@@ -1,7 +1,5 @@
 #include "hash_table.h"
 
-
-
 // bucket destroy nu med svansrekursion!
 static void bucket_destroy(entry_t *entry) // recursively destroys a bucket (input is pointer to first entry(dvs dummy entry)){
 {
@@ -13,28 +11,6 @@ static void bucket_destroy(entry_t *entry) // recursively destroys a bucket (inp
   }
 }
 
-// bucket destroy utan svansrekursion
-//  static void bucket_destroy(entry_t *entry) //recursively destroys a bucket (input is pointer to first entry(dvs dummy entry)){
-//  {
-//    if (next != NULL)
-//    {
-//      bucket_destroy(next);
-//    }
-//    free(entry);
-//  }
-
-// static void bucket_destroy(entry_t *entry) // non-recursive variant. input = dummy entry for the bucket in question
-// {
-//   entry_t *next_entry;
-//   while (entry->next != NULL)
-//   {
-//     next_entry = entry->next;
-//     free(entry);
-//     entry = next_entry;
-//   }
-//   free(entry
-// }
-
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
   for (size_t i = 0; i < no_buckets; i++)
@@ -45,13 +21,13 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 }
 
 static entry_t *find_previous_entry_for_key(ioopm_eq_function key_eq_fnc, entry_t *entry, elem_t key)
-{ 
+{
   entry_t **start_pointer = &entry;
 
   while (entry != NULL)
   {
     if (entry->next == NULL)
-    { 
+    {
       return *start_pointer; // Key not in bucket!! Return dummy
     }
     if (key_eq_fnc(entry->next->key, key))
@@ -136,10 +112,10 @@ ioopm_option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key)
       return result;
     }
   }
-  return (ioopm_option_t) {.success = false};
+  return (ioopm_option_t){.success = false};
 }
 
-ioopm_option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key) 
+ioopm_option_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
 {
   int bucket = ht->hash_function(key);
   entry_t *prev_entry = find_previous_entry_for_key(ht->key_eq_fn, ht->buckets[bucket], key);
@@ -230,7 +206,7 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
   for (int i = 0; (i < no_buckets) && (no_found <= size); i++) // ballin
   {
     current_entry = ht->buckets[i]->next; // Jump into bucket
-    if (current_entry)                    //Handling empty bucket case
+    if (current_entry)                    // Handling empty bucket case
     {
       while (current_entry) // Climb into a bucket
       {
@@ -245,21 +221,25 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
 {
-  bool is_found = false;
-  entry_t *current;
-  for (size_t i = 0; i < no_buckets; i++) // check every bucket
+  for (size_t i = 0; i < ioopm_hash_table_size(ht); i++)
   {
-    current = ht->buckets[i]->next;
-    while (current) // every entry in bucket
+    bool is_found = false;
+    entry_t *current;
+    for (size_t i = 0; i < no_buckets; i++) // check every bucket
     {
-      is_found = ht->key_eq_fn(current->key, key);
-      if (is_found)
+      current = ht->buckets[i]->next;
+      while (current) // every entry in bucket
       {
-        return true;
+        is_found = ht->key_eq_fn(current->key, key);
+        if (is_found)
+        {
+          return true;
+        }
+        current = current->next;
       }
-      current = current->next;
     }
   }
+
   return false;
 }
 
@@ -331,12 +311,14 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_hash_predicate func, voi
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_hash_function apply_fun, void *arg)
 {
   entry_t *current = NULL;
-
-  for (size_t i = 0; i < no_buckets; i++) // looks through all buckets
+  size_t size = ioopm_hash_table_size(ht);
+  size_t j = 0;
+  for (size_t i = 0; i < no_buckets && j < size; i++) // looks through all buckets
   {
     current = ht->buckets[i]->next;
     while (current != NULL) // looks through all entries in given bucket
     {
+      j++;
       apply_fun(current->key, &current->value, arg);
       current = current->next;
     }

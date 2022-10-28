@@ -29,7 +29,7 @@ ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
 
 ioopm_item_t *ioopm_input_item();
 
-void list_db(ioopm_hash_table_t *HTn, int no_items);
+void list_db(ioopm_hash_table_t *HTn, size_t no_items);
 
 void show_stock_db(ioopm_item_t item);
 

@@ -18,15 +18,14 @@ string ioopm_random_shelf()
 { // TODO fix magic numbers
     int constant = 10;
 
-
     char buf[3];
     int rand1 = random() % constant;
     int rand2 = random() % constant;
     int rand3 = random() % 26;
 
-    char rand1_char = (char)(rand1 + 48);  //ascii(48) = '0'
-    char rand2_char = (char)(rand2 + 48);   //ascii(48) = '0'
-    char letter = (char)(rand3 + 65);   //ascii(65) = 'A'
+    char rand1_char = (char)(rand1 + 48); // ascii(48) = '0'
+    char rand2_char = (char)(rand2 + 48); // ascii(48) = '0'
+    char letter = (char)(rand3 + 65);     // ascii(65) = 'A'
 
     buf[0] = letter;
     buf[1] = rand1_char;
@@ -53,43 +52,55 @@ ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
 {
 
     list_db(HTn, (int)ioopm_ht_size(HTn));
-    int index = ask_question_int("Whiche item?"); // TODO test for valid/negative inputs, etc
-    index--;
+    int index = -1;
+    while ((0 > index || index > (int)ioopm_ht_size(HTn)))
+    {
+        index = ask_question_int("Whiche item?"); // TODO add test for valid/negative inputs, etc
+        index--;
+    }
     return ioopm_choose_item_from_list_backend(HTn, index);
 }
 
-void list_db(ioopm_hash_table_t *HTn, int no_items)
+void list_db(ioopm_hash_table_t *HTn, size_t no_items)
 {
-    string answer;
-
     string *merchandise = ioopm_merchandice_array(HTn);
 
     qsort(merchandise, no_items, sizeof(string), cmpstringp); // taken from freq-count.c
 
-    for (int i = 0; i < no_items; i++)
+    for (size_t i = 0; i < no_items; i++)
     {
-        printf("%d. %s\n", i + 1, merchandise[i]);
+        printf("%d. %s\n", (int)i + 1, merchandise[i]);
         if (i % 20 == 0 && i != 0)
         {
-            answer = ask_question_string("List more items?\n");
+            string answer = ask_question_string("List more items?\n");
+            char to_lower;
+            for (size_t i = 0; i < strlen(answer); i++)
+            {
+                to_lower = tolower(answer[i]);
+                answer[i] = to_lower;
+            }
 
             while (strcmp(answer, "no") != 0 && strcmp(answer, "yes") != 0) // TODO we assume that input is in small letters! not accepted: write Yes| yEs| YES
             {
                 puts("Invalid input!/n");
-                answer = ask_question_string("List more items?\n");
+                free(answer);
+                string answer = ask_question_string("List more items?\n");
+                (void) answer;
             }
 
             if (strcmp(answer, "no") == 0)
             {
+                free(answer);
                 break;
             }
+            free(answer);
         }
     }
     for (size_t i = 0; i < no_items; i++)
     {
-       free(merchandise[i]);
+        free(merchandise[i]);
     }
-    
+
     free(merchandise);
 }
 /*void edit_db(ioopm_item_t *items, int no_items)
@@ -151,8 +162,10 @@ answer_t str_to_answer_t(string s)
 }
 
 // använder
-char ask_question_menu()
+char ask_question_menu() // TODO Free answer.
 {
-    answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)str_to_answer_t);
-    return *answer.string_value;
+    answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)conv_str_answer);
+    char answ = *answer.string_value;
+    free(answer.string_value);
+    return answ;
 }

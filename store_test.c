@@ -21,6 +21,7 @@ static int clean_suite(void)
 // functions of your own.
 static void test1(void)
 {
+  
   CU_ASSERT(42);
 }
 

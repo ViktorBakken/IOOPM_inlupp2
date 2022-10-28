@@ -6,7 +6,7 @@
 #define ERR_NULL_item "Not an existing item..."
 
 struct cart
-{ // TODO ty då vi nu använder hashtable för att förvara alla olika shopping carts, behöver vi kanske inte spara alla id i structen då id används som key.
+{ // TODO ty då vi nu använder hashtable för att förvara alla olika shopping all_carts, behöver vi kanske inte spara alla id i structen då id används som key.
     int id;
     ioopm_hash_table_t *cart;
 };
@@ -17,20 +17,17 @@ struct cart_item
     int amount;
     ioopm_item_t *item;
 };
-/*
-void print_cart_item(cart_item_t *cart_item) // TODO
-{
-    
-}
-*/
 
-void create_cart(ioopm_hash_table_t *carts, int id)
+void create_cart(ioopm_hash_table_t *all_carts, int id)
 {
-    if (carts != NULL && cart_unique(carts, id))
+    if (all_carts != NULL && cart_unique(all_carts, id))
     {
+
         ioopm_hash_table_t *hash_table_cart = create_cart_backend();
-        ioopm_shopping_cart_t new_cart = (ioopm_shopping_cart_t){.id = id, .cart = hash_table_cart};
-        ioopm_new_cart_backend(carts, &new_cart, id);
+        ioopm_shopping_cart_t *new_cart = calloc(1, sizeof(ioopm_shopping_cart_t));
+        new_cart->id = id;
+        new_cart->cart = hash_table_cart;
+        ioopm_new_cart_backend(all_carts, new_cart, id);
     }
     else
     {
@@ -43,16 +40,34 @@ cart_item_t *create_cart_item(int amount, ioopm_item_t *item)
 {
     cart_item_t *cart_item = calloc(1, sizeof(cart_item_t));
     cart_item->amount = amount;
+    cart_item->item = calloc(1, sizeof(cart_item_t *));
     cart_item->item = item;
     return cart_item;
 }
 
-void ioopm_print_cart(ioopm_shopping_cart_t *cart) // TODO
+static void print_item(ioopm_item_t *item)
 {
-    // get linked list of all values in cart->cart
-    // use either iterator over the linked list or for loop to print both item name and amount of item
-    ioopm_merchandice_array(cart->cart);
-    ioopm_hash_table_values(cart->cart);
+    printf("%s: %d amount in cart\n", item->name, (int)item->price);
+}
+
+void ioopm_list_items_in_cart(ioopm_shopping_cart_t *cart)
+{
+    if (cart && ioopm_hash_table_size(cart->cart) != 0)
+    {
+
+        ioopm_list_t *value_list = ioopm_hash_table_values(cart->cart); //TODO INNEHÅLLER SKRäP
+        ioopm_list_iterator_t *value_iterator = ioopm_list_iterator(value_list);
+        ioopm_item_t *current_item = ioopm_iterator_current(value_iterator).p;
+
+        do
+        {
+            print_item(current_item);
+            ioopm_iterator_next(value_iterator);
+        } while (ioopm_iterator_has_next(value_iterator));
+
+        ioopm_linked_list_destroy(value_list);
+        ioopm_iterator_destroy(value_iterator);
+    }
 }
 
 void remove_cart(ioopm_shopping_cart_t *cart)
@@ -76,18 +91,21 @@ void ioopm_destroy_cart(elem_t unused_key, elem_t *value, void *unused_extra)
 
     ioopm_shopping_cart_t *cart = value->p;
     destroy_cart_backend(cart->cart);
+    free(cart);
 }
 
-void add_to_cart(ioopm_hash_table_t *cart, size_t amount, ioopm_item_t *item) // TODO add handelers for special cases eg. NULL item/Cart, DONE?
+void add_to_cart(ioopm_shopping_cart_t *cart, size_t amount, ioopm_item_t *item)
 {
-    if (item->llsl->size >= amount)
+    if (cart->cart != NULL && item->llsl->size >= amount)
     {
-        ioopm_hash_table_insert(cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(item));
+        cart_item_t *cart_item = create_cart_item(amount, item);
+
+        ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item));
     }
-
-    cart_item_t *cart_item = create_cart_item(amount, item);
-
-    ioopm_add_to_cart(cart, cart_item, item->name);
+    else
+    {
+        puts("No stock avalible!");
+    }
 }
 
 void remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
@@ -121,7 +139,7 @@ int calculate_cost(ioopm_shopping_cart_t *cart, ioopm_warehouse_t warehouse)
     return total;
 }
 
-void checkout(ioopm_shopping_cart_t *cart, ioopm_warehouse_t *warehouse) // TODO add for special case when we buy out item, DONE?
+void checkout(ioopm_shopping_cart_t *cart, ioopm_warehouse_t *warehouse)
 {
     
     ioopm_list_t *keys = ioopm_hash_table_keys(cart->cart);
@@ -133,9 +151,12 @@ void checkout(ioopm_shopping_cart_t *cart, ioopm_warehouse_t *warehouse) // TODO
 
         void *amount_ptr = ioopm_hash_table_lookup(cart->cart, index).value.p;
         cart_item_t *cart_item = amount_ptr;
-        if(item_choosen->llsl->size != 0){
+        if (item_choosen->llsl->size != 0)
+        {
             item_choosen->llsl->size -= cart_item->amount;
-        }else{
+        }
+        else
+        {
             assert(false);
         }
     }

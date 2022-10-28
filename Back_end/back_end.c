@@ -3,6 +3,16 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+void ioopm_merchandise_list_destroy(string *merchandise, size_t size)
+{
+
+    for (size_t i = 0; i < size; i++)
+    {
+        free(merchandise[i]);
+    }
+    free(merchandise);
+}
+
 static void remove_from_stock(ioopm_hash_table_t *HTsl, ioopm_list_t *llsl)
 {
     size_t size = ioopm_linked_list_size(llsl);
@@ -36,7 +46,7 @@ string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE ke
 
     for (size_t i = 0; i < list->size; i++)
     {
-        keys[i] = ioopm_iterator_current(iter).s;
+        keys[i] = strdup(ioopm_iterator_current(iter).s);
         if (i < list->size - 1)
         {
             ioopm_iterator_next(iter);
@@ -45,12 +55,6 @@ string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE ke
     ioopm_linked_list_destroy(list);
     ioopm_iterator_destroy(iter);
     return keys;
-}
-
-void list_items_in_cart(ioopm_hash_table_t *cart)
-{
-    ioopm_list_t *value_list = ioopm_hash_table_values(cart);
-    ioopm_list_iterator_t *value_iterator = ioopm_list_iterator(value_list);
 }
 
 ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key)
@@ -91,7 +95,7 @@ ioopm_item_t *ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_
 
     ioopm_item_t *tmp_item = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(merchandise[index])).value).p;
 
-    free(merchandise);
+    ioopm_merchandise_list_destroy(merchandise, size);
 
     return tmp_item;
 }
@@ -114,18 +118,12 @@ string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
     return keys;
 }
 
-ioopm_item_t *make_item_backend(string name, string descr, size_t price)
+ioopm_item_t *make_item_backend(string name, string descr, size_t price) //TODO free name, descr, llsl and item
 {
     ioopm_list_t *llsl = ioopm_linked_list_create(ioopm_elem_str_eq);
     ioopm_item_t *item = calloc(1, sizeof(ioopm_item_t));
 
-    string name_call = calloc(strlen(name), sizeof(string));
-    name_call = name;
-    string descr_call = calloc(strlen(descr), sizeof(string));
-    descr_call = descr;
-    // int *price_call = calloc(1, sizeof(int)); //TODO Might cause issues for big numbers
-
-    *item = (ioopm_item_t){.name = name_call, .desc = descr_call, .price = price, .llsl = llsl};
+    *item = (ioopm_item_t){.name = name, .desc = descr, .price = price, .llsl = llsl};
     return item;
 }
 
@@ -142,10 +140,18 @@ void destroy_cart_backend(ioopm_hash_table_t *cart)
     ioopm_hash_table_destroy(cart);
 }
 
-void ioopm_destroy_cart_list(ioopm_hash_table_t *carts)
+void ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts)
 {
-    ioopm_hash_table_apply_to_all(carts, ioopm_destroy_cart, NULL);
-    ioopm_hash_table_destroy(carts);
+    ioopm_hash_table_apply_to_all(all_carts, ioopm_destroy_cart, NULL);
+    ioopm_hash_table_destroy(all_carts);
+}
+
+void destroy_shelf(size_t unused_index, elem_t *value, void *unused_extra)
+{
+    (void) unused_index;
+    (void) unused_extra;
+    free(value->s);
+    // free(value);
 }
 
 void destroy_item(elem_t unused_key, elem_t *value, void *unused_extra)
@@ -155,21 +161,23 @@ void destroy_item(elem_t unused_key, elem_t *value, void *unused_extra)
     ioopm_item_t *item_ptr = value->p;
     free(item_ptr->name);
     free(item_ptr->desc);
+    ioopm_linked_list_apply_to_all(item_ptr->llsl, destroy_shelf, NULL);
     ioopm_linked_list_destroy(item_ptr->llsl);
     free(item_ptr);
 }
 
-void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings, DONE?
+
+void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings, DONE?(ger valgrind error?)
 {
     ioopm_hash_table_apply_to_all(warehouse->HTn, destroy_item, NULL);
     ioopm_hash_table_destroy(warehouse->HTn);
-    ioopm_hash_table_destroy(warehouse->HTsl); // might need to
+    ioopm_hash_table_destroy(warehouse->HTsl); 
 }
 
 // Cart
-void *choose_cart(ioopm_hash_table_t *carts, int id)
+void *choose_cart(ioopm_hash_table_t *all_carts, int id)
 {
-    ioopm_option_t output = ioopm_hash_table_lookup(carts, ioopm_int_to_elem(id));
+    ioopm_option_t output = ioopm_hash_table_lookup(all_carts, ioopm_int_to_elem(id));
     return output.success ? output.value.p : NULL;
 }
 
@@ -184,19 +192,14 @@ ioopm_hash_table_t *ioopm_create_cart_list(void)
     return ioopm_hash_table_create(ioopm_elem_int_eq, NULL, ioopm_int_hash);
 }
 
-void ioopm_new_cart_backend(ioopm_hash_table_t *carts, void *new_cart, int id)
+void ioopm_new_cart_backend(ioopm_hash_table_t *all_carts, void *new_cart, int id)
 {
-    ioopm_hash_table_insert(carts, ioopm_int_to_elem(id), ioopm_ptr_to_elem(&new_cart));
+    ioopm_hash_table_insert(all_carts, ioopm_int_to_elem(id), ioopm_ptr_to_elem(new_cart));
 }
 
 void remove_cart_backend(ioopm_hash_table_t *cart)
 {
     ioopm_hash_table_destroy(cart);
-}
-
-void ioopm_add_to_cart(ioopm_hash_table_t *cart, void *item, string name)
-{
-    ioopm_hash_table_insert(cart, ioopm_str_to_elem(name), ioopm_ptr_to_elem(item));
 }
 
 void ioopm_remove_from_cart(ioopm_hash_table_t *cart, string name)

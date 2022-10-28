@@ -12,32 +12,31 @@
 #include <assert.h>
 
 #define ERR_non_unique "Error item is non unique!"
-#define ID 1334
 
-void add_merchandise(ioopm_hash_table_t *HTn)
+bool add_merchandise(ioopm_hash_table_t *HTn)
 {
     ioopm_item_t *new_item = ioopm_input_item();
 
     if (merchandice_unique(HTn, new_item->name))
     {
         ioopm_add_merchandise_backend(HTn, new_item);
+        return true;
     }
-    else
-    {
-        perror(ERR_non_unique);
-        assert(false);
-    }
+    perror(ERR_non_unique);
+    return false;
 }
 
-ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
+void edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
 {
     char *answername = ask_question_string("Do you wish to change the name?: ");
-    if (strcmp(answername, "yes"))
+    if (strstr("yes", answername))
     {
         char *answername2 = ask_question_string("What name would you like to name it?: ");
         if (merchandice_unique(warehouse.HTn, answername2))
         {
+            string old_name = tmp->name;
             tmp->name = answername2;
+            free(old_name);
         }
         else
         {
@@ -47,38 +46,49 @@ ioopm_item_t edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
     else
     {
         char *answerdesc = ask_question_string("Do you wish to change the description?: ");
-        if (strcmp(answerdesc, "yes"))
+        if (strstr("yes", answerdesc))
         {
-            char *answerdesc2 = ask_question_string("What shall the new description be?: ");
-            tmp->desc = answerdesc2;
+            char *newdesc2 = ask_question_string("What shall the new description be?: ");
+
+            string old_desc = tmp->desc;
+            tmp->desc = newdesc2;
+            free(old_desc);
         }
         else
         {
             char *answerprice = ask_question_string("Would you like to change the price?: ");
-            if (strcmp(answerprice, "yes"))
+            if (strstr("yes", answerprice))
             {
                 size_t newprice = ask_question_int("What would you like to put the new price on?: ");
                 tmp->price = newprice;
             }
+            free(answerprice);
         }
+        free(answerdesc);
     }
-    puts("Should not be able to get here!");
-    assert(false);
+    free(answername);
 }
 
-void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item) // TODO DONE?
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
 {
     int amount = ask_question_int("How much of this item?: ");
     string shelf_name;
-    for (int i = 0; i < amount; i++)
+    bool found_non_unique_shelf;
+    for (size_t i = 0; i < (size_t)amount; i++)
     {
-        do
+        found_non_unique_shelf = true;
+        while (found_non_unique_shelf)
         {
-            shelf_name = ioopm_random_shelf();
-
-        } while (shelf_unique(warehouse->HTsl, shelf_name));
+            string tmp = ioopm_random_shelf();
+            if (shelf_unique(warehouse->HTsl, tmp))
+            {
+                shelf_name = tmp;
+                found_non_unique_shelf = false;
+            }
+        }
 
         ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
+        ioopm_hash_table_insert(warehouse->HTsl, ioopm_str_to_elem(shelf_name), ioopm_ptr_to_elem(item));
     }
 }
 
@@ -90,92 +100,173 @@ static void quit(ioopm_warehouse_t *warehouse)
 
 void event_loop(int no_items, ioopm_warehouse_t warehouse)
 {
-    ioopm_hash_table_t *carts = ioopm_create_cart_list();
+    ioopm_hash_table_t *all_carts = ioopm_create_cart_list();
     ioopm_item_t *item;
     ioopm_shopping_cart_t *cart_choice = NULL;
 
-    int id = ID;
     bool avaliable_shopping_cart = false;
 
     while (true)
     {
-        if (avaliable_shopping_cart) // TODO add function to show all the items in the shoppingcart
+        if (avaliable_shopping_cart)
         {
-            puts("\nshoppingcart\n");
+            puts("\nshoppingcart:");
+            ioopm_list_items_in_cart(cart_choice); // TODO not working
         }
 
         char choice = ask_question_menu();
         if (choice == 'L')
         {
-            add_merchandise(warehouse.HTn);
-            no_items++;
+            if (add_merchandise(warehouse.HTn))
+            {
+                no_items++;
+            }
         }
         else if (choice == 'T')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            ioopm_remove_merchandise(&warehouse, item->name);
-            no_items--;
+            if (no_items != 0)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                ioopm_remove_merchandise(&warehouse, item->name);
+                no_items--;
+            }
+            else
+            {
+                puts("No items to remove\n");
+            }
         }
         else if (choice == 'V')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            show_stock_db(*item);
+            if (no_items != 0)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                show_stock_db(*item);
+            }
+            else
+            {
+                puts("No items!\n");
+            }
         }
         else if (choice == 'R')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            edit_merchandise(warehouse, item);
+            if (no_items != 0)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                edit_merchandise(warehouse, item);
+            }
+            else
+            {
+                puts("No items to edit\n");
+            }
         }
         else if (choice == 'l')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            replenish_stock(&warehouse, item);
+            if (no_items != 0)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                replenish_stock(&warehouse, item);
+            }
+            else
+            {
+                puts("No items to add!\n");
+            }
         }
         else if (choice == 'g')
         {
-            // TODO implementera ångra ändring
+            puts("Not implemented!");
         }
         else if (choice == 'k')
         {
-            create_cart(carts, id); // TODO Create random int (or something)
-            avaliable_shopping_cart = true;
+            if (cart_choice == NULL)
+            {
+                int id = ask_question_int("What shall the id of your cart be");
+                create_cart(all_carts, id);
+                cart_choice = choose_cart(all_carts, id);
+                avaliable_shopping_cart = true;
+            }
+            else
+            {
+                puts("Already a pending cart\n");
+            }
         }
         else if (choice == 'u')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            int amount = ask_question_int("How many...?: ");
-            add_to_cart(carts, amount, item); // TODO
+            if (cart_choice != NULL && no_items != 0)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                int amount = ask_question_int("How many...?: ");
+                add_to_cart(cart_choice, amount, item);
+            }
+            else
+            {
+                puts("No cart exists or no items in the cart\n");
+            }
         }
-        else if (choice == 't') // TODO add case for non-existing shopping cart, DONE?
+        else if (choice == 't')
         {
-            remove_cart(cart_choice);
-            cart_choice = NULL;
+            if (cart_choice != NULL)
+            {
+                remove_cart(cart_choice);
+                cart_choice = NULL;
 
-            avaliable_shopping_cart = false;
+                avaliable_shopping_cart = false;
+            }
+            else
+            {
+                puts("No carts to remove\n");
+            }
         }
         else if (choice == 'n')
         {
-            item = ioopm_choose_item_from_list(warehouse.HTn);
-            remove_from_cart(cart_choice, item);
-            item = NULL;
+            if (no_items != 0 && cart_choice != NULL)
+            {
+                item = ioopm_choose_item_from_list(warehouse.HTn);
+                remove_from_cart(cart_choice, item);
+                item = NULL;
+            }
+            else
+            {
+                puts("Not yet duable!(no cart or no items in the cart)\n");
+            }
         }
         else if (choice == 'c')
         {
-            checkout(cart_choice, &warehouse);
-            remove_cart(cart_choice);
-            cart_choice = NULL;
+            if (cart_choice != NULL)
+            {
+                checkout(cart_choice, &warehouse);
+                remove_cart(cart_choice);
+                cart_choice = NULL;
+            }
+            else
+            {
+                puts("No carts made!\n");
+            }
         }
         else if (choice == 'o')
         {
-            calculate_cost(cart_choice, warehouse);
+            if (/*TODO no_items != 0 && ger inga items 0?*/ cart_choice != NULL)
+            {
+                calculate_cost(cart_choice, warehouse);
+            }
+            else
+            {
+                puts("No carts made!\n");
+            }
         }
         else if (choice == 'i')
         {
-            list_db(warehouse.HTn, no_items);
+            if (no_items != 0)
+            {
+                list_db(warehouse.HTn, no_items);
+            }
+            else
+            {
+                puts("No items to list!\n");
+            }
         }
         else if (choice == 'A')
         {
-            ioopm_destroy_cart_list(carts);
+            ioopm_destroy_cart_list(all_carts);
             quit(&warehouse);
         }
     }
