@@ -96,33 +96,23 @@ void list_db(ioopm_hash_table_t *HTn, size_t no_items)
             free(answer);
         }
     }
-    for (size_t i = 0; i < no_items; i++)
-    {
-        free(merchandise[i]);
-    }
+ioopm_merchandise_list_destroy(merchandise, no_items);
+}
 
-    free(merchandise);
-}
-/*void edit_db(ioopm_item_t *items, int no_items)
-{
-    // int num = ask_question_int("Which item would you like to edit? ");
-    // items += (num - 1);
-    // print_item(items);
-    // *items = input_item();
-}
-*/
 
 void show_stock_db(ioopm_item_t item)
 {
     ioopm_list_t *locations = item.llsl;
+    size_t size = item.llsl->size;
     string *locationarray = ioopm_llsl_array(locations);
     qsort(locationarray, ioopm_linked_list_size(locations), sizeof(char *), cmpstringp);
 
     puts("Item is availabel at locations:");
-    for (int i = 0; i < (int)item.llsl->size; i++)
+    for (int i = 0; i < (int) size; i++)
     {
         printf("%d. %s\n", i + 1, locationarray[i]);
     }
+    free(locationarray);
 }
 
 // använder

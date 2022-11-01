@@ -75,16 +75,10 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
 /// @param id the id of the cart choosen
 void *choose_cart(ioopm_hash_table_t *all_carts, int id);
 
-/// @brief creates a cart
-/// @return the cart created
-ioopm_hash_table_t *create_cart_backend(void);
-
 /// @brief destroy the hashtable cart inside shoppingcart
 /// @param cart the cart ot be removed
 void destroy_cart_backend(ioopm_hash_table_t *cart);
 
-
-// void ioopm_destroy_item(elem_t unused_key, elem_t *value, void *unused_extra);
 
 /// @brief 
 /// @param all_carts 
@@ -93,8 +87,6 @@ void ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts);
 /// @brief makes a list of all all_carts
 /// @return a list of all the all_carts
 ioopm_hash_table_t *ioopm_create_cart_list(void);
-
-void ioopm_new_cart_backend(ioopm_hash_table_t *all_carts, void *new_cart, int id);
 
 void remove_cart_backend(ioopm_hash_table_t *cart);
 

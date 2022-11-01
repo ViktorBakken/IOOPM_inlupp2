@@ -26,17 +26,19 @@ bool add_merchandise(ioopm_hash_table_t *HTn)
     return false;
 }
 
-void edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
+void edit_merchandise(ioopm_warehouse_t *warehouse, ioopm_item_t *tmp)
 {
     char *answername = ask_question_string("Do you wish to change the name?: ");
     if (strstr("yes", answername))
     {
         char *answername2 = ask_question_string("What name would you like to name it?: ");
-        if (merchandice_unique(warehouse.HTn, answername2))
+        if (merchandice_unique(warehouse->HTn, answername2))
         {
-            string old_name = tmp->name;
-            tmp->name = answername2;
-            free(old_name);
+            ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(tmp->name));
+            strcpy(tmp->name, answername2);
+            ioopm_hash_table_insert(warehouse->HTn, ioopm_str_to_elem(tmp->name), ioopm_ptr_to_elem(tmp));
+            
+            free(answername2);
         }
         else
         {
@@ -50,9 +52,8 @@ void edit_merchandise(ioopm_warehouse_t warehouse, ioopm_item_t *tmp)
         {
             char *newdesc2 = ask_question_string("What shall the new description be?: ");
 
-            string old_desc = tmp->desc;
-            tmp->desc = newdesc2;
-            free(old_desc);
+            strcpy(tmp->desc, newdesc2);
+            free(newdesc2);
         }
         else
         {
@@ -85,6 +86,10 @@ void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
                 shelf_name = tmp;
                 found_non_unique_shelf = false;
             }
+            else
+            {
+                free(tmp);
+            }
         }
 
         ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
@@ -111,7 +116,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         if (avaliable_shopping_cart)
         {
             puts("\nshoppingcart:");
-            ioopm_list_items_in_cart(cart_choice); // TODO not working
+            // ioopm_list_items_in_cart(cart_choice); // TODO not working
         }
 
         char choice = ask_question_menu();
@@ -152,7 +157,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                edit_merchandise(warehouse, item);
+                edit_merchandise(&warehouse, item);
             }
             else
             {
@@ -192,12 +197,12 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         else if (choice == 'u')
         {
             if (cart_choice != NULL && no_items != 0)
-            {
+            { 
                 item = ioopm_choose_item_from_list(warehouse.HTn);
                 int amount = ask_question_int("How many...?: ");
                 add_to_cart(cart_choice, amount, item);
             }
-            else
+            else 
             {
                 puts("No cart exists or no items in the cart\n");
             }
@@ -206,6 +211,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (cart_choice != NULL)
             {
+                ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
                 remove_cart(cart_choice);
                 cart_choice = NULL;
 
@@ -233,9 +239,11 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (cart_choice != NULL)
             {
-                checkout(cart_choice, &warehouse);
+                checkout(cart_choice, warehouse.HTsl);
+                ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
                 remove_cart(cart_choice);
                 cart_choice = NULL;
+                avaliable_shopping_cart = false;
             }
             else
             {
@@ -246,7 +254,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (/*TODO no_items != 0 && ger inga items 0?*/ cart_choice != NULL)
             {
-                calculate_cost(cart_choice, warehouse);
+                calculate_cost(cart_choice);
             }
             else
             {

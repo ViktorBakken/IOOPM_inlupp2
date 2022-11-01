@@ -55,6 +55,7 @@ string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE ke
     ioopm_linked_list_destroy(list);
     ioopm_iterator_destroy(iter);
     return keys;
+    
 }
 
 ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key)
@@ -181,20 +182,11 @@ void *choose_cart(ioopm_hash_table_t *all_carts, int id)
     return output.success ? output.value.p : NULL;
 }
 
-ioopm_hash_table_t *create_cart_backend(void)
-{
-    ioopm_hash_table_t *cart = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_item_eq, ioopm_string_hash);
-    return cart;
-}
+
 
 ioopm_hash_table_t *ioopm_create_cart_list(void)
 {
     return ioopm_hash_table_create(ioopm_elem_int_eq, NULL, ioopm_int_hash);
-}
-
-void ioopm_new_cart_backend(ioopm_hash_table_t *all_carts, void *new_cart, int id)
-{
-    ioopm_hash_table_insert(all_carts, ioopm_int_to_elem(id), ioopm_ptr_to_elem(new_cart));
 }
 
 void remove_cart_backend(ioopm_hash_table_t *cart)
