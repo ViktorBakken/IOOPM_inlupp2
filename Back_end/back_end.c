@@ -3,14 +3,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void ioopm_merchandise_list_destroy(string *merchandise, size_t size)
+void ioopm_item_list_destroy(string *item, size_t size)
 {
 
     for (size_t i = 0; i < size; i++)
     {
-        free(merchandise[i]);
+        free(item[i]);
     }
-    free(merchandise);
+    free(item);
 }
 
 static void remove_from_stock(ioopm_hash_table_t *HTsl, ioopm_list_t *llsl)
@@ -22,15 +22,15 @@ static void remove_from_stock(ioopm_hash_table_t *HTsl, ioopm_list_t *llsl)
     }
 }
 
-// Merchandise
-bool merchandice_unique(ioopm_hash_table_t *HTn, string name)
+// item
+bool item_unique(ioopm_hash_table_t *HTn, string name)
 {
     return !ioopm_hash_table_has_key(HTn, ioopm_str_to_elem(name));
 }
 
-bool cart_unique(ioopm_hash_table_t *cart, int id)
+bool cart_unique(ioopm_hash_table_t *all_cart, int id)
 {
-    return !ioopm_hash_table_has_key(cart, ioopm_int_to_elem(id));
+    return !ioopm_hash_table_has_key(all_cart, ioopm_int_to_elem(id));
 }
 
 bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name)
@@ -38,7 +38,7 @@ bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name)
     return !ioopm_hash_table_has_key(HTsl, ioopm_str_to_elem(shelf_name));
 }
 
-string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE keys
+string *ioopm_item_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE keys
 {
     ioopm_list_t *list = ioopm_hash_table_keys(HTn);
     ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
@@ -55,12 +55,11 @@ string *ioopm_merchandice_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE ke
     ioopm_linked_list_destroy(list);
     ioopm_iterator_destroy(iter);
     return keys;
-    
 }
 
-ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key)
+ioopm_item_t ioopm_remove_item(ioopm_warehouse_t *warehouse, string key)
 {
-    if (merchandice_unique(warehouse->HTn, key))
+    if (item_unique(warehouse->HTn, key))
     {
         ioopm_item_t *tmp_ptr = ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(key)).value.p;
         ioopm_item_t tmp = *tmp_ptr;
@@ -75,7 +74,7 @@ ioopm_item_t ioopm_remove_merchandise(ioopm_warehouse_t *warehouse, string key)
     return empty_item_t;
 }
 
-void ioopm_add_merchandise_backend(ioopm_hash_table_t *HTn, ioopm_item_t *new_item)
+void ioopm_add_item_backend(ioopm_hash_table_t *HTn, ioopm_item_t *new_item)
 {
     ioopm_hash_table_insert(HTn,
                             ioopm_str_to_elem(new_item->name),
@@ -91,12 +90,12 @@ size_t ioopm_ht_size(ioopm_hash_table_t *HTn)
 ioopm_item_t *ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index)
 {
     int size = ioopm_hash_table_size(HTn);
-    string *merchandise = ioopm_merchandice_array(HTn);
-    qsort(merchandise, size, sizeof(string), cmpstringp); // taken from freq-count.c
+    string *item = ioopm_item_array(HTn);
+    qsort(item, size, sizeof(string), cmpstringp); // taken from freq-count.c
 
-    ioopm_item_t *tmp_item = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(merchandise[index])).value).p;
+    ioopm_item_t *tmp_item = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(item[index])).value).p;
 
-    ioopm_merchandise_list_destroy(merchandise, size);
+    ioopm_item_list_destroy(item, size);
 
     return tmp_item;
 }
@@ -119,7 +118,7 @@ string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
     return keys;
 }
 
-ioopm_item_t *make_item_backend(string name, string descr, size_t price) //TODO free name, descr, llsl and item
+ioopm_item_t *make_item_backend(string name, string descr, size_t price) // TODO free name, descr, llsl and item
 {
     ioopm_list_t *llsl = ioopm_linked_list_create(ioopm_elem_str_eq);
     ioopm_item_t *item = calloc(1, sizeof(ioopm_item_t));
@@ -149,8 +148,8 @@ void ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts)
 
 void destroy_shelf(size_t unused_index, elem_t *value, void *unused_extra)
 {
-    (void) unused_index;
-    (void) unused_extra;
+    (void)unused_index;
+    (void)unused_extra;
     free(value->s);
     // free(value);
 }
@@ -167,12 +166,11 @@ void destroy_item(elem_t unused_key, elem_t *value, void *unused_extra)
     free(item_ptr);
 }
 
-
 void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings, DONE?(ger valgrind error?)
 {
     ioopm_hash_table_apply_to_all(warehouse->HTn, destroy_item, NULL);
     ioopm_hash_table_destroy(warehouse->HTn);
-    ioopm_hash_table_destroy(warehouse->HTsl); 
+    ioopm_hash_table_destroy(warehouse->HTsl);
 }
 
 // Cart
@@ -182,20 +180,7 @@ void *choose_cart(ioopm_hash_table_t *all_carts, int id)
     return output.success ? output.value.p : NULL;
 }
 
-
-
 ioopm_hash_table_t *ioopm_create_cart_list(void)
 {
     return ioopm_hash_table_create(ioopm_elem_int_eq, NULL, ioopm_int_hash);
-}
-
-void remove_cart_backend(ioopm_hash_table_t *cart)
-{
-    ioopm_hash_table_destroy(cart);
-}
-
-void ioopm_remove_from_cart(ioopm_hash_table_t *cart, string name)
-{
-
-    ioopm_hash_table_remove(cart, ioopm_str_to_elem(name));
 }

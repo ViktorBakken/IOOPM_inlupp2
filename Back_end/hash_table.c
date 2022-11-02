@@ -203,7 +203,7 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
   ioopm_list_t *value_ll = ioopm_linked_list_create(ht->value_eq_fn);
   size_t no_found = 0;
   entry_t *current_entry;
-  for (int i = 0; (i < no_buckets) && (no_found <= size); i++) // ballin
+  for (int i = 0; (i < no_buckets) && (no_found < size); i++) // ballin
   {
     current_entry = ht->buckets[i]->next; // Jump into bucket
     if (current_entry)                    // Handling empty bucket case

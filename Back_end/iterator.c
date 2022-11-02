@@ -15,7 +15,6 @@ bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
             return iter->current->next != NULL;
         }
     }
-    perror(ERR_null_input);
     return false;
 }
 
@@ -33,7 +32,6 @@ elem_t ioopm_iterator_next(ioopm_list_iterator_t *iter)
             else
             {
                 iter->current = iter->current->next;
-                perror(ERR_null_next);
                 return ioopm_create_empty_elem();
             }
         }

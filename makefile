@@ -7,6 +7,9 @@ clr_flags = -k -s -i
 
 # Which directory is the file stored at
 store_plac = store.c
+db_test_plac = dbTest.c
+
+
 db_plac = db.c
 back_end_plac = Back_end/back_end.c 
 iterator_plac = Back_end/iterator.c 
@@ -30,24 +33,35 @@ common_depend = $(common_plac)
 store_specific_data_types_depend = $(store_specific_data_types_plac)
 
 #Dependencies for store.c and their .o files
-object.c = $(store_plac) $(db_plac) $(back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
-# object.h = store.h db.h    Back_end/back_end.h  Back_end/iterator.h Back_end/hash_table.h Back_end/linked_list.h  Back_end/shopping_cart.h   Back_end/Generic_func_Data_types/common.h Back_end/Generic_func_Data_types/utils.h Back_end/Generic_func_Data_types/store_specific_data_types.h
-object.o = store.o db.o back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
-object_test = store_test.c
+store.c = $(store_plac) $(db_plac) $(back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
+# store.h = store.h db.h    Back_end/back_end.h  Back_end/iterator.h Back_end/hash_table.h Back_end/linked_list.h  Back_end/shopping_cart.h   Back_end/Generic_func_Data_types/common.h Back_end/Generic_func_Data_types/utils.h Back_end/Generic_func_Data_types/store_specific_data_types.h
+store.o = store.o db.o back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
+db_test.o = db_test.o db.o back_end.o utils.o store_specific_data_types.o
 
 
-# %_test.o : $(object.c)ob
+# %_test.o : $(store.c)
 # 	$(cc) $^ $(flag) object_test.c $(CUnit) -c
-
-
-store: $(object.o)
+store: $(store.o)
 	$(cc) $^ $(flag) -o store
 
-store.o : $(object.c)
+db_test: $(db_test.o)
+	$(cc) $^ $(flag) $(CUnit) -o $@
+
+
+
+
+
+
+
+
+store.o : $(store.c)
 	$(cc) $^ $(flag) -c
 
 db.o : $(db_depend)
 	$(cc) $^ $(flag) -c
+
+db_test.o: $(db_depend) $(db_test_plac)
+	$(cc) $^ $(flag) $(CUnit) -c
 
 back_end.o : $(back_end_depend)
 	$(cc) $^ $(flag) -c

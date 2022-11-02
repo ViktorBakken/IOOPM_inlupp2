@@ -11,7 +11,8 @@ struct cart
     ioopm_hash_table_t *cart;
 };
 
-int ioopm_cart_id(ioopm_shopping_cart_t *cart){
+int ioopm_cart_id(ioopm_shopping_cart_t *cart)
+{
     return cart->id;
 }
 
@@ -48,17 +49,48 @@ void create_cart(ioopm_hash_table_t *all_carts, int id)
     }
 }
 
-cart_item_t *create_cart_item(int amount, ioopm_item_t *item)
+static cart_item_t *create_cart_item(size_t amount, ioopm_item_t *item)
 {
-    cart_item_t *cart_item = calloc(1, sizeof(cart_item_t));
+    cart_item_t *cart_item = calloc(1, sizeof(cart_item_t)); // must remove
     cart_item->amount = amount;
     cart_item->item = item;
     return cart_item;
 }
 
+void ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
+{
+    if (cart->cart != NULL)
+    {
+        if (!ioopm_is_in_shopping_cart(cart, item))
+        {
+            int amount = ask_question_int("How many?");
+            while (amount > (int)item->llsl->size || amount <= 0)
+            {
+                amount = ask_question_int("Invalid input!");
+            }
+
+            cart_item_t *cart_item = create_cart_item((size_t)amount, item);
+
+            ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item));
+        }
+        else{
+            puts("No stock avalible!");
+        }
+    }
+    else
+    {
+        puts("No stock avalible!");
+    }
+}
+
+bool ioopm_is_in_shopping_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
+{
+    return ioopm_hash_table_has_key(cart->cart, ioopm_str_to_elem(item->name));
+}
+
 static void print_item(ioopm_item_t *item)
 {
-    printf("%s: %d amount in cart\n", item->name, (int)item->price);
+    printf("%s: %d cents/item\n", item->name, (int)item->price);
 }
 
 void ioopm_list_items_in_cart(ioopm_shopping_cart_t *cart)
@@ -66,16 +98,17 @@ void ioopm_list_items_in_cart(ioopm_shopping_cart_t *cart)
     if (cart && ioopm_hash_table_size(cart->cart) != 0)
     {
 
-        ioopm_list_t *value_list = ioopm_hash_table_values(cart->cart); // TODO INNEHÅLLER SKRäP
+        ioopm_list_t *value_list = ioopm_hash_table_values(cart->cart);
         ioopm_list_iterator_t *value_iterator = ioopm_list_iterator(value_list);
-        ioopm_item_t *current_item = ioopm_iterator_current(value_iterator).p;
+        cart_item_t *current_cart_item = ioopm_iterator_current(value_iterator).p;
 
         do
         {
-            print_item(current_item);
+            printf("%d amount of ", current_cart_item->amount);
+            print_item(current_cart_item->item);
             ioopm_iterator_next(value_iterator);
         } while (ioopm_iterator_has_next(value_iterator));
-
+        printf("\n");
         ioopm_linked_list_destroy(value_list);
         ioopm_iterator_destroy(value_iterator);
     }
@@ -85,13 +118,12 @@ void remove_cart(ioopm_shopping_cart_t *cart)
 {
     if (cart != NULL)
     {
-        remove_cart_backend(cart->cart);
+        ioopm_hash_table_destroy(cart->cart);
         free(cart);
     }
     else
     {
         perror(ERR_NULL_cart);
-        assert(false);
     }
 }
 
@@ -101,30 +133,29 @@ void ioopm_destroy_cart(elem_t unused_key, elem_t *value, void *unused_extra)
     (void)unused_key;
 
     ioopm_shopping_cart_t *cart = value->p;
+
+    ioopm_list_t *cart_item_list = ioopm_hash_table_values(cart->cart);
+    ioopm_list_iterator_t *cart_item_iterator = ioopm_list_iterator(cart_item_list);
+    cart_item_t *current_cart_item = ioopm_iterator_current(cart_item_iterator).p;
+
+    do
+    {
+        free(current_cart_item);
+        ioopm_iterator_next(cart_item_iterator);
+    } while (ioopm_iterator_has_next(cart_item_iterator));
+
+    ioopm_linked_list_destroy(cart_item_list);
+    ioopm_iterator_destroy(cart_item_iterator);
     destroy_cart_backend(cart->cart);
     free(cart);
 }
 
-void add_to_cart(ioopm_shopping_cart_t *cart, size_t amount, ioopm_item_t *item)
-{
-    if (cart->cart != NULL && item->llsl->size >= amount)
-    {
-        cart_item_t *cart_item = create_cart_item(amount, item);
-
-        ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item)); // TODO leaves rubish
-    }
-    else
-    {
-        puts("No stock avalible!");
-    }
-}
-
-void remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
+void ioopm_remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
 {
     int size = ioopm_ht_size(cart->cart);
     if (cart != NULL && size != 0)
     {
-        ioopm_remove_from_cart(cart->cart, item_rem->name);
+        ioopm_hash_table_remove(cart->cart, ioopm_str_to_elem(item_rem->name));
     }
     else
     {
@@ -134,51 +165,25 @@ void remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
 
 int calculate_cost(ioopm_shopping_cart_t *cart)
 {
-    int total;
-    // ioopm_list_t *keys = ioopm_hash_table_keys(cart->cart);
-    // for (int i = 0; i < (int)ioopm_linked_list_size(keys); i++)
-    // {
-    //     elem_t index = ioopm_linked_list_get(keys, i);
-    //     void *item_ptr = ioopm_hash_table_lookup(warehouse.HTn, index).value.p;
-    //     ioopm_item_t *item_choosen = item_ptr;
-
-    //     void *amount_ptr = ioopm_hash_table_lookup(cart->cart, index).value.p;
-    //     cart_item_t *choosen_item_in_cart = amount_ptr;
-
-    //     total = item_choosen->price * choosen_item_in_cart->amount;
-    // }
-
-    ioopm_list_t *values = ioopm_hash_table_values(cart->cart);
-    for (int i = 0; i < (int)ioopm_linked_list_size(values); i++)
+    if (cart) // Handeling NULL cart case
     {
-        cart_item_t *cart_item = ioopm_linked_list_get(values, i).p;
+        int total = 0;
 
-        total += cart_item->amount * cart_item->item->price;
+        ioopm_list_t *cart_item_list = ioopm_hash_table_values(cart->cart);
+        for (int i = 0; i < (int)ioopm_linked_list_size(cart_item_list); i++)
+        {
+            cart_item_t *cart_item = ioopm_linked_list_get(cart_item_list, i).p;
+
+            total += cart_item->amount * cart_item->item->price;
+        }
+        ioopm_linked_list_destroy(cart_item_list);
+        return total;
     }
-    ioopm_linked_list_destroy(values); // TODO might not remove cart_item
-    return total;
+    return -1;
 }
 
 bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
 {
-    // ioopm_list_t *keys = ioopm_hash_table_keys(cart->cart);
-    // for (int i = 0; i < (int)ioopm_linked_list_size(keys); i++)
-    // {
-    //     elem_t index = ioopm_linked_list_get(keys, i);
-    //     void *item_ptr = ioopm_hash_table_lookup(warehouse->HTn, index).value.p;
-    //     ioopm_item_t *item_choosen = item_ptr;
-
-    //     void *amount_ptr = ioopm_hash_table_lookup(cart->cart, index).value.p;
-    //     cart_item_t *cart_item = amount_ptr;
-    //     if (item_choosen->llsl->size != 0)
-    //     {
-    //         item_choosen->llsl->size -= cart_item->amount;
-    //     }
-    //     else
-    //     {
-    //         assert(false);
-    //     }
-    // }
     if (cart) // Handeling cart is NULL
     {
         printf("Your total is ");
@@ -216,7 +221,7 @@ bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
             }
             ioopm_iterator_destroy(cart_iter); // TODO might not remove cart_item
             ioopm_linked_list_destroy(values); // TODO might not remove cart_item
-            remove_cart(cart);
+            // remove_cart(cart);
         }
         else
         {

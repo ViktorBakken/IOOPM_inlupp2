@@ -1,5 +1,93 @@
 #include "db.h"
 
+#define ERR_non_unique "Error item is non unique!"
+
+
+bool ioopm_add_item(ioopm_hash_table_t *HTn)
+{
+    ioopm_item_t *new_item = ioopm_input_item();
+
+    if (item_unique(HTn, new_item->name))
+    {
+        ioopm_add_item_backend(HTn, new_item);
+        return true;
+    }
+    perror(ERR_non_unique);
+    return false;
+}
+
+void edit_item(ioopm_warehouse_t *warehouse, ioopm_item_t *tmp)
+{
+    char *answername = ask_question_string("Do you wish to change the name?: ");
+    if (strstr("yes", answername))
+    {
+        char *answername2 = ask_question_string("What name would you like to name it?: ");
+        if (item_unique(warehouse->HTn, answername2))
+        {
+            ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(tmp->name));
+            strcpy(tmp->name, answername2);
+            ioopm_hash_table_insert(warehouse->HTn, ioopm_str_to_elem(tmp->name), ioopm_ptr_to_elem(tmp));
+
+            free(answername2);
+        }
+        else
+        {
+            puts("That name of a item already exists!");
+        }
+    }
+    else
+    {
+        char *answerdesc = ask_question_string("Do you wish to change the description?: ");
+        if (strstr("yes", answerdesc))
+        {
+            char *newdesc2 = ask_question_string("What shall the new description be?: ");
+
+            strcpy(tmp->desc, newdesc2);
+            free(newdesc2);
+        }
+        else
+        {
+            char *answerprice = ask_question_string("Would you like to change the price?: ");
+            if (strstr("yes", answerprice))
+            {
+                size_t newprice = ask_question_int("What would you like to put the new price on?: ");
+                tmp->price = newprice;
+            }
+            free(answerprice);
+        }
+        free(answerdesc);
+    }
+    free(answername);
+}
+
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
+{
+    int amount = ask_question_int("How much of this item?: ");
+    string shelf_name;
+    bool found_non_unique_shelf;
+    for (size_t i = 0; i < (size_t)amount; i++)
+    {
+        found_non_unique_shelf = true;
+        while (found_non_unique_shelf)
+        {
+            string tmp = ioopm_random_shelf();
+            if (shelf_unique(warehouse->HTsl, tmp))
+            {
+                shelf_name = tmp;
+                found_non_unique_shelf = false;
+            }
+            else
+            {
+                free(tmp);
+            }
+        }
+
+        ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
+        ioopm_hash_table_insert(warehouse->HTsl, ioopm_str_to_elem(shelf_name), ioopm_ptr_to_elem(item));
+    }
+}
+
+
 bool is_shelf(string shelf)
 {
     if (isalpha(shelf[0]) && (string_length(shelf) > 1))
@@ -14,6 +102,9 @@ bool is_shelf(string shelf)
     return false;
 }
 
+// ioopm_item_t ioopm_item_destroy(ioopm_item_t *item_rem){
+
+// }
 string ioopm_random_shelf()
 { // TODO fix magic numbers
     int constant = 10;
@@ -63,13 +154,13 @@ ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
 
 void list_db(ioopm_hash_table_t *HTn, size_t no_items)
 {
-    string *merchandise = ioopm_merchandice_array(HTn);
+    string *item = ioopm_item_array(HTn);
 
-    qsort(merchandise, no_items, sizeof(string), cmpstringp); // taken from freq-count.c
+    qsort(item, no_items, sizeof(string), cmpstringp); // taken from freq-count.c
 
     for (size_t i = 0; i < no_items; i++)
     {
-        printf("%d. %s\n", (int)i + 1, merchandise[i]);
+        printf("%d. %s\n", (int)i + 1, item[i]);
         if (i % 20 == 0 && i != 0)
         {
             string answer = ask_question_string("List more items?\n");
@@ -96,7 +187,7 @@ void list_db(ioopm_hash_table_t *HTn, size_t no_items)
             free(answer);
         }
     }
-ioopm_merchandise_list_destroy(merchandise, no_items);
+ioopm_item_list_destroy(item, no_items);
 }
 
 
