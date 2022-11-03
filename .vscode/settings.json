@@ -1,10 +1,12 @@
 {
     "files.associations": {
         "utils.h": "c",
-        "back_end.h": "c",
+        "db_back_end.h": "c",
         "linked_list.h": "c",
         "common.h": "c",
         "store_specific_data_types.h": "c",
-        "hash_table.h": "c"
+        "hash_table.h": "c",
+        "iterator.h": "c",
+        "db.h": "c"
     }
 }

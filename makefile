@@ -11,10 +11,13 @@ db_test_plac = dbTest.c
 
 
 db_plac = db.c
-back_end_plac = Back_end/back_end.c 
+db_back_end_plac = Back_end/db_back_end.c 
+
+datatypes_plac = $(iterator_plac) $(hash_table_plac) $(linked_list_plac)
 iterator_plac = Back_end/iterator.c 
 hash_table_plac = Back_end/hash_table.c 
 linked_list_plac = Back_end/linked_list.c
+
 shopping_cart_plac = Back_end/shopping_cart.c  
 common_plac = Back_end/Generic_func_Data_types/common.c
 utils_plac = Back_end/Generic_func_Data_types/utils.c
@@ -22,21 +25,24 @@ store_specific_data_types_plac = Back_end/Generic_func_Data_types/store_specific
 
 
 #The dependecies of each file
-db_depend = $(db_plac) $(back_end_plac) $(utils_plac) $(store_specific_data_types_plac)
-back_end_depend = $(back_end_plac) $(hash_table_plac) $(linked_list_plac) $(iterator_plac) $(common_plac) $(store_specific_data_types_plac)
+shopping_cart_depend = $(db_back_end_plac) $(store_specific_data_types_plac) $(datatypes_plac)
+
+db_depend = $(db_plac) $(db_back_end_plac) $(utils_plac) $(store_specific_data_types_plac) $(datatypes_plac)
+db_back_end_depend = $(db_back_end_plac) $(db_plac)
+
 iterator_depend = $(iterator_plac) $(common_plac)
 hash_table_depend =$(hash_table_plac) $(linked_list_plac) $(common_plac)
 linked_list_depend = $(linked_list_plac) $(iterator_plac) $(common_plac)
-shopping_cart_depend = $(back_end_plac) $(store_specific_data_types_plac) $(db_plac)
+
 utils_depend = $(utils_plac)
 common_depend = $(common_plac)
 store_specific_data_types_depend = $(store_specific_data_types_plac)
 
-#Dependencies for store.c and their .o files
-store.c = $(store_plac) $(db_plac) $(back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
-# store.h = store.h db.h    Back_end/back_end.h  Back_end/iterator.h Back_end/hash_table.h Back_end/linked_list.h  Back_end/shopping_cart.h   Back_end/Generic_func_Data_types/common.h Back_end/Generic_func_Data_types/utils.h Back_end/Generic_func_Data_types/store_specific_data_types.h
-store.o = store.o db.o back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
-db_test.o = db_test.o db.o back_end.o utils.o store_specific_data_types.o
+#Runable programs
+store.c = $(store_plac) $(db_plac) $(db_back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
+store.o = store.o db.o db_back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
+
+db_test.o = db_test.o db.o db_back_end.o utils.o store_specific_data_types.o
 
 
 # %_test.o : $(store.c)
@@ -63,7 +69,7 @@ db.o : $(db_depend)
 db_test.o: $(db_depend) $(db_test_plac)
 	$(cc) $^ $(flag) $(CUnit) -c
 
-back_end.o : $(back_end_depend)
+db_back_end.o : $(db_back_end_depend)
 	$(cc) $^ $(flag) -c
 
 iterator.o : $(iterator_depend)

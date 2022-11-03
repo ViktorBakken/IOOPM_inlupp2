@@ -1,5 +1,5 @@
 // #include "store.h"
-#include "Back_end/back_end.h"
+#include "Back_end/db_back_end.h"
 #include "db.h"
 #include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
 #include "Back_end/shopping_cart.h"
@@ -10,6 +10,52 @@
 #include <string.h>
 #include <stddef.h>
 #include <assert.h>
+
+
+// använder
+bool is_menu_char(char *c)
+{
+    if (strstr("LliTtsVRgkuncoA", c) == NULL || strlen(c) > 1)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+// använder
+string print_menu()
+{
+    return "[L]ägga till en vara        \n"
+           "[T]a bort en vara           \n"
+           "[V]isa alla stocks          \n"
+           "[R]edigera en vara          \n"
+           "Lägg til[l] stock           \n"
+           "Ån[g]ra senaste ändringen   \n"
+           "Skappa [k]undvagn           \n"
+           "Lägg till i k[u]ndvagnen    \n"
+           "Ta bor[t] kundvagnen        \n"
+           "Ta bort från kundvagne[n]   \n"
+           "Che[c]kout                  \n"
+           "T[o]tala kostnad            \n"
+           "Lista alla [i]tems          \n"
+           "[A]vsluta                   \n";
+}
+
+answer_t str_to_answer_t(string s)
+{
+    return (answer_t){.string_value = s};
+}
+
+// använder
+char ask_question_menu() // TODO Free answer.
+{
+    answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)conv_str_answer);
+    char answ = *answer.string_value;
+    free(answer.string_value);
+    return answ;
+}
 
 static void quit(ioopm_warehouse_t *warehouse, ioopm_hash_table_t *all_carts)
 {
@@ -37,7 +83,8 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         char choice = ask_question_menu();
         if (choice == 'L')
         {
-            if (ioopm_add_item(warehouse.HTn))
+            ioopm_item_t *new_item = ioopm_input_item();
+            if (ioopm_add_item(warehouse.HTn, new_item))
             {
                 no_items++;
             }
@@ -47,7 +94,6 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                ioopm_remove_item(&warehouse, item->name);
                 if (cart_choice != NULL)
                 {
                     if (ioopm_is_in_shopping_cart(cart_choice, item))
@@ -55,7 +101,9 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
                         ioopm_remove_from_cart(cart_choice, item);
                     }
                 }
+                ioopm_remove_item(&warehouse, item->name);
 
+                item = NULL;
                 no_items--;
             }
             else
@@ -121,8 +169,14 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (cart_choice != NULL && no_items != 0)
             {
+
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                ioopm_add_to_cart(cart_choice, item);
+                int amount = ask_question_int("How many?");
+                while (amount > (int)item->llsl->size || amount <= 0)
+                {
+                    amount = ask_question_int("Invalid input!");
+                }
+                ioopm_add_to_cart(cart_choice, item, amount);
             }
             else
             {
@@ -134,7 +188,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (cart_choice != NULL)
             {
                 ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
-                remove_cart(cart_choice);
+                ioopm_destroy_cart(cart_choice);
                 cart_choice = NULL;
 
                 avaliable_shopping_cart = false;
@@ -163,7 +217,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             {
                 checkout(cart_choice, warehouse.HTsl);
                 // ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
-                // remove_cart(cart_choice);
+                // ioopm_destroy_cart(cart_choice);
                 quit(&warehouse, all_carts);
                 cart_choice = NULL;
                 avaliable_shopping_cart = false;

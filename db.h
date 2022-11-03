@@ -1,7 +1,12 @@
 #pragma once
+#include "Back_end/db_back_end.h"
+
 #include "Back_end/Generic_func_Data_types/utils.h"
 #include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
-#include "Back_end/back_end.h"
+
+#include "Back_end/hash_table.h"
+#include "Back_end/linked_list.h"
+#include "Back_end/iterator.h"
 
 #include <stdbool.h>
 #include <ctype.h>
@@ -9,51 +14,57 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h> 
+#include <math.h>
 
 
-/// @brief Adds a new item to the warehouse with a name, description and price
-/// @param HTn the current item's in the warehouse
-/// @return true if the item is unique(and adds it), other false(not add it).
-bool ioopm_add_item(ioopm_hash_table_t *HTn);
+// /// @brief checks if a shelf's location is unique
+// /// @param HTsl the list of all locations
+// /// @param shelf_name a given location of a given shelf
+// bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name);
+
+// /// @brief checks if a string is a valid shelf location
+// /// @param shelf a given string representing the shelf
+// bool is_shelf(char *shelf);
+
+
+
+/// @brief Checks if a item already exist
+/// @param name the name of the item to be checked
+bool item_unique(ioopm_hash_table_t *HTn, ioopm_item_t *item);
+
+/// @brief obtains ability for the user to make a item
+/// @return the newly created item
+ioopm_item_t *ioopm_input_item();
+
+/// @brief Destroys a given item
+/// @param item_Destr The item to be destroyed
+void ioopm_destroy_item(ioopm_item_t *item_Destr);
+
+/// @brief remove a specific item from warehouse
+/// @param warehouse is the warehouse where the item is removed
+/// @param key the name of the item to be removed
+/// @return the item that is removed
+/// @warning the returend item needs to be freed
+bool ioopm_remove_item(ioopm_warehouse_t *warehouse, string key);
 
 /// @brief Allows changing the name, description and price of a merch
 /// @param warehouse where item is located and to be potentially edited
 /// @param tmp the item to be edited
 void edit_item(ioopm_warehouse_t *warehouse, ioopm_item_t *tmp);
 
+/// @brief Creates a warehouse
+/// @return a empty warehouse
+/// @warning Needs to be destroyed
+ioopm_warehouse_t ioopm_create_warehouse();
+
+/// @brief destroys a given warehouse
+/// @param warehouse the warehouse to be destroyed
+void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
+
 /// @brief Increases the stock of a merch by at least one
 /// @param warehouse where the merch is located and to be potentially replenished
 /// @param item the item to obtain stock location of
 void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item);
-
-/// @brief checks if a string is a valid shelf location
-/// @param shelf a given string representing the shelf
-bool is_shelf(char *shelf);
-
-/// @brief Creates a random shelf
-/// @return a string in the form of ex A14 
-/// @warning need to free the return value!
-string ioopm_random_shelf(); 
-
-/// @brief checks if a shelf's location is unique
-/// @param HTsl the list of all locations
-/// @param shelf_name a given location of a given shelf
-bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name);
-
-/// @brief asks a question where the expectation of the answer is a valid shelf location
-/// @param question is the asked question
-/// @return return the answered shelf location as a string
-char* ioopm_ask_question_shelf(char *question);
-
-/// @brief obtains ability to pick a specific item based on a list of all items
-/// @param HTn are all the items in the warehouse
-/// @return the choosen item of the list of items
-ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
-
-/// @brief obtains ability for the user to make a item
-/// @return the newly created item 
-ioopm_item_t *ioopm_input_item();
 
 /// @brief list all items in the store (20 at a time) in alphabetical order
 /// @param HTn are all the items in the warehouse
@@ -64,8 +75,27 @@ void list_db(ioopm_hash_table_t *HTn, size_t no_items);
 /// @param item the item
 void show_stock_db(ioopm_item_t item);
 
-/// @brief prints the menu with option to choose action based on a letter
-/// @return the choosen letter to produce the respective action
-char ask_question_menu();
+/// @brief asks a question where the expectation of the answer is a valid shelf location
+/// @param question is the asked question
+/// @return return the answered shelf location as a string
+char *ioopm_ask_question_shelf(char *question);
 
+/// @brief obtains ability to pick a specific item based on a list of all items
+/// @param HTn are all the items in the warehouse
+/// @return the choosen item of the list of items
+ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
 
+/// @brief convert a hash table to an array
+/// @param HTn is the hashtable to be converted
+/// @return array containing the keys of the hash table
+string *ioopm_item_array(ioopm_hash_table_t *HTn);
+
+/// @brief Destroys a mechandice list
+/// @param item The list to be destroyed
+/// @param size The size of the list
+void ioopm_item_list_destroy(string *item, size_t size);
+
+/// @brief convert a hash table to an array
+/// @param llsl is the linked list to be converted
+/// @return array containing the converted linked list
+string *ioopm_llsl_array(ioopm_list_t *llsl);

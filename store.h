@@ -31,7 +31,7 @@
 
 // void create_cart();
 
-// void remove_cart();
+// void ioopm_destroy_cart();
 
 // void ioopm_add_to_cart();
 

@@ -1,13 +1,88 @@
 #include <CUnit/Basic.h>
 #include "shopping_cart.h"
-#include ".. /db"
+
+
+
+static void test_create(){
+    ioopm_hash_table_t *cart = create_cart(); // TODO: create_cart returnar inte ioopm_hash_table_t
+    CU_ASSERT_NOT_NULL(cart);
+
+    ioopm_hash_table_t *cart_list = ioopm_create_cart_list();
+    CU_ASSERT_NOT_NULL(cart_list);
+}
+
+static void test_destroy(){
+    ioopm_hash_table_t *cart = create_cart();
+    ioopm_hash_table_t *all_carts = ioopm_create_cart_list();
+    
+    CU_ASSERT_NOT_NULL(all_carts);
+
+    ioopm_destroy_cart_list(all_carts);
+
+    CU_ASSERT_NULL(all_carts);
+}
 
 void test_add_to_cart()
 {
-    ioopm_hash_table_t *all_carts = ioopm_create_cart_list();
-    create_cart(all_carts, 100);
-    ioopm_item_t item = ioopm_input_item();
     
+    ioopm_hash_table_t *cart = create_cart(); 
+    
+    ioopm_item_t item = make_item_backend("ape","a ape", 2);
+    ioopm_add_to_cart(cart,item, 2);
+    CU_ASSERT_TRUE(ioopm_is_in_shopping_cart(cart, item));
+    int amount = ioopm_amount_items_in_cart(cart, item);
+    CU_ASSERT_EQUAL(amount, 2)
+    
+}
+
+static void test_remove_cart_cart_items(){
+    ioopm_hash_table_t *cart = create_cart();
+    ioopm_item_t item = make_item_backend("ape","a ape", 2);
+    ioopm_add_to_cart(cart,item, 2);
+
+    CU_ASSERT_PTR_NOT_NULL(cart);
+    CU_ASSERT_TRUE(ioopm_is_in_shopping_cart(cart, item));
+    CU_ASSERT_EQUAL(ioopm_amount_items_in_cart(cart, item), 2);
+
+    ioopm_remove_from_cart(cart, item);
+
+    CU_ASSERT_FALSE(ioopm_is_in_shopping_cart(cart, item));
+    CU_ASSERT_EQUAL(ioopm_amount_items_in_cart(cart, item), 0);
+
+    CU_ASSERT_PTR_NOT_NULL(cart);
+    ioopm_destroy_cart(cart);
+    CU_ASSERT_NULL(cart);
+}
+
+static void test_calculate_cost(){
+    ioopm_hash_table_t *cart = create_cart();
+    ioopm_item_t item = make_item_backend("ape","a ape", 2);
+    ioopm_add_to_cart(cart,item, 2);
+
+    int cost = calculate_cost(cart);
+    CU_ASSERT_EQUAL(cost, 4);
+}
+
+static void test_calculate_cost_empty(){
+    ioopm_hash_table_t *cart = create_cart(); 
+
+    int cost = calculate_cost(cart);
+    CU_ASSERT_EQUAL(cost, 0);
+}
+
+static void test_checkout(){
+    ioopm_warehouse_t *warehouse = ioopm_create_warehouse();
+    ioopm_hash_table_t *cart = create_cart();
+    ioopm_item_t item = make_item_backend("ape","a ape", 2);
+
+    ioopm_add_item(warehouse->HTn, item);
+    replenish_stock(warehouse, item);
+    ioopm_add_to_cart(cart, item 1);
+    checkout(cart, warehouse->HTsl);
+
+    
+    CU_ASSERT_EQUAL(stock_location , ioopm_hash_table_size(warehouse->HTsl));
+
 }
 
 static int init_suite(void)

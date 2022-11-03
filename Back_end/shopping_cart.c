@@ -6,22 +6,23 @@
 #define ERR_NULL_item "Not an existing item..."
 
 struct cart
-{ // TODO ty då vi nu använder hashtable för att förvara alla olika shopping all_carts, behöver vi kanske inte spara alla id i structen då id används som key.
+{
     int id;
     ioopm_hash_table_t *cart;
+};
+
+typedef struct cart_item cart_item_t;
+struct cart_item
+{
+    int amount;
+    ioopm_item_t *item;wsl
+    mkae 
 };
 
 int ioopm_cart_id(ioopm_shopping_cart_t *cart)
 {
     return cart->id;
 }
-
-typedef struct cart_item cart_item_t;
-struct cart_item
-{
-    int amount;
-    ioopm_item_t *item;
-};
 
 bool ioopm_elem_cart_item_eq(elem_t elem1, elem_t elem2)
 {
@@ -57,23 +58,24 @@ static cart_item_t *create_cart_item(size_t amount, ioopm_item_t *item)
     return cart_item;
 }
 
-void ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
+void *choose_cart(ioopm_hash_table_t *all_carts, int id)
+{
+    ioopm_option_t output = ioopm_hash_table_lookup(all_carts, ioopm_int_to_elem(id));
+    return output.success ? output.value.p : NULL;
+}
+
+void ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item, size_t amount)
 {
     if (cart->cart != NULL)
     {
         if (!ioopm_is_in_shopping_cart(cart, item))
         {
-            int amount = ask_question_int("How many?");
-            while (amount > (int)item->llsl->size || amount <= 0)
-            {
-                amount = ask_question_int("Invalid input!");
-            }
-
             cart_item_t *cart_item = create_cart_item((size_t)amount, item);
 
             ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item));
         }
-        else{
+        else
+        {
             puts("No stock avalible!");
         }
     }
@@ -81,6 +83,16 @@ void ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
     {
         puts("No stock avalible!");
     }
+}
+
+int ioopm_amount_items_in_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
+{
+    cart_item_t *cart_item = ioopm_hash_table_lookup(cart->cart, ioopm_str_to_elem(item->name)).value.p;
+    if (ioopm_hash_table_has_key(cart->cart, ioopm_ptr_to_elem(cart_item->item)))
+    {
+        return cart_item->amount;
+    }
+    return -1;
 }
 
 bool ioopm_is_in_shopping_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
@@ -114,10 +126,22 @@ void ioopm_list_items_in_cart(ioopm_shopping_cart_t *cart)
     }
 }
 
-void remove_cart(ioopm_shopping_cart_t *cart)
+void ioopm_destroy_cart(ioopm_shopping_cart_t *cart)
 {
     if (cart != NULL)
     {
+        ioopm_list_t *cart_item_list = ioopm_hash_table_values(cart->cart);
+        ioopm_list_iterator_t *cart_item_iterator = ioopm_list_iterator(cart_item_list);
+        cart_item_t *current_cart_item = ioopm_iterator_current(cart_item_iterator).p;
+
+        do
+        {
+            free(current_cart_item);
+            ioopm_iterator_next(cart_item_iterator);
+        } while (ioopm_iterator_has_next(cart_item_iterator));
+
+        ioopm_linked_list_destroy(cart_item_list);
+        ioopm_iterator_destroy(cart_item_iterator);
         ioopm_hash_table_destroy(cart->cart);
         free(cart);
     }
@@ -127,34 +151,22 @@ void remove_cart(ioopm_shopping_cart_t *cart)
     }
 }
 
-void ioopm_destroy_cart(elem_t unused_key, elem_t *value, void *unused_extra)
+void destroy_cart_hashfunc(elem_t unused_key, elem_t *value, void *unused_extra)
 {
     (void)unused_extra;
     (void)unused_key;
 
     ioopm_shopping_cart_t *cart = value->p;
-
-    ioopm_list_t *cart_item_list = ioopm_hash_table_values(cart->cart);
-    ioopm_list_iterator_t *cart_item_iterator = ioopm_list_iterator(cart_item_list);
-    cart_item_t *current_cart_item = ioopm_iterator_current(cart_item_iterator).p;
-
-    do
-    {
-        free(current_cart_item);
-        ioopm_iterator_next(cart_item_iterator);
-    } while (ioopm_iterator_has_next(cart_item_iterator));
-
-    ioopm_linked_list_destroy(cart_item_list);
-    ioopm_iterator_destroy(cart_item_iterator);
-    destroy_cart_backend(cart->cart);
-    free(cart);
+    ioopm_destroy_cart(cart);
 }
 
 void ioopm_remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
 {
-    int size = ioopm_ht_size(cart->cart);
+    int size = ioopm_hash_table_size(cart->cart);
     if (cart != NULL && size != 0)
     {
+        cart_item_t *cart_item_rem = ioopm_hash_table_lookup(cart->cart, ioopm_str_to_elem(item_rem->name)).value.p;
+        free(cart_item_rem);
         ioopm_hash_table_remove(cart->cart, ioopm_str_to_elem(item_rem->name));
     }
     else
@@ -221,7 +233,7 @@ bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
             }
             ioopm_iterator_destroy(cart_iter); // TODO might not remove cart_item
             ioopm_linked_list_destroy(values); // TODO might not remove cart_item
-            // remove_cart(cart);
+            // ioopm_destroy_cart(cart);
         }
         else
         {
@@ -231,4 +243,20 @@ bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
     }
     perror("Non-existing shopping cart!");
     return false;
+}
+
+ioopm_hash_table_t *ioopm_create_cart_list(void)
+{
+    return ioopm_hash_table_create(ioopm_elem_int_eq, NULL, ioopm_int_hash);
+}
+
+void ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts)
+{
+    ioopm_hash_table_apply_to_all(all_carts, destroy_cart_hashfunc, NULL);
+    ioopm_hash_table_destroy(all_carts);
+}
+
+bool cart_unique(ioopm_hash_table_t *all_cart, int id)
+{
+    return !ioopm_hash_table_has_key(all_cart, ioopm_int_to_elem(id));
 }
