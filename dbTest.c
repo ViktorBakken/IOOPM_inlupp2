@@ -1,7 +1,9 @@
-// libraries
+//libraries
 #include <CUnit/Basic.h>
 #include "db.h"
 // #include "store.h"
+
+
 
 static int init_suite(void)
 {
@@ -17,46 +19,47 @@ static int clean_suite(void)
   return 0;
 }
 
-// // These are example test functions. You should replace them with
-// // functions of your own.
-// static void test_is_shelf_true(void){
-//     char *shelf = "A12";
-//     // CU_ASSERT_TRUE(is_shelf(shelf))
-// }
+// These are example test functions. You should replace them with
+// functions of your own.
+static void test_is_shelf_true(void){
+    char *shelf = "A12";
+    CU_ASSERT_TRUE(is_shelf(shelf))
+}
 
-// static void test_is_shelf_false(void)
-// {
-//   char *shelf = "AAA";
-//   CU_ASSERT_FALSE(is_shelf(shelf))
-// }
+static void test_is_shelf_false(void)
+{
+  char *shelf = "AAA";
+  CU_ASSERT_FALSE(is_shelf(shelf)) 
+}
 
-// static void test_random(void){
-//     // char *random = ioopm_random_shelf();
-//     CU_ASSERT_TRUE(is_shelf(random))
-// }
+static void test_random(void){
+    char *random = ioopm_random_shelf();
+    CU_ASSERT_TRUE(is_shelf(random))
+}
 
-// static void test_ask_question_shelf(void)
-// {
-//   char *shelf = ask_question_shelf("Enter a shelf");
-//   CU_ASSERT_TRUE(is_shelf(shelf))
-// }
+static void test_ask_question_shelf(void)
+{
+  char *shelf = ask_question_shelf("Enter a shelf");
+  CU_ASSERT_TRUE(is_shelf(shelf))
+}
 
-// static void test_show_stock(void){
 
-//     ioopm_warehouse_t *warehouse;
-//     ioopm_item_t item;
+static void test_show_stock(void){
 
-//     replenish_stock(warehouse, item);
-//     show_stock_db(item);
-// }
+    ioopm_warehouse_t *warehouse;
+    ioopm_item_t item;
 
-// static void test_is_menu_char_false(void){
-//     CU_ASSERT_TRUE(is_menu_char("L"))
-// }
+    replenish_stock(warehouse, item);
+    show_stock_db(item);
+}
 
-// static void test_is_menu_char_false(void){
-//     CU_ASSERT_FALSE(is_menu_char("p"))
-// }
+static void test_is_menu_char_false(void){
+    CU_ASSERT_TRUE(is_menu_char("L"))
+}
+
+static void test_is_menu_char_false(void){
+    CU_ASSERT_FALSE(is_menu_char("p"))
+}
 
 int main()
 {
@@ -80,8 +83,7 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-
-      0)
+      (CU_add_test(my_test_suite, "False test of is_shelf", test_is_shelf) == NULL) || 0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit
     CU_cleanup_registry();

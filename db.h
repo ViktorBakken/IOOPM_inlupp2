@@ -64,8 +64,7 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
 /// @brief Increases the stock of a merch by at least one
 /// @param warehouse where the merch is located and to be potentially replenished
 /// @param item the item to obtain stock location of
-/// @param amount the amount of items to replenish to stock
-void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount);
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item);
 
 /// @brief list all items in the store (20 at a time) in alphabetical order
 /// @param HTn are all the items in the warehouse

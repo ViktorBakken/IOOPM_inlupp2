@@ -140,13 +140,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                int amount = ask_question_int("How much?");
-                while (amount >)
-                {
-                    /* code */
-                }
-                
-                replenish_stock(&warehouse, item, (size_t) amount);
+                replenish_stock(&warehouse, item);
             }
             else
             {
@@ -162,7 +156,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (cart_choice == NULL)
             {
                 int id = ask_question_int("What shall the id of your cart be");
-                create_cart_in_cart_list(all_carts, id);
+                create_cart(all_carts, id);
                 cart_choice = choose_cart(all_carts, id);
                 avaliable_shopping_cart = true;
             }

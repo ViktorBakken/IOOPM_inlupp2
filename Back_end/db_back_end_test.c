@@ -49,8 +49,8 @@ static void test_remove_from_stock(){
     replenish_stock(warehouse, item);
     remove_from_stock(warehouse->HTsl, item.llsl);
     CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse->HTsl), 0)
-}
 
+}
 
 static void test_merchendise_item_unique_true(){
     ioopm_warehouse_t *warehouse;
