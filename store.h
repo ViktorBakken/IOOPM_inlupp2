@@ -17,13 +17,13 @@
 
 
 
-// void add_merchandise();
+// void ioopm_add_item();
 
-// void remove_merchandise();
+// void remove_item();
 
-// void list_merchandise();
+// void list_item();
 
-// void edit_merchandise();
+// void edit_item();
 
 // void show_stock();
 
@@ -31,9 +31,9 @@
 
 // void create_cart();
 
-// void remove_cart();
+// void ioopm_destroy_cart();
 
-// void add_to_cart();
+// void ioopm_add_to_cart();
 
 // void remove_from_cart();
 

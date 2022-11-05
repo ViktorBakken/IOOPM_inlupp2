@@ -3,12 +3,12 @@
 answer_t conv_int_answer(char *str)
 {
     int int_val = atoi(str);
-    return (answer_t) {.int_value = int_val};
+    return (answer_t){.int_value = int_val};
 }
 
 answer_t conv_str_answer(char *str)
 {
-    return (answer_t) {.string_value = strdup(str)};
+    return (answer_t){.string_value = strdup(str)};
 }
 
 void clear_input_buffer()
@@ -78,14 +78,18 @@ answer_t ask_question(char *question, check_func check, convert_func convert)
 {
     int buf_siz = 255;
     char buf[buf_siz];
+
+    println(question);
+
     do
     {
-        println(question);
         read_string(buf, buf_siz);
         if (check(buf))
         {
             break;
         }
+        puts("Invalid input!");
+
     } while (true);
 
     return convert(buf);

@@ -1,7 +1,7 @@
-//libraries
+// libraries
 #include <CUnit/Basic.h>
-#include "store.h"
-
+#include "db.h"
+// #include "store.h"
 
 static int init_suite(void)
 {
@@ -17,18 +17,46 @@ static int clean_suite(void)
   return 0;
 }
 
-// These are example test functions. You should replace them with
-// functions of your own.
-static void test1(void)
-{
-  
-  CU_ASSERT(42);
-}
+// // These are example test functions. You should replace them with
+// // functions of your own.
+// static void test_is_shelf_true(void){
+//     char *shelf = "A12";
+//     // CU_ASSERT_TRUE(is_shelf(shelf))
+// }
 
-static void test2(void)
-{
-  CU_ASSERT_EQUAL(1 + 1, 2);
-}
+// static void test_is_shelf_false(void)
+// {
+//   char *shelf = "AAA";
+//   CU_ASSERT_FALSE(is_shelf(shelf))
+// }
+
+// static void test_random(void){
+//     // char *random = ioopm_random_shelf();
+//     CU_ASSERT_TRUE(is_shelf(random))
+// }
+
+// static void test_ask_question_shelf(void)
+// {
+//   char *shelf = ask_question_shelf("Enter a shelf");
+//   CU_ASSERT_TRUE(is_shelf(shelf))
+// }
+
+// static void test_show_stock(void){
+
+//     ioopm_warehouse_t *warehouse;
+//     ioopm_item_t item;
+
+//     replenish_stock(warehouse, item);
+//     show_stock_db(item);
+// }
+
+// static void test_is_menu_char_false(void){
+//     CU_ASSERT_TRUE(is_menu_char("L"))
+// }
+
+// static void test_is_menu_char_false(void){
+//     CU_ASSERT_FALSE(is_menu_char("p"))
+// }
 
 int main()
 {
@@ -52,8 +80,7 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-      (CU_add_test(my_test_suite, "A simple test", test1) == NULL) ||
-      (CU_add_test(my_test_suite, "Basic arithmetics", test2) == NULL) ||
+
       0)
   {
     // If adding any of the tests fails, we tear down CUnit and exit

@@ -1,6 +1,11 @@
 #include "db.h"
 
-bool is_shelf(string shelf)
+static bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name)
+{
+    return !ioopm_hash_table_has_key(HTsl, ioopm_str_to_elem(shelf_name));
+}
+
+static bool is_shelf(string shelf)
 {
     if (isalpha(shelf[0]) && (string_length(shelf) > 1))
     {
@@ -14,35 +19,39 @@ bool is_shelf(string shelf)
     return false;
 }
 
-string ioopm_random_shelf()
+static void destroy_shelf_listfunc(size_t unused_index, elem_t *value, void *unused_extra)
+{
+    (void)unused_index;
+    (void)unused_extra;
+    free(value->s);
+}
+
+bool item_unique(ioopm_hash_table_t *HTn, ioopm_item_t *item)
+{
+    return !ioopm_hash_table_has_key(HTn, ioopm_str_to_elem(item->name));
+}
+
+static string ioopm_random_shelf()
 { // TODO fix magic numbers
-    int constant = 9;
-    string rand1_str = " ";
-    string rand2_str = " ";
+    int constant = 10;
 
-
-    char buf[255] = {0};
+    char buf[3];
     int rand1 = random() % constant;
     int rand2 = random() % constant;
     int rand3 = random() % 26;
-    char letter = (char)(rand3 + 65);
 
-    sprintf(rand1_str, "%d", rand1);
-    sprintf(rand2_str, "%d", rand2);
+    char rand1_char = (char)(rand1 + 48); // ascii(48) = '0'
+    char rand2_char = (char)(rand2 + 48); // ascii(48) = '0'
+    char letter = (char)(rand3 + 65);     // ascii(65) = 'A'
 
-    strcat(buf, &letter);
-    strcat(buf, rand1_str);
-    strcat(buf, rand2_str);
-    
+    buf[0] = letter;
+    buf[1] = rand1_char;
+    buf[2] = rand2_char;
+
     return strdup(buf);
 }
 
-string ask_question_shelf(string question)
-{
-    return ask_question(question, is_shelf, conv_str_answer).string_value; //TODO strdup returns a string not a answear_t!
-}
-
-ioopm_item_t ioopm_input_item()
+ioopm_item_t *ioopm_input_item()
 {
     string name = ask_question_string("What is the name of the item? ");
     string desc = ask_question_string("Give a description of the item: ");
@@ -51,174 +60,240 @@ ioopm_item_t ioopm_input_item()
     return make_item_backend(name, desc, price);
 }
 
-ioopm_item_t ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
+void ioopm_destroy_item(ioopm_item_t *item_Destr)
 {
-    int index = ask_question_int("Whiche item?"); // TODO test for negative inputs, etc
-
-    return ioopm_choose_item_from_list_backend(HTn, index);
+    free(item_Destr->name);
+    free(item_Destr->desc);
+    ioopm_linked_list_apply_to_all(item_Destr->llsl, destroy_shelf_listfunc, NULL);
+    ioopm_linked_list_destroy(item_Destr->llsl);
+    free(item_Destr);
 }
 
-
-// string magick(string arr1[], string arr2[], string arr3[], int num)
-// {
-//     char buf[255] = {0};
-//     int rand1 = random() % num;
-//     int rand2 = random() % num;
-//     int rand3 = random() % num;
-//     printf("%d %d %d\n", rand1, rand2, rand3);
-//     strcat(buf, arr1[rand1]);
-//     strcat(buf, "-");
-//     strcat(buf, arr2[rand2]);
-//     strcat(buf, " ");
-//     strcat(buf, arr3[rand3]);
-//     return strdup(buf);
-// }
-
-void list_db(ioopm_hash_table_t *HTn, int no_items)
+void destroy_item_hashfunc(elem_t unused_key, elem_t *value, void *unused_extra)
 {
-    string answer;
+    (void)unused_extra;
+    (void)unused_key;
+    ioopm_item_t *item_ptr = value->p;
+    ioopm_destroy_item(item_ptr);
+}
 
-    string *merchandise = ioopm_merchandice_array(HTn);
-
-    qsort(merchandise, no_items, sizeof(string), cmpstringp); // taken from freq-count.c
-
-    for (int i = 0; i < no_items; i++)
+bool ioopm_remove_item(ioopm_warehouse_t *warehouse, string key) // TODO FIX
+{
+    if (ioopm_hash_table_lookup(warehouse->HTn, ioopm_str_to_elem(key)).success)
     {
-        printf("%d. %s\n", i + 1, merchandise[i]);
-        if (i % 20 == 0 && i != 0)
+        ioopm_item_t *item_ptr = ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(key)).value.p;
+        ioopm_list_t *item_llsl = item_ptr->llsl;
+        for (size_t i = 0; i < item_llsl->size ; i++)
         {
-            answer = ask_question_string("List more items?\n");
-            
-            while ( strcmp(answer, "no") != 0 && strcmp(answer, "yes") != 0) //TODO we assume that input is in small letters! not accepted: write Yes| yEs| YES
-            {
-                puts("Invalid input!/n");
-                answer = ask_question_string("List more items?\n");
-            }
+            string current_shelf = ioopm_linked_list_get(item_llsl, i).s;
+            ioopm_hash_table_remove(warehouse->HTsl, ioopm_str_to_elem(current_shelf));
+        }
+        
+        ioopm_destroy_item(item_ptr);
+        return true;
+    }
+    return false;
+}
 
-            if (strcmp(answer, "no") == 0 )
-            {
-                break;
-            }
+void edit_item(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
+{
+    char *answername = ask_question_string("Do you wish to change the name?: ");
+    if (strstr("yes", answername))
+    {
+        char *answername2 = ask_question_string("What name would you like to name it?: ");
+        if (item_unique(warehouse->HTn, item))
+        {
+            ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(item->name));
+            strcpy(item->name, answername2);
+            ioopm_hash_table_insert(warehouse->HTn, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(item));
+
+            free(answername2);
+        }
+        else
+        {
+            puts("That name of a item already exists!");
         }
     }
+    else
+    {
+        char *answerdesc = ask_question_string("Do you wish to change the description?: ");
+        if (strstr("yes", answerdesc))
+        {
+            char *newdesc2 = ask_question_string("What shall the new description be?: ");
+
+            strcpy(item->desc, newdesc2);
+            free(newdesc2);
+        }
+        else
+        {
+            char *answerprice = ask_question_string("Would you like to change the price?: ");
+            if (strstr("yes", answerprice))
+            {
+                size_t newprice = ask_question_int("What would you like to put the new price on?: ");
+                item->price = newprice;
+            }
+            free(answerprice);
+        }
+        free(answerdesc);
+    }
+    free(answername);
 }
-/*void edit_db(ioopm_item_t *items, int no_items)
+
+ioopm_warehouse_t ioopm_create_warehouse()
 {
-    // int num = ask_question_int("Which item would you like to edit? ");
-    // items += (num - 1);
-    // print_item(items);
-    // *items = input_item();
+    ioopm_hash_table_t *HTn = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_item_eq, ioopm_string_hash);
+    ioopm_hash_table_t *HTsl = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_item_eq, ioopm_string_hash);
+    return (ioopm_warehouse_t){.HTn = HTn, .HTsl = HTsl};
 }
-*/
+
+void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings, DONE?(ger valgrind error?)
+{
+    ioopm_hash_table_apply_to_all(warehouse->HTn, destroy_item_hashfunc, NULL);
+    ioopm_hash_table_destroy(warehouse->HTn);
+    ioopm_hash_table_destroy(warehouse->HTsl);
+}
+
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount)
+{
+    
+    string shelf_name;
+    bool found_non_unique_shelf;
+    for (size_t i = 0; i < amount; i++)
+    {
+        found_non_unique_shelf = true;
+        while (found_non_unique_shelf)
+        {
+            string item = ioopm_random_shelf();
+            if (shelf_unique(warehouse->HTsl, item))
+            {
+                shelf_name = item;
+                found_non_unique_shelf = false;
+            }
+            else
+            {
+                free(item);
+            }
+        }
+
+        ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
+        ioopm_hash_table_insert(warehouse->HTsl, ioopm_str_to_elem(shelf_name), ioopm_ptr_to_elem(item));
+    }
+}
+
+void list_db(ioopm_hash_table_t *HTn, size_t no_items)
+{
+    string *item = ioopm_item_array(HTn);
+
+    qsort(item, no_items, sizeof(string), cmpstringp); // taken from freq-count.c
+
+    for (size_t i = 0; i < no_items; i++)
+    {
+        printf("%d. %s\n", (int)i + 1, item[i]);
+        if (i % 20 == 0 && i != 0)
+        {
+            string answer = ask_question_string("List more items?\n");
+            char to_lower;
+            for (size_t i = 0; i < strlen(answer); i++)
+            {
+                to_lower = tolower(answer[i]);
+                answer[i] = to_lower;
+            }
+
+            while (strcmp(answer, "no") != 0 && strcmp(answer, "yes") != 0) // TODO we assume that input is in small letters! not accepted: write Yes| yEs| YES
+            {
+                puts("Invalid input!/n");
+                free(answer);
+                string answer = ask_question_string("List more items?\n");
+                (void)answer;
+            }
+
+            if (strcmp(answer, "no") == 0)
+            {
+                free(answer);
+                break;
+            }
+            free(answer);
+        }
+    }
+    ioopm_item_list_destroy(item, no_items);
+}
 
 void show_stock_db(ioopm_item_t item)
 {
     ioopm_list_t *locations = item.llsl;
+    size_t size = item.llsl->size;
     string *locationarray = ioopm_llsl_array(locations);
     qsort(locationarray, ioopm_linked_list_size(locations), sizeof(char *), cmpstringp);
 
-    for (int i = 0; i < (int) ioopm_linked_list_size(locations); i++)
+    puts("Item is availabel at locations:");
+    for (int i = 0; i < (int)size; i++)
     {
-        printf("%d. %s: %d", i + 1, locationarray[i], (int) item.llsl->size);
+        printf("%d. %s\n", i + 1, locationarray[i]);
     }
+    free(locationarray);
 }
 
-// använder
-bool is_menu_char(char *c)
+string ask_question_shelf(string question)
 {
-    if (strstr("LlTtsVRgkuncoA", c) == NULL || strlen(c) > 1)
+    return ask_question(question, is_shelf, conv_str_answer).string_value; // TODO strdup returns a string not a answear_t!
+}
+
+ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
+{
+    size_t size = ioopm_hash_table_size(HTn);
+
+    list_db(HTn, (int)size);
+
+    int index = -1;
+    while (0 > index || index > (int)size)
     {
-        return false;
+        index = ask_question_int("Whiche item?"); // TODO add test for valid/negative inputs, etc
+        index--;
     }
-    else
+    return ioopm_choose_item_from_list_backend(HTn, index);
+}
+string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
+{
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(llsl);
+    char **keys = calloc(llsl->size, sizeof(char *));
+
+    for (size_t i = 0; i < llsl->size; i++)
     {
-        return true;
+        keys[i] = ioopm_iterator_current(iter).s;
+        if (i < llsl->size - 1)
+        {
+            ioopm_iterator_next(iter);
+        }
     }
+    ioopm_iterator_destroy(iter);
+    return keys;
 }
-// använder
-string print_menu()
+
+void ioopm_item_list_destroy(string *item, size_t size)
 {
-    return "[L]ägga till en vara        \n"
-           "[T]a bort en vara           \n"
-           "Li[s]ta alla items          \n"
-           "[V]isa alla stocks          \n"
-           "[R]edigera en vara          \n"
-           "Lägg til[l] stock           \n"
-           "Ån[g]ra senaste ändringen   \n"
-           "Skappa [k]undvagn           \n"
-           "Lägg till i k[u]ndvagnen    \n"
-           "Ta bor[t] kundvagnen        \n"
-           "Ta bort från kundvagne[n]   \n"
-           "Che[c]kout                  \n"
-           "T[o]tala kostnad            \n"
-           "Lis[t]a alla items          \n"
-           "[A]vsluta                   \n";
+
+    for (size_t i = 0; i < size; i++)
+    {
+        free(item[i]);
+    }
+    free(item);
 }
 
-answer_t str_to_answer_t(string s)
+string *ioopm_item_array(ioopm_hash_table_t *HTn) // TODO NEED TO FREE keys
 {
-    return (answer_t) {.string_value = s};
+    ioopm_list_t *list = ioopm_hash_table_keys(HTn);
+    ioopm_list_iterator_t *iter = ioopm_list_iterator(list);
+    string *keys = calloc(list->size, sizeof(string));
+
+    for (size_t i = 0; i < list->size; i++)
+    {
+        keys[i] = strdup(ioopm_iterator_current(iter).s);
+        if (i < list->size - 1)
+        {
+            ioopm_iterator_next(iter);
+        }
+    }
+    ioopm_linked_list_destroy(list);
+    ioopm_iterator_destroy(iter);
+    return keys;
 }
-
-// använder
-char ask_question_menu()
-{
-    answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)str_to_answer_t);
-    return *answer.string_value;
-}
-
-// int main(int argc, char *argv[])
-// {
-//     srandom(time(NULL));
-//     char *array1[] = {"Laser", "Polka", "Extra"};           // TODO: Lägg till!
-//     char *array2[] = {"förnicklad", "smakande", "ordinär"}; // TODO: Lägg till!
-//     char *array3[] = {"skruvdragare", "kola", "uppgift"};   // TODO: Lägg till!
-
-//     if (argc < 2)
-//     {
-//         printf("Usage: %s number\n", argv[0]);
-//     }
-//     else
-//     {
-//         ioopm_item_t db[16]; // Array med plats för 16 varor
-//         int db_siz = 0;      // Antalet varor i arrayen just nu
-
-//         int items = atoi(argv[1]); // Antalet varor som skall skapas
-
-//         if (items > 0 && items <= 16)
-//         {
-//             for (int i = 0; i < items; ++i)
-//             {
-//                 // Läs in en vara, lägg till den i arrayen, öka storleksräknaren
-//                 ioopm_item_t item = input_item();
-//                 db[db_siz] = item;
-//                 ++db_siz;
-//             }
-//         }
-//         else
-//         {
-//             puts("Sorry, must have [1-16] items in database.");
-//             return 1; // Avslutar programmet!
-//         }
-//         puts("Hej");
-//         for (int i = db_siz; i < 16; ++i)
-//         {
-
-//             char *name = magick(array1, array2, array3, 3); // TODO: Lägg till storlek
-//             char *desc = magick(array1, array2, array3, 3); // TODO: Lägg till storlek
-//             int price = random() % 200000;
-//             char shelf[] = {random() % ('Z' - 'A') + 'A',
-//                             random() % 10 + '0',
-//                             random() % 10 + '0',
-//                             '\0'};
-//             ioopm_item_t item = make_item(name, desc, price, shelf);
-
-//             db[db_siz] = item;
-//             ++db_siz;
-//         }
-
-//         // event_loop(db, &db_siz);
-//     }
-
-//     return 0;
-// }
