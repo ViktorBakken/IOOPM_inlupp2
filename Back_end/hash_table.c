@@ -221,6 +221,7 @@ ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht)
 
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
 {
+  
   for (size_t i = 0; i < ioopm_hash_table_size(ht); i++)
   {
     bool is_found = false;

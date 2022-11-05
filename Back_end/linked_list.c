@@ -8,10 +8,8 @@
  * @brief A simple linked list that implements parts of the interface
  * of `linked_list.h`. */
 
-
 #define ERR_NULL_List "\nNothing to get! Aborting..."
 #define ERR_Out_of_bounds "\nIndex out of bounds! Aborting..."
-
 
 link_t *link_create(elem_t value, link_t *next)
 {
@@ -28,8 +26,7 @@ ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function eq_fn)
     return list;
 }
 
-
-void ioopm_fill_linked_list(ioopm_list_t *list, elem_t *values, int length) 
+void ioopm_fill_linked_list(ioopm_list_t *list, elem_t *values, int length)
 {
     if (list) // Handling NULL list case
     {
@@ -43,8 +40,6 @@ void ioopm_fill_linked_list(ioopm_list_t *list, elem_t *values, int length)
         perror(ERR_NULL_List);
     }
 }
-
-
 
 void ioopm_linked_list_destroy(ioopm_list_t *list)
 {
@@ -67,7 +62,6 @@ void ioopm_linked_list_destroy(ioopm_list_t *list)
         perror(ERR_NULL_List);
     }
 }
-
 
 void ioopm_linked_list_append(ioopm_list_t *list, elem_t value)
 {
@@ -234,7 +228,10 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
             cursor = cursor->next;
         }
     }
-    perror(ERR_NULL_List);
+    else
+    {
+        perror(ERR_NULL_List);
+    }
     return false;
 }
 
@@ -369,7 +366,7 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_list_functio
                 current = current->next;
                 index++;
             }
-        } 
+        }
         else
         {
             perror(ERR_NULL_List);

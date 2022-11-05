@@ -153,12 +153,12 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings,
     ioopm_hash_table_destroy(warehouse->HTsl);
 }
 
-void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
+void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount)
 {
-    int amount = ask_question_int("How much of this item?: ");
+    
     string shelf_name;
     bool found_non_unique_shelf;
-    for (size_t i = 0; i < (size_t)amount; i++)
+    for (size_t i = 0; i < amount; i++)
     {
         found_non_unique_shelf = true;
         while (found_non_unique_shelf)

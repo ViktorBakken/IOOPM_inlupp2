@@ -46,8 +46,8 @@ linked_list.o: linked_list.c
 	$(cc) linked_list.c $(flag) -c
 
 
-common.o: common.c
-	$(cc) common.c $(flag) -c
+common.o: Generic_func_Data_types/common.c
+	$(cc) $^ $(flag) -c
 
 
 
