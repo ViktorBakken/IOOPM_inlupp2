@@ -11,8 +11,17 @@
 #include <stddef.h>
 #include <assert.h>
 
-
 // använder
+
+ioopm_item_t *ioopm_input_item()
+{
+    string name = ask_question_string("What is the name of the item? ");
+    string desc = ask_question_string("Give a description of the item: ");
+    int price = ask_question_int("What is the items price? ");
+
+    return make_item_backend(name, desc, price);
+}
+
 bool is_menu_char(char *c)
 {
     if (strstr("LliTtsVRgkuncoA", c) == NULL || strlen(c) > 1)
@@ -71,6 +80,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
     ioopm_shopping_cart_t *cart_choice = NULL;
 
     bool avaliable_shopping_cart = false;
+    int amount = -1;
 
     while (true)
     {
@@ -101,7 +111,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
                         ioopm_remove_from_cart(cart_choice, item);
                     }
                 }
-                ioopm_remove_item(&warehouse, item->name);
+                ioopm_remove_item(&warehouse, item);
 
                 item = NULL;
                 no_items--;
@@ -140,13 +150,13 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                int amount = ask_question_int("How much?");
-                while (amount >)
+                amount = ask_question_int("How much?");
+                while (amount < 0)
                 {
-                    /* code */
+                    amount = ask_question_int("Invalid amount!!");
                 }
-                
-                replenish_stock(&warehouse, item, (size_t) amount);
+
+                replenish_stock(&warehouse, item, (size_t)amount);
             }
             else
             {

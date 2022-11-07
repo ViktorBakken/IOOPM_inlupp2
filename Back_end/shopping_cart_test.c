@@ -4,6 +4,9 @@
 
 #include "../db.h"
 
+
+
+
 static void test_create()
 {
     ioopm_shopping_cart_t *cart = create_cart(100);
@@ -11,6 +14,9 @@ static void test_create()
 
     ioopm_hash_table_t *all_carts = ioopm_create_cart_list();
     CU_ASSERT_PTR_NOT_NULL(all_carts);
+
+    ioopm_destroy_cart(cart);
+    ioopm_destroy_cart_list(all_carts);
 }
 
 static void test_destroy()
@@ -35,9 +41,12 @@ static void test_id_and_eq_cart()
     int random_id = 0;
     create_cart_in_cart_list(all_carts, id);
 
-    ioopm_shopping_cart_t *cart = ioopm_hash_table_lookup(all_carts, ioopm_int_to_elem(id)).value.p;
+    ioopm_shopping_cart_t *cart = choose_cart(all_carts, id);
     CU_ASSERT_EQUAL(ioopm_cart_id(cart), id);
     CU_ASSERT_NOT_EQUAL(ioopm_cart_id(cart), random_id);
+
+    
+    ioopm_destroy_cart_list(all_carts);
 }
 
 static void test_cart_unique()
@@ -52,35 +61,52 @@ static void test_cart_unique()
     CU_ASSERT_TRUE(cart_unique(all_carts, random_id));
 
     CU_ASSERT_TRUE(cart_unique(all_carts_empty, random_id));
+
+    ioopm_destroy_cart_list(all_carts);
+    ioopm_destroy_cart_list(all_carts_empty);
 }
 
 static void test_amount_items_in_cart()
 {
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     ioopm_shopping_cart_t *cart = create_cart(10);
     ioopm_shopping_cart_t *cart_empty = create_cart(10);
-    ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
-    ioopm_item_t *item_not_in_cart = make_item_backend("ape", "a ape", 2);
+    ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
+    ioopm_item_t *item_not_in_cart = make_item_backend(strdup("dante"), strdup("a dante"), 2);
+    replenish_stock(&warehouse, item, 2);
     ioopm_add_to_cart(cart, item, 2);
 
     CU_ASSERT_EQUAL(2, ioopm_amount_items_in_cart(cart, item));
     CU_ASSERT_EQUAL(0, ioopm_amount_items_in_cart(cart, item_not_in_cart));
     CU_ASSERT_EQUAL(0, ioopm_amount_items_in_cart(cart_empty, item));
+
+    ioopm_destroy_cart(cart);
+    ioopm_destroy_cart(cart_empty);
+    ioopm_destroy_item(item);
+    ioopm_destroy_item(item_not_in_cart);
 }
 
 static void test_is_in_shopping_cart()
-{
+{   
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     ioopm_shopping_cart_t *cart = create_cart(100);
     ioopm_shopping_cart_t *cart_empty = create_cart(100);
 
     ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-    ioopm_item_t *item_new = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-
+    ioopm_item_t *item_new = make_item_backend(strdup("dante"), strdup("a dante"), 2);
+    replenish_stock(&warehouse, item, 2);
+    replenish_stock(&warehouse, item, 2);
     ioopm_add_to_cart(cart, item, 2);
 
     CU_ASSERT_TRUE(ioopm_is_in_shopping_cart(cart, item));
     CU_ASSERT_FALSE(ioopm_is_in_shopping_cart(cart, item_new));
     CU_ASSERT_FALSE(ioopm_is_in_shopping_cart(cart_empty, item));
     CU_ASSERT_FALSE(ioopm_is_in_shopping_cart(cart_empty, item_new));
+
+    ioopm_destroy_cart(cart);
+    ioopm_destroy_cart(cart_empty);
+    ioopm_destroy_item(item);
+    ioopm_destroy_item(item_new);
 }
 
 static void test_choose_cart()
@@ -95,18 +121,24 @@ static void test_choose_cart()
     create_cart_in_cart_list(all_carts, random_id_one);
     create_cart_in_cart_list(all_carts, random_id_two);
 
-    // TODO: dont know how to test...
+    ioopm_shopping_cart_t *found_cart = ioopm_hash_table_lookup(all_carts, ioopm_int_to_elem(existing_id)).value.p;
+    ioopm_shopping_cart_t *choosen_cart = choose_cart(all_carts, existing_id);
+
+    CU_ASSERT_EQUAL(found_cart, choosen_cart);
+    ioopm_destroy_cart_list(all_carts);
+    ioopm_destroy_cart_list(all_carts_empty);
 }
 
 static void test_add_to_cart()
 {
-
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     ioopm_shopping_cart_t *cart = create_cart(100);
     ioopm_shopping_cart_t *cart_new = create_cart(100);
     ioopm_shopping_cart_t *cart_empty = create_cart(100);
     ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-    ioopm_item_t *item_new = make_item_backend(strdup("ape"), strdup("a ape"), 2);
+    ioopm_item_t *item_new = make_item_backend(strdup("dante"), strdup("a ape"), 2);
 
+    replenish_stock(&warehouse, item, 2);
     ioopm_add_to_cart(cart, item, 2);
     ioopm_add_to_cart(cart_new, item_new, 0);
 
@@ -120,17 +152,25 @@ static void test_add_to_cart()
     CU_ASSERT_FALSE(ioopm_is_in_shopping_cart(cart_empty, item_new));
     CU_ASSERT_EQUAL(0, ioopm_amount_items_in_cart(cart_empty, item));
     CU_ASSERT_EQUAL(0, ioopm_amount_items_in_cart(cart_empty, item_new));
+
+    ioopm_destroy_cart(cart);
+    ioopm_destroy_cart(cart_new);
+    ioopm_destroy_cart(cart_empty);
+    ioopm_destroy_item(item);
+    ioopm_destroy_item(item_new);
 }
 
 static void test_remove_cart_items()
-{
-    ioopm_shopping_cart_t *cart = create_cart(10);
-    ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+{   
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
+    ioopm_shopping_cart_t *cart = create_cart(100);
+    ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
+    replenish_stock(&warehouse, item, 2);
     ioopm_add_to_cart(cart, item, 2);
 
     CU_ASSERT_PTR_NOT_NULL(cart);
     CU_ASSERT_TRUE(ioopm_is_in_shopping_cart(cart, item));
-    CU_ASSERT_EQUAL(ioopm_amount_items_in_cart(cart, item), 2);
+    CU_ASSERT_EQUAL(2, ioopm_amount_items_in_cart(cart, item));
 
     CU_ASSERT_TRUE(ioopm_remove_from_cart(cart, item));
 
@@ -141,28 +181,37 @@ static void test_remove_cart_items()
 
     ioopm_destroy_cart(cart);
 
-    CU_ASSERT_PTR_NULL(cart);
+    CU_ASSERT_PTR_NOT_NULL(cart);
 
     // ioopm_item_t *not_existing_item = make_item_backend("ape","a ape", 2);
     // CU_ASSERT_FALSE(ioopm_remove_from_cart(cart, not_existing_item));
+
+    ioopm_destroy_item(item);
 }
 
 static void test_calculate_cost()
 {
+    ioopm_warehouse_t warehouse = ioopm_create_warehouse();
     ioopm_shopping_cart_t *cart = create_cart(100);
     ioopm_shopping_cart_t *cart_more = create_cart(1000);
-    ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+    ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
+    replenish_stock(&warehouse, item, 2);
     ioopm_add_to_cart(cart, item, 2);
     ioopm_add_to_cart(cart_more, item, 6);
 
     int cost = calculate_cost(cart);
-    int cost_more = calculate_cost(cart_more);
+    // int cost_more = calculate_cost(cart_more);
     CU_ASSERT_EQUAL(cost, 4);
 
     ioopm_shopping_cart_t *cart_is_empty = create_cart(100);
 
     int cost_empty = calculate_cost(cart_is_empty);
     CU_ASSERT_EQUAL(cost_empty, 0);
+
+    ioopm_destroy_cart(cart);
+    ioopm_destroy_cart(cart_more);
+    ioopm_destroy_cart(cart_is_empty);
+    ioopm_destroy_item(item);
 }
 
 static void test_checkout()
@@ -171,7 +220,7 @@ static void test_checkout()
     ioopm_shopping_cart_t *cart_one = create_cart(100);
     ioopm_shopping_cart_t *cart_two = create_cart(100);
     ioopm_shopping_cart_t *cart_empty = create_cart(100);
-    ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+    ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
 
     ioopm_add_item(warehouse.HTn, item);
 
@@ -184,7 +233,12 @@ static void test_checkout()
     checkout(cart_two, warehouse.HTsl);
     checkout(cart_empty, warehouse.HTsl);
 
-    CU_ASSERT_EQUAL(1, ioopm_hash_table_size(warehouse.HTsl));
+    CU_ASSERT_EQUAL(2, ioopm_hash_table_size(warehouse.HTsl));
+
+    ioopm_warehouse_destroy(&warehouse);
+    ioopm_destroy_cart(cart_one);
+    ioopm_destroy_cart(cart_two);
+    ioopm_destroy_cart(cart_empty);
 }
 
 static int init_suite(void)

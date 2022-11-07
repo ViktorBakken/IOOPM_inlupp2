@@ -25,67 +25,7 @@ static int clean_suite(void)
 // These are example test functions. You should replace them with
 // functions of your own.
 
-static void test_create_destroy()
-{
-  ioopm_hash_table_t *ht = ioopm_hash_table_create(ioopm_elem_int_eq, ioopm_elem_str_eq, NULL);
-  CU_ASSERT_PTR_NOT_NULL(ht);
-  ioopm_hash_table_destroy(ht);
-  ioopm_item_t item;
 
-  replenish_stock(warehouse, item);
-  ioopm_item_list_destroy(item, 1);
-}
-
-static void test_destory_shelf(){
-  char *shelf = "A12";
-  destroy_shelf_listfunc(NULL, ioopm_str_to_elem(shelf));
-  CU_ASSERT_NULL(shelf);
-}
-
-static void test_remove_from_stock(){
-    ioopm_warehouse_t *warehouse;
-    ioopm_item_t item;
-
-    replenish_stock(warehouse, item);
-    remove_from_stock(warehouse->HTsl, item.llsl);
-    CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse->HTsl), 0)
-}
-
-
-static void test_merchendise_item_unique_true(){
-    ioopm_warehouse_t *warehouse;
-    ioopm_item_t item;
-
-    ioopm_add_item(warehouse->HTn);
-    CU_ASSERT_TRUE(item_unique(warehouse->HTn, item));
-}
-
-static void test_is_shelf_false(void)
-{
-  char *shelf = "AAA";
-  CU_ASSERT_FALSE(is_shelf(shelf)) 
-}
-
-static void test_random(void){
-    char *random = ioopm_random_shelf();
-    CU_ASSERT_TRUE(is_shelf(random))
-}
-
-static void test_ask_question_shelf(void)
-{
-  char *shelf = ask_question_shelf("Enter a shelf");
-  CU_ASSERT_TRUE(is_shelf(shelf))
-}
-
-
-static void test_show_stock(void){
-
-    ioopm_warehouse_t *warehouse;
-    ioopm_item_t item;
-
-    replenish_stock(warehouse, item);
-    show_stock_db(item);
-}
 
 static void test_is_menu_char_false(void){
     CU_ASSERT_TRUE(is_menu_char("L"))

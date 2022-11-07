@@ -66,10 +66,16 @@ bool ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item, size_t a
         {
             if (!ioopm_is_in_shopping_cart(cart, item))
             {
-                cart_item_t *cart_item = create_cart_item(amount, item);
+                if (item->llsl->size > 0) //Check item stock
+                {
+                    cart_item_t *cart_item = create_cart_item(amount, item);
 
-                ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item));
-                return true;
+                    ioopm_hash_table_insert(cart->cart, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(cart_item));
+                    return true;
+                }
+
+                puts("item is not in stock!");
+                return false;
             }
             else
             {
@@ -86,7 +92,7 @@ bool ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item, size_t a
         }
         else
         {
-            puts("No stock avalible!");
+            puts("No cart avalible!");
             return false;
         }
         puts("how you get here?");
@@ -101,21 +107,20 @@ bool ioopm_add_to_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item, size_t a
 
 int ioopm_amount_items_in_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)
 {
-    if (cart) // Handeling NULL cart case
+    if (cart && item) // Handeling NULL cart case
     {
         ioopm_option_t result = ioopm_hash_table_lookup(cart->cart, ioopm_str_to_elem(item->name));
         if (result.success)
         {
             cart_item_t *cart_item = result.value.p;
 
-            if (ioopm_hash_table_has_key(cart->cart, ioopm_ptr_to_elem(cart_item->item)))
-            {
-                return cart_item->amount;
-            }
+            // if (ioopm_hash_table_has_key(cart->cart, ioopm_str_to_elem(cart_item->item->name)))
+            // {
+            return cart_item->amount;
+            // }
         }
     }
-
-    return -1;
+    return 0; // om denna del är i else-sats så funkar det enart för en amount på 0
 }
 
 bool ioopm_is_in_shopping_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item)

@@ -5,7 +5,7 @@ static bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name)
     return !ioopm_hash_table_has_key(HTsl, ioopm_str_to_elem(shelf_name));
 }
 
-static bool is_shelf(string shelf)
+bool is_shelf(string shelf)
 {
     if (isalpha(shelf[0]) && (string_length(shelf) > 1))
     {
@@ -51,15 +51,6 @@ static string ioopm_random_shelf()
     return strdup(buf);
 }
 
-ioopm_item_t *ioopm_input_item()
-{
-    string name = ask_question_string("What is the name of the item? ");
-    string desc = ask_question_string("Give a description of the item: ");
-    int price = ask_question_int("What is the items price? ");
-
-    return make_item_backend(name, desc, price);
-}
-
 void ioopm_destroy_item(ioopm_item_t *item_Destr)
 {
     free(item_Destr->name);
@@ -77,11 +68,11 @@ void destroy_item_hashfunc(elem_t unused_key, elem_t *value, void *unused_extra)
     ioopm_destroy_item(item_ptr);
 }
 
-bool ioopm_remove_item(ioopm_warehouse_t *warehouse, string key) // TODO FIX
+bool ioopm_remove_item(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
 {
-    if (ioopm_hash_table_lookup(warehouse->HTn, ioopm_str_to_elem(key)).success)
+    if (ioopm_hash_table_lookup(warehouse->HTn, ioopm_str_to_elem(item->name)).success)
     {
-        ioopm_item_t *item_ptr = ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(key)).value.p;
+        ioopm_item_t *item_ptr = ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(item->name)).value.p;
         ioopm_list_t *item_llsl = item_ptr->llsl;
         for (size_t i = 0; i < item_llsl->size ; i++)
         {
@@ -153,31 +144,35 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse) // TODO free strings,
     ioopm_hash_table_destroy(warehouse->HTsl);
 }
 
-void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount)
+bool replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount)
 {
     
     string shelf_name;
     bool found_non_unique_shelf;
-    for (size_t i = 0; i < amount; i++)
-    {
-        found_non_unique_shelf = true;
-        while (found_non_unique_shelf)
+    if(amount > 0){
+        for (size_t i = 0; i < amount; i++)
         {
-            string item = ioopm_random_shelf();
-            if (shelf_unique(warehouse->HTsl, item))
+            found_non_unique_shelf = true;
+            while (found_non_unique_shelf)
             {
-                shelf_name = item;
-                found_non_unique_shelf = false;
+                string item = ioopm_random_shelf();
+                if (shelf_unique(warehouse->HTsl, item))
+                {
+                    shelf_name = item;
+                    found_non_unique_shelf = false;
+                }
+                else
+                {
+                    free(item);
+                }
             }
-            else
-            {
-                free(item);
-            }
-        }
 
-        ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
-        ioopm_hash_table_insert(warehouse->HTsl, ioopm_str_to_elem(shelf_name), ioopm_ptr_to_elem(item));
+            ioopm_linked_list_prepend(item->llsl, ioopm_str_to_elem(shelf_name));
+            ioopm_hash_table_insert(warehouse->HTsl, ioopm_str_to_elem(shelf_name), ioopm_ptr_to_elem(item));
+        }
+        return true;
     }
+    return false;
 }
 
 void list_db(ioopm_hash_table_t *HTn, size_t no_items)
@@ -252,6 +247,7 @@ ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn)
     }
     return ioopm_choose_item_from_list_backend(HTn, index);
 }
+
 string *ioopm_llsl_array(ioopm_list_t *llsl) // NEED TO FREE keys
 {
     ioopm_list_iterator_t *iter = ioopm_list_iterator(llsl);

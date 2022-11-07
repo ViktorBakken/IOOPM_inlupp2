@@ -5,17 +5,24 @@
 
 ioopm_item_t *ioopm_choose_item_from_list_backend(ioopm_hash_table_t *HTn, size_t index)
 {
-    int size = ioopm_hash_table_size(HTn);
-    string *item = ioopm_item_array(HTn);
-    qsort(item, size, sizeof(string), cmpstringp); // taken from freq-count.c
+    if (HTn)
+    {
+        size_t size = ioopm_hash_table_size(HTn);
+        if (index < size)
+        {
+            string *item = ioopm_item_array(HTn);
+            
+            qsort(item, size, sizeof(string), cmpstringp); // taken from freq-count.c
 
-    ioopm_item_t *tmp_item = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(item[index])).value).p;
+            ioopm_item_t *tmp_item = (ioopm_hash_table_lookup(HTn, ioopm_str_to_elem(item[index])).value).p;
 
-    ioopm_item_list_destroy(item, size);
+            ioopm_item_list_destroy(item, size);
 
-    return tmp_item;
+            return tmp_item;
+        }
+    }
+    return NULL;
 }
-
 
 ioopm_item_t *make_item_backend(string name, string descr, size_t price) // TODO free name, descr, llsl and item
 {

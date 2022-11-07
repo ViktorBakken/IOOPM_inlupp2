@@ -17,61 +17,61 @@ static int clean_suite(void)
   return 0;
 }
 
-static void test_is_shelf()
-{
+// // These are example test functions. You should replace them with
+// // functions of your own.
+static void test_is_shelf(){
   char *shelf = "A12";
   char *shelf_false = "AAA";
 
+
   CU_ASSERT_TRUE(is_shelf(shelf));
   CU_ASSERT_FALSE(is_shelf(shelf_false));
+
 }
 
-// static void test_item_unique(){
-//   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-//   ioopm_warehouse_t warehouse_empty = ioopm_create_warehouse();
-//   ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-//   ioopm_item_t *item_new = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-
-//   bool check = ioopm_add_item(warehouse.HTn, item);
-
-//   CU_ASSERT_TRUE(item_unique(warehouse.HTn, item_new));
-//   CU_ASSERT_TRUE(item_unique(warehouse_empty.HTn, item_new));
-//   CU_ASSERT_FALSE(item_unique(warehouse.HTn, item));
-
-//   ioopm_warehouse_destroy(&warehouse);
-//   ioopm_warehouse_destroy(&warehouse_empty);
-// }
-
-// static void test_random(void){
-//   char *random = ioopm_random_shelf();
-
-//   CU_ASSERT_TRUE(is_shelf(random));
-// }
-
-static void test_remove_item()
-{
+static void test_item_unique(){
   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-  ioopm_item_t *item_new = make_item_backend(strdup("dante"), strdup("a dante"), 2);
+  ioopm_warehouse_t warehouse_empty = ioopm_create_warehouse();
+  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
+
+  bool check = ioopm_add_item(warehouse.HTn, item);
+
+  CU_ASSERT_TRUE(item_unique(warehouse.HTn, item_new));
+  CU_ASSERT_TRUE(item_unique(warehouse_empty.HTn, item_new));
+  CU_ASSERT_FALSE(item_unique(warehouse.HTn, item));
+  
+
+}
+
+static void test_random(void){
+  char *random = ioopm_random_shelf();
+
+  CU_ASSERT_TRUE(is_shelf(random));
+}
+
+
+static void test_remove_item(){
+  ioopm_warehouse_t warehouse = ioopm_create_warehouse();
+  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
 
   CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse.HTn), 0);
-  replenish_stock(&warehouse, item, 1);
+
   ioopm_add_item(warehouse.HTn, item);
 
   CU_ASSERT_FALSE(ioopm_remove_item(&warehouse, item_new));
   CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse.HTn), 1);
+  
 
-  CU_ASSERT_TRUE(ioopm_remove_item(&warehouse, item));
-  CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse.HTn), 0);
-
-  ioopm_warehouse_destroy(&warehouse);
+  CU_ASSERT_TRUE(ioopm_remove_item(&warehouse,item));
+  CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse.HTn), 0);  
 }
 
-static void test_replenish_stock()
-{
+static void test_replenish_stock(){
   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-  ioopm_item_t *item_new = make_item_backend(strdup("dante"), strdup("a dante"), 2);
+  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
 
   CU_ASSERT_EQUAL(0, ioopm_hash_table_size(warehouse.HTsl));
   CU_ASSERT_FALSE(replenish_stock(&warehouse, item, 0));
@@ -82,21 +82,6 @@ static void test_replenish_stock()
   CU_ASSERT_TRUE(replenish_stock(&warehouse, item_new, 4));
   CU_ASSERT_EQUAL(7, ioopm_hash_table_size(warehouse.HTsl));
 
-  ioopm_warehouse_destroy(&warehouse);
-}
-
-static void test_choose_item_backend()
-{
-  ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend(strdup("ape"), strdup("a ape"), 2);
-  ioopm_item_t *item_new = make_item_backend(strdup("dante"), strdup("a dante"), 2);
-
-  CU_ASSERT_PTR_NOT_EQUAL(ioopm_choose_item_from_list_backend(warehouse.HTn, 0), item);
-
-  ioopm_add_item(warehouse.HTn, item);
-
-  CU_ASSERT_PTR_NOT_EQUAL(ioopm_choose_item_from_list_backend(warehouse.HTn, 1), item);
-  CU_ASSERT_PTR_EQUAL(ioopm_choose_item_from_list_backend(warehouse.HTn, 0), item);
 }
 
 int main()
@@ -121,10 +106,6 @@ int main()
   // the test in question. If you want to add another test, just
   // copy a line below and change the information
   if (
-      (CU_add_test(my_test_suite, "Test replenish_stock", test_replenish_stock) == NULL) ||
-      (CU_add_test(my_test_suite, "Test remove item", test_remove_item) == NULL) ||
-      (CU_add_test(my_test_suite, "Test is shelf", test_is_shelf) == NULL) ||
-      (CU_add_test(my_test_suite, "Test choose item from list (backend)", test_choose_item_backend) == NULL) ||
 
       0)
   {

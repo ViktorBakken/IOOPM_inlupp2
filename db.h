@@ -22,19 +22,17 @@
 // /// @param shelf_name a given location of a given shelf
 // bool shelf_unique(ioopm_hash_table_t *HTsl, string shelf_name);
 
-// /// @brief checks if a string is a valid shelf location
-// /// @param shelf a given string representing the shelf
-// bool is_shelf(char *shelf);
-
-
+/// @brief checks if a string is a valid shelf location
+/// @param shelf a given string representing the shelf
+bool is_shelf(char *shelf);
 
 /// @brief Checks if a item already exist
 /// @param name the name of the item to be checked
 bool item_unique(ioopm_hash_table_t *HTn, ioopm_item_t *item);
 
-/// @brief obtains ability for the user to make a item
-/// @return the newly created item
-ioopm_item_t *ioopm_input_item();
+// /// @brief obtains ability for the user to make a item
+// /// @return the newly created item
+// ioopm_item_t *ioopm_input_item();
 
 /// @brief Destroys a given item
 /// @param item_Destr The item to be destroyed
@@ -45,7 +43,7 @@ void ioopm_destroy_item(ioopm_item_t *item_Destr);
 /// @param key the name of the item to be removed
 /// @return the item that is removed
 /// @warning the returend item needs to be freed
-bool ioopm_remove_item(ioopm_warehouse_t *warehouse, string key);
+bool ioopm_remove_item(ioopm_warehouse_t *warehouse, ioopm_item_t *item);
 
 /// @brief Allows changing the name, description and price of a merch
 /// @param warehouse where item is located and to be potentially edited
@@ -65,7 +63,7 @@ void ioopm_warehouse_destroy(ioopm_warehouse_t *warehouse);
 /// @param warehouse where the merch is located and to be potentially replenished
 /// @param item the item to obtain stock location of
 /// @param amount the amount of items to replenish to stock
-void replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount);
+bool replenish_stock(ioopm_warehouse_t *warehouse, ioopm_item_t *item, size_t amount);
 
 /// @brief list all items in the store (20 at a time) in alphabetical order
 /// @param HTn are all the items in the warehouse
