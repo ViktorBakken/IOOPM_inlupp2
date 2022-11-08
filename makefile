@@ -1,6 +1,6 @@
 cc = gcc
 flag = -g -Wall -Wextra --coverage -pg
-# flagExtra = 
+flagExtra = --coverage -pg
 CUnit = -lcunit
 
 clr_flags = -k -s -i
@@ -8,7 +8,7 @@ clr_flags = -k -s -i
 # Which directory is the file stored at
 store_plac = store.c
 db_test_plac = db_test.c
-shopping_cart_test_plac = Back_end/shopping_cart_test.c
+cart_test_plac = Back_end/shopping_cart_test.c
 
 db_plac = db.c
 db_back_end_plac = Back_end/db_back_end.c 
@@ -29,10 +29,10 @@ store_specific_data_types_plac = Back_end/Generic_func_Data_types/store_specific
 #The dependecies of each file
 store_depend = $(store_plac) $(db_plac) $(db_back_end_plac)  $(iterator_plac) $(hash_table_plac) $(linked_list_plac)  $(shopping_cart_plac)   $(common_plac) $(utils_plac) $(store_specific_data_types_plac)
 
-shopping_cart_depend = $(shopping_cart_plac) $(db_plac) $(store_specific_data_types_plac) $(datatypes_plac)
-shopping_cart_test_depend = $(shopping_cart_test_plac) $(shopping_cart_depend) $(db_back_end_plac)
+shopping_cart_depend = $(shopping_cart_plac) $(db_plac) $(store_specific_data_types_plac) $(common_plac)  $(utils_plac) $(datatypes_plac)
+cart_test_depend = $(cart_test_plac) $(shopping_cart_depend) $(db_back_end_plac)
 
-db_depend = $(db_plac) $(db_back_end_plac) $(utils_plac) $(store_specific_data_types_plac) $(datatypes_plac)
+db_depend = $(db_plac) $(db_back_end_plac) $(utils_plac) $(store_specific_data_types_plac)$(common_plac) $(datatypes_plac)
 db_back_end_depend = $(db_back_end_plac) $(db_depend)
 db_test_depend = $(db_depend) $(db_test_plac)
 
@@ -51,7 +51,7 @@ datatypes.o = iterator.o hash_table.o linked_list.o
 store.o = store.o db.o db_back_end.o iterator.o hash_table.o linked_list.o shopping_cart.o common.o utils.o store_specific_data_types.o
 
 db_test.o = db_test.o db.o db_back_end.o utils.o store_specific_data_types.o utils.o common.o $(datatypes.o)
-shopping_cart_test.o = shopping_cart_test.o shopping_cart.o store_specific_data_types.o db_back_end.o db.o $(datatypes.o) utils.o common.o
+cart_test.o = shopping_cart_test.o shopping_cart.o store_specific_data_types.o db_back_end.o db.o $(datatypes.o) utils.o common.o
 
 
 %.o: %.c 
@@ -70,7 +70,7 @@ tests = cart_test db_test
 db_test: $(db_test.o)
 	$(cc) $^ $(flag) $(CUnit) -o $@
 
-cart_test: $(shopping_cart_test.o) #$(store.o)
+cart_test: $(cart_test.o)
 	$(cc) $^ $(flag) $(CUnit) -o $@
 
 
@@ -100,7 +100,7 @@ db_back_end.o : $(db_back_end_depend)
 shopping_cart.o : $(shopping_cart_depend)
 	$(cc) $^ $(flag) -c
 
-shopping_cart_test.o : $(shopping_cart_test_depend)
+shopping_cart_test.o : $(cart_test_depend)
 	$(cc) $^ $(flag) $(CUnit) -c
 
 common.o : $(common_depend)
@@ -112,27 +112,33 @@ utils.o : $(utils_depend)
 # store_specific_data_types.o : $(store_specific_data_types_depend)
 # 	$(cc) $^ $(flag) -c
 
+progr= cart_test
 
-all = $(store_depend)  $(shopping_cart_test_plac)
-db_special_comp: $(db_test_plac)
-	make clr $(clr_flags)
+$(progr)_special_comp: $($(progr)_depend)
+	make clr $(clr_flags) 
 	$(cc) $^ $(flag) $(flagExtra) $(CUnit)
 
-gprof: special_comp
+gprof: $(progr)_special_comp
 	./a.out
-	gprof -b a.out gmon.out > analysis.txt && more analysis.txt
+	gprof -b a.out gmon.out > analysis.txt
+	more analysis.txt
 
-callgrind: special_comp
+callgrind: $(progr)_special_comp
 	valgrind --tool=callgrind --callgrind-out-file=callgrind_test.out ./a.out 	
 	kcachegrind callgrind_test.out
 
-lcov: special_comp
+lcov: $(progr)_special_comp
+	./a.out
+	lcov --capture --directory . --output-file coverage.info && genhtml coverage.info --output-directory out 
+
+
+lcov_all: $(tests)
 	./cart_test
 	./db_test
 	lcov --capture --directory . --output-file coverage.info && genhtml coverage.info --output-directory out 
 
-gcov: special_comp
-	./a.out && gcov -abcfu a-$($(progr)_name)
+# gcov: $(progr)_special_comp
+# 	./a.out && gcov -abcfu a-$($(progr)_name)
 
 
 
