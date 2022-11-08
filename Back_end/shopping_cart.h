@@ -1,13 +1,19 @@
 #pragma once
 
-// #include "db_back_end.h"
 #include "Generic_func_Data_types/store_specific_data_types.h"
 #include "Generic_func_Data_types/common.h"
-#include "../db.h"
+#include "../items_db.h"
 
 #include "hash_table.h"
 #include "linked_list.h"
 #include "iterator.h"
+
+/**
+ * @file shopping_cart.h
+ * @author Loran Daqouri och Viktor Bakken
+ * @date 35 Nov 2022
+ * @brief Simple shopping cart module.
+ */
 
 typedef struct cart ioopm_shopping_cart_t;
 
@@ -18,22 +24,16 @@ int ioopm_cart_id(ioopm_shopping_cart_t *cart);
 
 /// @brief creates a new empty cart
 /// @param id the identification of that cart
-ioopm_shopping_cart_t *create_cart(int id);
+ioopm_shopping_cart_t *ioopm_create_cart(int id);
 
 /// @brief removes a cart from the list of all carts
 /// @param cart a given cart
 bool ioopm_destroy_cart(ioopm_shopping_cart_t *cart);
 
-// /// @brief Delete a cart and free its memory.
-// /// @param unused_key a irrelevant argument to the function
-// /// @param value a pointer to the carts items
-// /// @param unused_extra a irrelevant argument to the function
-// void destroy_cart_hashfunc(elem_t unused_key, elem_t *value, void *unused_extra);
-
 /// @brief ability to choose a cart
 /// @param all_carts is the "list" of all_carts to list items from one specefic
 /// @param id the id of the cart choosen
-void *choose_cart(ioopm_hash_table_t *all_carts, int id);
+void *ioopm_choose_cart(ioopm_hash_table_t *all_carts, int id);
 
 /// @brief Obtains amount of a speceifc item in a cart
 /// @param cart the cart that potentially has the item
@@ -65,13 +65,13 @@ bool ioopm_remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
 /// @brief Calculates the cost of the items in given cart
 /// @param cart The cart from which the cost shall be calculated
 /// @return The cost of all items in cart
-int calculate_cost(ioopm_shopping_cart_t *cart);
+int ioopm_calculate_cost(ioopm_shopping_cart_t *cart);
 
 /// @brief Checkouts a cart
 /// @param cart The cart to be checkedout
 /// @param HTsl The shelf hash table
 /// @return Boolean value for if the operation succeded
-bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl);
+bool ioopm_checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl);
 
 /// @brief makes a  of all carts
 /// @return a representation of a list of all the carts
@@ -83,16 +83,11 @@ bool ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts);
 
 /// @brief Checks if a cart is unique
 /// @param cart a cart to be checked if it is unique
-/// @param id the
+/// @param id the id of the cart
 /// @return true or false depending on if its unique or not
-bool cart_unique(ioopm_hash_table_t *all_carts, int id);
+bool ioopm_cart_unique(ioopm_hash_table_t *all_carts, int id);
 
 /// @brief creates and adds a cart in the list of all carts
 /// @param all_carts the list of all carts
 /// @param id the created carts desired id
-bool create_cart_in_cart_list(ioopm_hash_table_t *all_carts, int id);
-
-// /// @brief creates a item inside a specefic cart
-// /// @param amount amount of a item to add to the cart
-// /// @param item the item to add to the cart/convert into a cart_item_t
-// cart_item_t *create_cart_item(size_t amount, ioopm_item_t *item);
+bool ioopm_create_cart_in_cart_list(ioopm_hash_table_t *all_carts, int id);

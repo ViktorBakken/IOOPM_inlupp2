@@ -1,0 +1,318 @@
+\hypertarget{items__db_8h}{}\doxysection{items\+\_\+db.\+h File Reference}
+\label{items__db_8h}\index{items\_db.h@{items\_db.h}}
+
+
+Simple database for items.  
+
+
+{\ttfamily \#include \char`\"{}Back\+\_\+end/items\+\_\+db\+\_\+back\+\_\+end.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Back\+\_\+end/\+Generic\+\_\+func\+\_\+\+Data\+\_\+types/utils.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Back\+\_\+end/\+Generic\+\_\+func\+\_\+\+Data\+\_\+types/store\+\_\+specific\+\_\+data\+\_\+types.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Back\+\_\+end/hash\+\_\+table.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Back\+\_\+end/linked\+\_\+list.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Back\+\_\+end/iterator.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+Include dependency graph for items\+\_\+db.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{items__db_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{items__db_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{items__db_8h_aae8d388dab0fd3a51d40ab8bc1f18573}{ioopm\+\_\+is\+\_\+shelf}} (char $\ast$shelf)
+\begin{DoxyCompactList}\small\item\em checks if a string is a valid shelf location \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{items__db_8h_a1ce6424d1e516734f68d97b125075ef2}{ioopm\+\_\+item\+\_\+name\+\_\+unique}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn, string item\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Checks if a item already exist. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{items__db_8h_a3c8a1f86ea62b6ab7d11d0dafb497c33}{ioopm\+\_\+destroy\+\_\+item}} (\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$item\+\_\+\+Destr)
+\begin{DoxyCompactList}\small\item\em Destroys a given item. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{items__db_8h_a772c0281ec0a043203e97aa6f9001647}{ioopm\+\_\+remove\+\_\+item}} (\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$\mbox{\hyperlink{structwarehouse}{warehouse}}, \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$\mbox{\hyperlink{structitem}{item}})
+\begin{DoxyCompactList}\small\item\em remove a specific item from warehouse \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} \mbox{\hyperlink{items__db_8h_abe8bc9d428e19cb0bbb2d346bf13baf9}{ioopm\+\_\+create\+\_\+warehouse}} ()
+\begin{DoxyCompactList}\small\item\em Creates a warehouse. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{items__db_8h_aea6eb9d492c8583afddcc5fd5cd31e5b}{ioopm\+\_\+warehouse\+\_\+destroy}} (\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$\mbox{\hyperlink{structwarehouse}{warehouse}})
+\begin{DoxyCompactList}\small\item\em destroys a given warehouse \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{items__db_8h_aa1bddf1b9f8388dbe0623f228dd93414}{ioopm\+\_\+replenish\+\_\+stock}} (\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$\mbox{\hyperlink{structwarehouse}{warehouse}}, \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$\mbox{\hyperlink{structitem}{item}}, size\+\_\+t amount)
+\begin{DoxyCompactList}\small\item\em Increases the stock of a merch by at least one. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{items__db_8h_ac8bcda179becb1fb114403bb9ef903dc}{ioopm\+\_\+list\+\_\+item}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn, size\+\_\+t no\+\_\+items)
+\begin{DoxyCompactList}\small\item\em list all items in the store (20 at a time) in alphabetical order \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{items__db_8h_abade9bd4c5a5ec3867ed42fd1b623bb6}{ioopm\+\_\+show\+\_\+stock\+\_\+items}} (\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} \mbox{\hyperlink{structitem}{item}})
+\begin{DoxyCompactList}\small\item\em list all stock locations for a given item \end{DoxyCompactList}\item 
+char $\ast$ \mbox{\hyperlink{items__db_8h_a1a2f2c54022a44e898bdbd0471698f8d}{ioopm\+\_\+ask\+\_\+question\+\_\+shelf}} (char $\ast$question)
+\begin{DoxyCompactList}\small\item\em asks a question where the expectation of the answer is a valid shelf location \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$ \mbox{\hyperlink{items__db_8h_a864a9c98b0d5d50635e1ba963fdd5192}{ioopm\+\_\+choose\+\_\+item\+\_\+from\+\_\+list}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn)
+\begin{DoxyCompactList}\small\item\em obtains ability to pick a specific item based on a list of all items \end{DoxyCompactList}\item 
+string $\ast$ \mbox{\hyperlink{items__db_8h_ae6e420d1a3495ee926cf9e3739057085}{ioopm\+\_\+item\+\_\+array}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn)
+\begin{DoxyCompactList}\small\item\em convert a hash table to an array \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{items__db_8h_a68b576b894338f88b9dc533fb09f44a2}{ioopm\+\_\+item\+\_\+list\+\_\+destroy}} (string $\ast$\mbox{\hyperlink{structitem}{item}}, size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Destroys a mechandice list. \end{DoxyCompactList}\item 
+string $\ast$ \mbox{\hyperlink{items__db_8h_a764a1efabb0520c5b97d53fa64576a92}{ioopm\+\_\+llsl\+\_\+array}} (\mbox{\hyperlink{structlist}{ioopm\+\_\+list\+\_\+t}} $\ast$llsl)
+\begin{DoxyCompactList}\small\item\em convert a hash table to an array \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Simple database for items. 
+
+\begin{DoxyAuthor}{Author}
+Loran Daqouri och Viktor Bakken 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+33 Nov 2022 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{items__db_8h_a1a2f2c54022a44e898bdbd0471698f8d}\label{items__db_8h_a1a2f2c54022a44e898bdbd0471698f8d}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_ask\_question\_shelf@{ioopm\_ask\_question\_shelf}}
+\index{ioopm\_ask\_question\_shelf@{ioopm\_ask\_question\_shelf}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_ask\_question\_shelf()}{ioopm\_ask\_question\_shelf()}}
+{\footnotesize\ttfamily char$\ast$ ioopm\+\_\+ask\+\_\+question\+\_\+shelf (\begin{DoxyParamCaption}\item[{char $\ast$}]{question }\end{DoxyParamCaption})}
+
+
+
+asks a question where the expectation of the answer is a valid shelf location 
+
+
+\begin{DoxyParams}{Parameters}
+{\em question} & is the asked question \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+return the answered shelf location as a string 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db_8h_a864a9c98b0d5d50635e1ba963fdd5192}\label{items__db_8h_a864a9c98b0d5d50635e1ba963fdd5192}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_choose\_item\_from\_list@{ioopm\_choose\_item\_from\_list}}
+\index{ioopm\_choose\_item\_from\_list@{ioopm\_choose\_item\_from\_list}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_choose\_item\_from\_list()}{ioopm\_choose\_item\_from\_list()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}}$\ast$ ioopm\+\_\+choose\+\_\+item\+\_\+from\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn }\end{DoxyParamCaption})}
+
+
+
+obtains ability to pick a specific item based on a list of all items 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HTn} & are all the items in the warehouse \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the choosen item of the list of items 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db_8h_abe8bc9d428e19cb0bbb2d346bf13baf9}\label{items__db_8h_abe8bc9d428e19cb0bbb2d346bf13baf9}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_create\_warehouse@{ioopm\_create\_warehouse}}
+\index{ioopm\_create\_warehouse@{ioopm\_create\_warehouse}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_create\_warehouse()}{ioopm\_create\_warehouse()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} ioopm\+\_\+create\+\_\+warehouse (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates a warehouse. 
+
+\begin{DoxyReturn}{Returns}
+a empty warehouse 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+Needs to be destroyed 
+\end{DoxyWarning}
+\mbox{\Hypertarget{items__db_8h_a3c8a1f86ea62b6ab7d11d0dafb497c33}\label{items__db_8h_a3c8a1f86ea62b6ab7d11d0dafb497c33}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_destroy\_item@{ioopm\_destroy\_item}}
+\index{ioopm\_destroy\_item@{ioopm\_destroy\_item}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_destroy\_item()}{ioopm\_destroy\_item()}}
+{\footnotesize\ttfamily void ioopm\+\_\+destroy\+\_\+item (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$}]{item\+\_\+\+Destr }\end{DoxyParamCaption})}
+
+
+
+Destroys a given item. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item\+\_\+\+Destr} & The item to be destroyed \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_aae8d388dab0fd3a51d40ab8bc1f18573}\label{items__db_8h_aae8d388dab0fd3a51d40ab8bc1f18573}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_is\_shelf@{ioopm\_is\_shelf}}
+\index{ioopm\_is\_shelf@{ioopm\_is\_shelf}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_is\_shelf()}{ioopm\_is\_shelf()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+is\+\_\+shelf (\begin{DoxyParamCaption}\item[{char $\ast$}]{shelf }\end{DoxyParamCaption})}
+
+
+
+checks if a string is a valid shelf location 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shelf} & a given string representing the shelf \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_ae6e420d1a3495ee926cf9e3739057085}\label{items__db_8h_ae6e420d1a3495ee926cf9e3739057085}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_item\_array@{ioopm\_item\_array}}
+\index{ioopm\_item\_array@{ioopm\_item\_array}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_item\_array()}{ioopm\_item\_array()}}
+{\footnotesize\ttfamily string$\ast$ ioopm\+\_\+item\+\_\+array (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn }\end{DoxyParamCaption})}
+
+
+
+convert a hash table to an array 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HTn} & is the hashtable to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array containing the keys of the hash table 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db_8h_a68b576b894338f88b9dc533fb09f44a2}\label{items__db_8h_a68b576b894338f88b9dc533fb09f44a2}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_item\_list\_destroy@{ioopm\_item\_list\_destroy}}
+\index{ioopm\_item\_list\_destroy@{ioopm\_item\_list\_destroy}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_item\_list\_destroy()}{ioopm\_item\_list\_destroy()}}
+{\footnotesize\ttfamily void ioopm\+\_\+item\+\_\+list\+\_\+destroy (\begin{DoxyParamCaption}\item[{string $\ast$}]{item,  }\item[{size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+Destroys a mechandice list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The list to be destroyed \\
+\hline
+{\em size} & The size of the list \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_a1ce6424d1e516734f68d97b125075ef2}\label{items__db_8h_a1ce6424d1e516734f68d97b125075ef2}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_item\_name\_unique@{ioopm\_item\_name\_unique}}
+\index{ioopm\_item\_name\_unique@{ioopm\_item\_name\_unique}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_item\_name\_unique()}{ioopm\_item\_name\_unique()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+item\+\_\+name\+\_\+unique (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn,  }\item[{string}]{item\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Checks if a item already exist. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the item to be checked \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_ac8bcda179becb1fb114403bb9ef903dc}\label{items__db_8h_ac8bcda179becb1fb114403bb9ef903dc}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_list\_item@{ioopm\_list\_item}}
+\index{ioopm\_list\_item@{ioopm\_list\_item}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_list\_item()}{ioopm\_list\_item()}}
+{\footnotesize\ttfamily void ioopm\+\_\+list\+\_\+item (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn,  }\item[{size\+\_\+t}]{no\+\_\+items }\end{DoxyParamCaption})}
+
+
+
+list all items in the store (20 at a time) in alphabetical order 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HTn} & are all the items in the warehouse \\
+\hline
+{\em no\+\_\+items} & the total number of current items in the warehouse \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_a764a1efabb0520c5b97d53fa64576a92}\label{items__db_8h_a764a1efabb0520c5b97d53fa64576a92}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_llsl\_array@{ioopm\_llsl\_array}}
+\index{ioopm\_llsl\_array@{ioopm\_llsl\_array}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_llsl\_array()}{ioopm\_llsl\_array()}}
+{\footnotesize\ttfamily string$\ast$ ioopm\+\_\+llsl\+\_\+array (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structlist}{ioopm\+\_\+list\+\_\+t}} $\ast$}]{llsl }\end{DoxyParamCaption})}
+
+
+
+convert a hash table to an array 
+
+
+\begin{DoxyParams}{Parameters}
+{\em llsl} & is the linked list to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array containing the converted linked list 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db_8h_a772c0281ec0a043203e97aa6f9001647}\label{items__db_8h_a772c0281ec0a043203e97aa6f9001647}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_remove\_item@{ioopm\_remove\_item}}
+\index{ioopm\_remove\_item@{ioopm\_remove\_item}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_remove\_item()}{ioopm\_remove\_item()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+remove\+\_\+item (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$}]{warehouse,  }\item[{\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$}]{item }\end{DoxyParamCaption})}
+
+
+
+remove a specific item from warehouse 
+
+
+\begin{DoxyParams}{Parameters}
+{\em warehouse} & is the warehouse where the item is removed \\
+\hline
+{\em key} & the name of the item to be removed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the item that is removed 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+the returend item needs to be freed 
+\end{DoxyWarning}
+\mbox{\Hypertarget{items__db_8h_aa1bddf1b9f8388dbe0623f228dd93414}\label{items__db_8h_aa1bddf1b9f8388dbe0623f228dd93414}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_replenish\_stock@{ioopm\_replenish\_stock}}
+\index{ioopm\_replenish\_stock@{ioopm\_replenish\_stock}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_replenish\_stock()}{ioopm\_replenish\_stock()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+replenish\+\_\+stock (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$}]{warehouse,  }\item[{\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$}]{item,  }\item[{size\+\_\+t}]{amount }\end{DoxyParamCaption})}
+
+
+
+Increases the stock of a merch by at least one. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em warehouse} & where the merch is located and to be potentially replenished \\
+\hline
+{\em item} & the item to obtain stock location of \\
+\hline
+{\em amount} & the amount of items to replenish to stock \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_abade9bd4c5a5ec3867ed42fd1b623bb6}\label{items__db_8h_abade9bd4c5a5ec3867ed42fd1b623bb6}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_show\_stock\_items@{ioopm\_show\_stock\_items}}
+\index{ioopm\_show\_stock\_items@{ioopm\_show\_stock\_items}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_show\_stock\_items()}{ioopm\_show\_stock\_items()}}
+{\footnotesize\ttfamily void ioopm\+\_\+show\+\_\+stock\+\_\+items (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}}}]{item }\end{DoxyParamCaption})}
+
+
+
+list all stock locations for a given item 
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & the item \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{items__db_8h_aea6eb9d492c8583afddcc5fd5cd31e5b}\label{items__db_8h_aea6eb9d492c8583afddcc5fd5cd31e5b}} 
+\index{items\_db.h@{items\_db.h}!ioopm\_warehouse\_destroy@{ioopm\_warehouse\_destroy}}
+\index{ioopm\_warehouse\_destroy@{ioopm\_warehouse\_destroy}!items\_db.h@{items\_db.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_warehouse\_destroy()}{ioopm\_warehouse\_destroy()}}
+{\footnotesize\ttfamily void ioopm\+\_\+warehouse\+\_\+destroy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structwarehouse}{ioopm\+\_\+warehouse\+\_\+t}} $\ast$}]{warehouse }\end{DoxyParamCaption})}
+
+
+
+destroys a given warehouse 
+
+
+\begin{DoxyParams}{Parameters}
+{\em warehouse} & the warehouse to be destroyed \\
+\hline
+\end{DoxyParams}

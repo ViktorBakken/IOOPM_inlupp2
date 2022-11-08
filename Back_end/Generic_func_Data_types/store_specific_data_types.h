@@ -1,5 +1,12 @@
-#pragma once/// @brief Insert at the end of a linked list in O(1) time
+#pragma once
 #include "common.h"
+
+/**
+ * @file store_specific_data_types.h
+ * @author Loran Daqouri och Viktor Bakken
+ * @date 32 Nov 2022
+ * @brief Common datatypes for the store program.
+ */
 
 #define string char *
 #define empty_item_t (ioopm_item_t){.desc="",.llsl=NULL, .name=""}

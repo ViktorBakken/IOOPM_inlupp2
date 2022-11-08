@@ -1,0 +1,11 @@
+<map id="Back_end/Generic_func_Data_types/common.h" name="Back_end/Generic_func_Data_types/common.h">
+<area shape="rect" id="node1" title="Common data types for hash_table, linked_list and iterator." alt="" coords="446,5,622,47"/>
+<area shape="rect" id="node2" href="$store__specific__data__types_8h.html" title="Common datatypes for the store program." alt="" coords="31,95,227,151"/>
+<area shape="rect" id="node5" href="$shopping__cart_8h.html" title="Simple shopping cart module." alt="" coords="334,363,526,389"/>
+<area shape="rect" id="node7" href="$hash__table_8h.html" title="Simple hash table that maps integer keys to string values." alt="" coords="572,206,744,233"/>
+<area shape="rect" id="node8" href="$iterator_8h.html" title="Simple iterator." alt="" coords="348,206,496,233"/>
+<area shape="rect" id="node9" href="$linked__list_8h.html" title="Simple linked list." alt="" coords="451,109,617,136"/>
+<area shape="rect" id="node3" href="$items__db__back__end_8h.html" title="The backend for items_db, this file is mainly used by shopping_cart_test.c." alt="" coords="35,199,222,240"/>
+<area shape="rect" id="node4" href="$items__db_8h.html" title="Simple database for items." alt="" coords="252,288,347,315"/>
+<area shape="rect" id="node6" href="$store_8h.html" title="our store code" alt="" coords="263,437,330,464"/>
+</map>

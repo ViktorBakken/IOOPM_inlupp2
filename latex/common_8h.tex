@@ -1,0 +1,374 @@
+\hypertarget{common_8h}{}\doxysection{Back\+\_\+end/\+Generic\+\_\+func\+\_\+\+Data\+\_\+types/common.h File Reference}
+\label{common_8h}\index{Back\_end/Generic\_func\_Data\_types/common.h@{Back\_end/Generic\_func\_Data\_types/common.h}}
+
+
+Common data types for \mbox{\hyperlink{structhash__table}{hash\+\_\+table}}, linked\+\_\+list and iterator.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+Include dependency graph for common.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{common_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{common_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+union \mbox{\hyperlink{unionelem}{elem}}
+\item 
+struct \mbox{\hyperlink{structentry}{entry}}
+\item 
+struct \mbox{\hyperlink{structhash__table}{hash\+\_\+table}}
+\item 
+struct \mbox{\hyperlink{structlink}{link}}
+\item 
+struct \mbox{\hyperlink{structlist}{list}}
+\item 
+struct \mbox{\hyperlink{structiterator}{iterator}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{common_8h_a18128f2ec8f7ede015019af2707c749f}\label{common_8h_a18128f2ec8f7ede015019af2707c749f}} 
+\#define {\bfseries no\+\_\+buckets}~17
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{common_8h_a833876c3875048ad46fcc53f1246835e}\label{common_8h_a833876c3875048ad46fcc53f1246835e}} 
+typedef union \mbox{\hyperlink{unionelem}{elem}} {\bfseries elem\+\_\+t}
+\item 
+\mbox{\Hypertarget{common_8h_a7c53c5784ce46d6a3a43bf3889a324d8}\label{common_8h_a7c53c5784ce46d6a3a43bf3889a324d8}} 
+typedef bool($\ast$ {\bfseries ioopm\+\_\+list\+\_\+predicate}) (size\+\_\+t index, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} value, void $\ast$extra)
+\item 
+\mbox{\Hypertarget{common_8h_a03305ad14886aca80b48b0475a81f21d}\label{common_8h_a03305ad14886aca80b48b0475a81f21d}} 
+typedef bool($\ast$ {\bfseries ioopm\+\_\+hash\+\_\+predicate}) (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} value, void $\ast$extra)
+\item 
+\mbox{\Hypertarget{common_8h_a0ae031f98a38ae3c3534ddc5a846f508}\label{common_8h_a0ae031f98a38ae3c3534ddc5a846f508}} 
+typedef void($\ast$ {\bfseries ioopm\+\_\+apply\+\_\+hash\+\_\+function}) (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} $\ast$value, void $\ast$extra)
+\item 
+\mbox{\Hypertarget{common_8h_aa244ac36a688a11f8f062c6e4fd23012}\label{common_8h_aa244ac36a688a11f8f062c6e4fd23012}} 
+typedef void($\ast$ {\bfseries ioopm\+\_\+apply\+\_\+list\+\_\+function}) (size\+\_\+t index, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} $\ast$value, void $\ast$extra)
+\item 
+\mbox{\Hypertarget{common_8h_a5fe208c4603001cf6244fb79ff379306}\label{common_8h_a5fe208c4603001cf6244fb79ff379306}} 
+typedef bool($\ast$ {\bfseries ioopm\+\_\+eq\+\_\+function}) (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} a, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} b)
+\item 
+\mbox{\Hypertarget{common_8h_a655bd4d7e2632fe24792249a9028bde9}\label{common_8h_a655bd4d7e2632fe24792249a9028bde9}} 
+typedef int($\ast$ {\bfseries ioopm\+\_\+hash\+\_\+function}) (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key)
+\item 
+\mbox{\Hypertarget{common_8h_a3468de3f997444ecbd14a9cee6014d09}\label{common_8h_a3468de3f997444ecbd14a9cee6014d09}} 
+typedef \mbox{\hyperlink{unionelem}{elem\+\_\+t}}($\ast$ {\bfseries to\+\_\+elem\+\_\+func}) (void $\ast$ptr)
+\item 
+\mbox{\Hypertarget{common_8h_a167a7ea47fbb39b436dc877f1a2a91b1}\label{common_8h_a167a7ea47fbb39b436dc877f1a2a91b1}} 
+typedef struct \mbox{\hyperlink{structentry}{entry}} {\bfseries entry\+\_\+t}
+\item 
+\mbox{\Hypertarget{common_8h_af8a82080b75d55e9d276e35e9f1e01fe}\label{common_8h_af8a82080b75d55e9d276e35e9f1e01fe}} 
+typedef struct \mbox{\hyperlink{structhash__table}{hash\+\_\+table}} {\bfseries ioopm\+\_\+hash\+\_\+table\+\_\+t}
+\item 
+\mbox{\Hypertarget{common_8h_ab1a5f2fcda4f00dce92c82ebc30c4b3d}\label{common_8h_ab1a5f2fcda4f00dce92c82ebc30c4b3d}} 
+typedef struct \mbox{\hyperlink{structlink}{link}} {\bfseries link\+\_\+t}
+\item 
+\mbox{\Hypertarget{common_8h_ab7191f856fbcc19e424f1c55c92551f6}\label{common_8h_ab7191f856fbcc19e424f1c55c92551f6}} 
+typedef struct \mbox{\hyperlink{structlist}{list}} {\bfseries ioopm\+\_\+list\+\_\+t}
+\item 
+\mbox{\Hypertarget{common_8h_ae67ee6b78eb3d8e46a6f95baabfc047f}\label{common_8h_ae67ee6b78eb3d8e46a6f95baabfc047f}} 
+typedef struct \mbox{\hyperlink{structiterator}{iterator}} {\bfseries ioopm\+\_\+list\+\_\+iterator\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{common_8h_ae8f40ff6801eb0a91866540a5d10217b}{ioopm\+\_\+create\+\_\+empty\+\_\+elem}} ()
+\begin{DoxyCompactList}\small\item\em Creates an empty elem\+\_\+t element. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{common_8h_a3a6a53f3c04e5dd43fa2735cf7aa8716}\label{common_8h_a3a6a53f3c04e5dd43fa2735cf7aa8716}} 
+bool \mbox{\hyperlink{common_8h_a3a6a53f3c04e5dd43fa2735cf7aa8716}{ioopm\+\_\+elem\+\_\+is\+\_\+empty}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{unionelem}{elem}})
+\begin{DoxyCompactList}\small\item\em Checks if elem\+\_\+t element is empty. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{common_8h_acf57f794d2b178983c1cc822e8c7b5f3}{ioopm\+\_\+elem\+\_\+int\+\_\+eq}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\begin{DoxyCompactList}\small\item\em Compares the ints of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{common_8h_abe2a2655605610f6d636c524bdb74100}{ioopm\+\_\+elem\+\_\+str\+\_\+eq}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\begin{DoxyCompactList}\small\item\em Compares the strings of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{common_8h_a61647be7e5ae7cc36f6d07dbf0663e69}{ioopm\+\_\+elem\+\_\+bool\+\_\+eq}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\begin{DoxyCompactList}\small\item\em Compares the bools of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{common_8h_a668e01345aea0d29abfbbb7f89be76af}{ioopm\+\_\+elem\+\_\+float\+\_\+eq}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\begin{DoxyCompactList}\small\item\em Compares the floats of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{common_8h_ab0e39cfcae15973316ca86697e76855c}{ioopm\+\_\+elem\+\_\+uint\+\_\+eq}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\begin{DoxyCompactList}\small\item\em Compares the unsigned ints of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{common_8h_a8b0b8b2f0dc1657bd7237d1546d36e65}{ioopm\+\_\+string\+\_\+hash}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key)
+\begin{DoxyCompactList}\small\item\em Hashes the string from an elem\+\_\+t element over no\+\_\+buckets. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{common_8h_ae11995f57ca37878d80dcd3e4b22616d}{ioopm\+\_\+int\+\_\+hash}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key)
+\begin{DoxyCompactList}\small\item\em Hashes the int from an elem\+\_\+t element over no\+\_\+buckets. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{common_8h_a804f86794e41400e8102120978a6dd6d}{ioopm\+\_\+uint\+\_\+hash}} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} key)
+\begin{DoxyCompactList}\small\item\em Hashes the unsigned int from an elem\+\_\+t element over no\+\_\+buckets. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{common_8h_a324c7bd69ac8e07c09d00aa6a8af8503}{ioopm\+\_\+int\+\_\+to\+\_\+elem}} (int i)
+\begin{DoxyCompactList}\small\item\em Converts an int to a elem\+\_\+t element. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{common_8h_a874e9215650f063785050f5b59e1e13a}{ioopm\+\_\+ptr\+\_\+to\+\_\+elem}} (void $\ast$ptr)
+\begin{DoxyCompactList}\small\item\em Converts an void pointer to a elem\+\_\+t element. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{common_8h_aa4bb316ae04ca9dd7f25aaf1662352e5}{ioopm\+\_\+str\+\_\+to\+\_\+elem}} (char $\ast$str)
+\begin{DoxyCompactList}\small\item\em Converts a string pointer to a elem\+\_\+t element. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{unionelem}{elem\+\_\+t}} \mbox{\hyperlink{common_8h_a828a76bac479ad06c4193f0f4ba51e9a}{ioopm\+\_\+uint\+\_\+to\+\_\+elem}} (unsigned int uint)
+\begin{DoxyCompactList}\small\item\em Converts an unsidint to a elem\+\_\+t element. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Common data types for \mbox{\hyperlink{structhash__table}{hash\+\_\+table}}, linked\+\_\+list and iterator. 
+
+\begin{DoxyAuthor}{Author}
+Egon Henriksen och Viktor Bakken 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+13 Sep 2022 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{common_8h_ae8f40ff6801eb0a91866540a5d10217b}\label{common_8h_ae8f40ff6801eb0a91866540a5d10217b}} 
+\index{common.h@{common.h}!ioopm\_create\_empty\_elem@{ioopm\_create\_empty\_elem}}
+\index{ioopm\_create\_empty\_elem@{ioopm\_create\_empty\_elem}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_create\_empty\_elem()}{ioopm\_create\_empty\_elem()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionelem}{elem\+\_\+t}} ioopm\+\_\+create\+\_\+empty\+\_\+elem (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates an empty elem\+\_\+t element. 
+
+\begin{DoxyReturn}{Returns}
+An empty elem\+\_\+t element 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a61647be7e5ae7cc36f6d07dbf0663e69}\label{common_8h_a61647be7e5ae7cc36f6d07dbf0663e69}} 
+\index{common.h@{common.h}!ioopm\_elem\_bool\_eq@{ioopm\_elem\_bool\_eq}}
+\index{ioopm\_elem\_bool\_eq@{ioopm\_elem\_bool\_eq}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_elem\_bool\_eq()}{ioopm\_elem\_bool\_eq()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+elem\+\_\+bool\+\_\+eq (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem1,  }\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem2 }\end{DoxyParamCaption})}
+
+
+
+Compares the bools of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em elem1} & first elem\+\_\+t with a bool \\
+\hline
+{\em elem2} & second elem\+\_\+t with a bool \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they are equal, false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a668e01345aea0d29abfbbb7f89be76af}\label{common_8h_a668e01345aea0d29abfbbb7f89be76af}} 
+\index{common.h@{common.h}!ioopm\_elem\_float\_eq@{ioopm\_elem\_float\_eq}}
+\index{ioopm\_elem\_float\_eq@{ioopm\_elem\_float\_eq}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_elem\_float\_eq()}{ioopm\_elem\_float\_eq()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+elem\+\_\+float\+\_\+eq (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem1,  }\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem2 }\end{DoxyParamCaption})}
+
+
+
+Compares the floats of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em elem1} & first elem\+\_\+t with a float \\
+\hline
+{\em elem2} & second elem\+\_\+t with a float \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they are equal, false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_acf57f794d2b178983c1cc822e8c7b5f3}\label{common_8h_acf57f794d2b178983c1cc822e8c7b5f3}} 
+\index{common.h@{common.h}!ioopm\_elem\_int\_eq@{ioopm\_elem\_int\_eq}}
+\index{ioopm\_elem\_int\_eq@{ioopm\_elem\_int\_eq}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_elem\_int\_eq()}{ioopm\_elem\_int\_eq()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+elem\+\_\+int\+\_\+eq (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem1,  }\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem2 }\end{DoxyParamCaption})}
+
+
+
+Compares the ints of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em elem1} & first elem\+\_\+t with an int \\
+\hline
+{\em elem2} & second elem\+\_\+t with an int \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they are equal, false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_abe2a2655605610f6d636c524bdb74100}\label{common_8h_abe2a2655605610f6d636c524bdb74100}} 
+\index{common.h@{common.h}!ioopm\_elem\_str\_eq@{ioopm\_elem\_str\_eq}}
+\index{ioopm\_elem\_str\_eq@{ioopm\_elem\_str\_eq}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_elem\_str\_eq()}{ioopm\_elem\_str\_eq()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+elem\+\_\+str\+\_\+eq (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem1,  }\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem2 }\end{DoxyParamCaption})}
+
+
+
+Compares the strings of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em elem1} & first elem\+\_\+t with a string \\
+\hline
+{\em elem2} & second elem\+\_\+t with a string \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they are equal, false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_ab0e39cfcae15973316ca86697e76855c}\label{common_8h_ab0e39cfcae15973316ca86697e76855c}} 
+\index{common.h@{common.h}!ioopm\_elem\_uint\_eq@{ioopm\_elem\_uint\_eq}}
+\index{ioopm\_elem\_uint\_eq@{ioopm\_elem\_uint\_eq}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_elem\_uint\_eq()}{ioopm\_elem\_uint\_eq()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+elem\+\_\+uint\+\_\+eq (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem1,  }\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{elem2 }\end{DoxyParamCaption})}
+
+
+
+Compares the unsigned ints of two elem\+\_\+t elements. Used for hash\+\_\+table\+\_\+create. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em elem1} & first elem\+\_\+t with an unsigned int \\
+\hline
+{\em elem2} & second elem\+\_\+t with an unsigned int \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they are equal, false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_ae11995f57ca37878d80dcd3e4b22616d}\label{common_8h_ae11995f57ca37878d80dcd3e4b22616d}} 
+\index{common.h@{common.h}!ioopm\_int\_hash@{ioopm\_int\_hash}}
+\index{ioopm\_int\_hash@{ioopm\_int\_hash}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_int\_hash()}{ioopm\_int\_hash()}}
+{\footnotesize\ttfamily int ioopm\+\_\+int\+\_\+hash (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{key }\end{DoxyParamCaption})}
+
+
+
+Hashes the int from an elem\+\_\+t element over no\+\_\+buckets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & key to be hashed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int made from the hash 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a324c7bd69ac8e07c09d00aa6a8af8503}\label{common_8h_a324c7bd69ac8e07c09d00aa6a8af8503}} 
+\index{common.h@{common.h}!ioopm\_int\_to\_elem@{ioopm\_int\_to\_elem}}
+\index{ioopm\_int\_to\_elem@{ioopm\_int\_to\_elem}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_int\_to\_elem()}{ioopm\_int\_to\_elem()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionelem}{elem\+\_\+t}} ioopm\+\_\+int\+\_\+to\+\_\+elem (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+
+
+Converts an int to a elem\+\_\+t element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & the int to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an elem\+\_\+t element with the value inserted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a874e9215650f063785050f5b59e1e13a}\label{common_8h_a874e9215650f063785050f5b59e1e13a}} 
+\index{common.h@{common.h}!ioopm\_ptr\_to\_elem@{ioopm\_ptr\_to\_elem}}
+\index{ioopm\_ptr\_to\_elem@{ioopm\_ptr\_to\_elem}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_ptr\_to\_elem()}{ioopm\_ptr\_to\_elem()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionelem}{elem\+\_\+t}} ioopm\+\_\+ptr\+\_\+to\+\_\+elem (\begin{DoxyParamCaption}\item[{void $\ast$}]{ptr }\end{DoxyParamCaption})}
+
+
+
+Converts an void pointer to a elem\+\_\+t element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ptr} & the pointer to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an elem\+\_\+t element with the value inserted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_aa4bb316ae04ca9dd7f25aaf1662352e5}\label{common_8h_aa4bb316ae04ca9dd7f25aaf1662352e5}} 
+\index{common.h@{common.h}!ioopm\_str\_to\_elem@{ioopm\_str\_to\_elem}}
+\index{ioopm\_str\_to\_elem@{ioopm\_str\_to\_elem}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_str\_to\_elem()}{ioopm\_str\_to\_elem()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionelem}{elem\+\_\+t}} ioopm\+\_\+str\+\_\+to\+\_\+elem (\begin{DoxyParamCaption}\item[{char $\ast$}]{str }\end{DoxyParamCaption})}
+
+
+
+Converts a string pointer to a elem\+\_\+t element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & the string pointer to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an elem\+\_\+t element with the value inserted 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a8b0b8b2f0dc1657bd7237d1546d36e65}\label{common_8h_a8b0b8b2f0dc1657bd7237d1546d36e65}} 
+\index{common.h@{common.h}!ioopm\_string\_hash@{ioopm\_string\_hash}}
+\index{ioopm\_string\_hash@{ioopm\_string\_hash}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_string\_hash()}{ioopm\_string\_hash()}}
+{\footnotesize\ttfamily int ioopm\+\_\+string\+\_\+hash (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{key }\end{DoxyParamCaption})}
+
+
+
+Hashes the string from an elem\+\_\+t element over no\+\_\+buckets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & key to hash \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int made from the hash 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a804f86794e41400e8102120978a6dd6d}\label{common_8h_a804f86794e41400e8102120978a6dd6d}} 
+\index{common.h@{common.h}!ioopm\_uint\_hash@{ioopm\_uint\_hash}}
+\index{ioopm\_uint\_hash@{ioopm\_uint\_hash}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_uint\_hash()}{ioopm\_uint\_hash()}}
+{\footnotesize\ttfamily int ioopm\+\_\+uint\+\_\+hash (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{unionelem}{elem\+\_\+t}}}]{key }\end{DoxyParamCaption})}
+
+
+
+Hashes the unsigned int from an elem\+\_\+t element over no\+\_\+buckets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & key to hash \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int made from the hash 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a828a76bac479ad06c4193f0f4ba51e9a}\label{common_8h_a828a76bac479ad06c4193f0f4ba51e9a}} 
+\index{common.h@{common.h}!ioopm\_uint\_to\_elem@{ioopm\_uint\_to\_elem}}
+\index{ioopm\_uint\_to\_elem@{ioopm\_uint\_to\_elem}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_uint\_to\_elem()}{ioopm\_uint\_to\_elem()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{unionelem}{elem\+\_\+t}} ioopm\+\_\+uint\+\_\+to\+\_\+elem (\begin{DoxyParamCaption}\item[{unsigned int}]{uint }\end{DoxyParamCaption})}
+
+
+
+Converts an unsidint to a elem\+\_\+t element. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em uint} & the unsigned int to be converted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an elem\+\_\+t element with the value inserted 
+\end{DoxyReturn}

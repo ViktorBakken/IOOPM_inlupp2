@@ -1,6 +1,6 @@
 // libraries
 #include <CUnit/Basic.h>
-#include "db.h"
+#include "items_db.h"
 // #include "store.h"
 
 static int init_suite(void)
@@ -24,37 +24,37 @@ static void test_is_shelf(){
   char *shelf_false = "AAA";
 
 
-  CU_ASSERT_TRUE(is_shelf(shelf));
-  CU_ASSERT_FALSE(is_shelf(shelf_false));
+  CU_ASSERT_TRUE(ioopm_is_shelf(shelf));
+  CU_ASSERT_FALSE(ioopm_is_shelf(shelf_false));
 
 }
 
 static void test_item_unique(){
   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
   ioopm_warehouse_t warehouse_empty = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
-  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item = ioopm_make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = ioopm_make_item_backend("ape", "a ape", 2);
 
   bool check = ioopm_add_item(warehouse.HTn, item);
 
-  CU_ASSERT_TRUE(item_unique(warehouse.HTn, item_new));
-  CU_ASSERT_TRUE(item_unique(warehouse_empty.HTn, item_new));
-  CU_ASSERT_FALSE(item_unique(warehouse.HTn, item));
+  CU_ASSERT_TRUE(ioopm_item_name_unique(warehouse.HTn, item_new->name));
+  CU_ASSERT_TRUE(ioopm_item_name_unique(warehouse_empty.HTn, item_new->name));
+  CU_ASSERT_FALSE(ioopm_item_name_unique(warehouse.HTn, item->name));
   
 
 }
 
 static void test_random(void){
-  char *random = ioopm_random_shelf();
+  char *random = random_shelf();
 
-  CU_ASSERT_TRUE(is_shelf(random));
+  CU_ASSERT_TRUE(ioopm_is_shelf(random));
 }
 
 
 static void test_remove_item(){
   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
-  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item = ioopm_make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = ioopm_make_item_backend("ape", "a ape", 2);
 
   CU_ASSERT_EQUAL(ioopm_hash_table_size(warehouse.HTn), 0);
 
@@ -70,16 +70,16 @@ static void test_remove_item(){
 
 static void test_replenish_stock(){
   ioopm_warehouse_t warehouse = ioopm_create_warehouse();
-  ioopm_item_t *item = make_item_backend("ape", "a ape", 2);
-  ioopm_item_t *item_new = make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item = ioopm_make_item_backend("ape", "a ape", 2);
+  ioopm_item_t *item_new = ioopm_make_item_backend("ape", "a ape", 2);
 
   CU_ASSERT_EQUAL(0, ioopm_hash_table_size(warehouse.HTsl));
-  CU_ASSERT_FALSE(replenish_stock(&warehouse, item, 0));
+  CU_ASSERT_FALSE(ioopm_replenish_stock(&warehouse, item, 0));
   CU_ASSERT_EQUAL(0, ioopm_hash_table_size(warehouse.HTsl));
 
-  CU_ASSERT_TRUE(replenish_stock(&warehouse, item, 3));
+  CU_ASSERT_TRUE(ioopm_replenish_stock(&warehouse, item, 3));
   CU_ASSERT_EQUAL(3, ioopm_hash_table_size(warehouse.HTsl));
-  CU_ASSERT_TRUE(replenish_stock(&warehouse, item_new, 4));
+  CU_ASSERT_TRUE(ioopm_replenish_stock(&warehouse, item_new, 4));
   CU_ASSERT_EQUAL(7, ioopm_hash_table_size(warehouse.HTsl));
 
 }

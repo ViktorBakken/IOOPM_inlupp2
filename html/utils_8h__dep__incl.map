@@ -1,0 +1,7 @@
+<map id="Back_end/Generic_func_Data_types/utils.h" name="Back_end/Generic_func_Data_types/utils.h">
+<area shape="rect" id="node1" title="util functions for user input." alt="" coords="118,5,293,47"/>
+<area shape="rect" id="node2" href="$items__db_8h.html" title="Simple database for items." alt="" coords="158,95,253,121"/>
+<area shape="rect" id="node3" href="$items__db__back__end_8h.html" title="The backend for items_db, this file is mainly used by shopping_cart_test.c." alt="" coords="5,169,192,211"/>
+<area shape="rect" id="node4" href="$shopping__cart_8h.html" title="Simple shopping cart module." alt="" coords="216,177,408,203"/>
+<area shape="rect" id="node5" href="$store_8h.html" title="our store code" alt="" coords="345,259,412,285"/>
+</map>

@@ -1,0 +1,108 @@
+\hypertarget{items__db__back__end_8h}{}\doxysection{Back\+\_\+end/items\+\_\+db\+\_\+back\+\_\+end.h File Reference}
+\label{items__db__back__end_8h}\index{Back\_end/items\_db\_back\_end.h@{Back\_end/items\_db\_back\_end.h}}
+
+
+The backend for items\+\_\+db, this file is mainly used by shopping\+\_\+cart\+\_\+test.\+c.  
+
+
+{\ttfamily \#include \char`\"{}../items\+\_\+db.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Generic\+\_\+func\+\_\+\+Data\+\_\+types/store\+\_\+specific\+\_\+data\+\_\+types.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+Include dependency graph for items\+\_\+db\+\_\+back\+\_\+end.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{items__db__back__end_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{items__db__back__end_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$ \mbox{\hyperlink{items__db__back__end_8h_a6e647443bb39b4eff49aa56ad3079ba1}{ioopm\+\_\+make\+\_\+item\+\_\+backend}} (string name, string descr, size\+\_\+t price)
+\begin{DoxyCompactList}\small\item\em creates a item\+\_\+t from given input \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$ \mbox{\hyperlink{items__db__back__end_8h_afcbf00f0602b9d363f450f825323761b}{ioopm\+\_\+choose\+\_\+item\+\_\+from\+\_\+list\+\_\+backend}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn, size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em creates a item\+\_\+t from given input \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{items__db__back__end_8h_aed613126c4b5e9237aaa00369fa2008f}{ioopm\+\_\+add\+\_\+item}} (\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$HTn, \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$new\+\_\+item)
+\begin{DoxyCompactList}\small\item\em Adds a new item to the warehouse with a name, description and price. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The backend for items\+\_\+db, this file is mainly used by shopping\+\_\+cart\+\_\+test.\+c. 
+
+\begin{DoxyAuthor}{Author}
+Loran Daqouri och Viktor Bakken 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+34 Nov 2022 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{items__db__back__end_8h_aed613126c4b5e9237aaa00369fa2008f}\label{items__db__back__end_8h_aed613126c4b5e9237aaa00369fa2008f}} 
+\index{items\_db\_back\_end.h@{items\_db\_back\_end.h}!ioopm\_add\_item@{ioopm\_add\_item}}
+\index{ioopm\_add\_item@{ioopm\_add\_item}!items\_db\_back\_end.h@{items\_db\_back\_end.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_add\_item()}{ioopm\_add\_item()}}
+{\footnotesize\ttfamily bool ioopm\+\_\+add\+\_\+item (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn,  }\item[{\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}} $\ast$}]{new\+\_\+item }\end{DoxyParamCaption})}
+
+
+
+Adds a new item to the warehouse with a name, description and price. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HTn} & the current item\textquotesingle{}s in the warehouse \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the item is unique(and adds it), other false(not add it). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db__back__end_8h_afcbf00f0602b9d363f450f825323761b}\label{items__db__back__end_8h_afcbf00f0602b9d363f450f825323761b}} 
+\index{items\_db\_back\_end.h@{items\_db\_back\_end.h}!ioopm\_choose\_item\_from\_list\_backend@{ioopm\_choose\_item\_from\_list\_backend}}
+\index{ioopm\_choose\_item\_from\_list\_backend@{ioopm\_choose\_item\_from\_list\_backend}!items\_db\_back\_end.h@{items\_db\_back\_end.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_choose\_item\_from\_list\_backend()}{ioopm\_choose\_item\_from\_list\_backend()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}}$\ast$ ioopm\+\_\+choose\+\_\+item\+\_\+from\+\_\+list\+\_\+backend (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structhash__table}{ioopm\+\_\+hash\+\_\+table\+\_\+t}} $\ast$}]{HTn,  }\item[{size\+\_\+t}]{index }\end{DoxyParamCaption})}
+
+
+
+creates a item\+\_\+t from given input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em HTn} & Given hashtable \\
+\hline
+{\em index} & the number of the wanted item\+\_\+t \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A item\+\_\+t containing the inputs 
+\end{DoxyReturn}
+\mbox{\Hypertarget{items__db__back__end_8h_a6e647443bb39b4eff49aa56ad3079ba1}\label{items__db__back__end_8h_a6e647443bb39b4eff49aa56ad3079ba1}} 
+\index{items\_db\_back\_end.h@{items\_db\_back\_end.h}!ioopm\_make\_item\_backend@{ioopm\_make\_item\_backend}}
+\index{ioopm\_make\_item\_backend@{ioopm\_make\_item\_backend}!items\_db\_back\_end.h@{items\_db\_back\_end.h}}
+\doxysubsubsection{\texorpdfstring{ioopm\_make\_item\_backend()}{ioopm\_make\_item\_backend()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}}$\ast$ ioopm\+\_\+make\+\_\+item\+\_\+backend (\begin{DoxyParamCaption}\item[{string}]{name,  }\item[{string}]{descr,  }\item[{size\+\_\+t}]{price }\end{DoxyParamCaption})}
+
+
+
+creates a item\+\_\+t from given input 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the item \\
+\hline
+{\em descr} & The description of the item \\
+\hline
+{\em price} & The price of the item \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A item\+\_\+t containing the inputs 
+\end{DoxyReturn}

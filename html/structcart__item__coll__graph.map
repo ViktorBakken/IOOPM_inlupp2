@@ -1,0 +1,7 @@
+<map id="cart_item" name="cart_item">
+<area shape="rect" id="node1" title=" " alt="" coords="5,363,89,389"/>
+<area shape="rect" id="node2" href="$structitem.html" title=" " alt="" coords="21,273,73,300"/>
+<area shape="rect" id="node3" href="$structlist.html" title=" " alt="" coords="26,184,69,211"/>
+<area shape="rect" id="node4" href="$structlink.html" title=" " alt="" coords="80,95,127,121"/>
+<area shape="rect" id="node5" href="$unionelem.html" title=" " alt="" coords="8,5,63,32"/>
+</map>

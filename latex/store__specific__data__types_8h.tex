@@ -1,0 +1,67 @@
+\hypertarget{store__specific__data__types_8h}{}\doxysection{Back\+\_\+end/\+Generic\+\_\+func\+\_\+\+Data\+\_\+types/store\+\_\+specific\+\_\+data\+\_\+types.h File Reference}
+\label{store__specific__data__types_8h}\index{Back\_end/Generic\_func\_Data\_types/store\_specific\_data\_types.h@{Back\_end/Generic\_func\_Data\_types/store\_specific\_data\_types.h}}
+
+
+Common datatypes for the store program.  
+
+
+{\ttfamily \#include \char`\"{}common.\+h\char`\"{}}\newline
+Include dependency graph for store\+\_\+specific\+\_\+data\+\_\+types.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{store__specific__data__types_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=341pt]{store__specific__data__types_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structitem}{item}}
+\item 
+struct \mbox{\hyperlink{structwarehouse}{warehouse}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_a25093e36e9fb377b246945a84745823f}\label{store__specific__data__types_8h_a25093e36e9fb377b246945a84745823f}} 
+\#define {\bfseries string}~char $\ast$
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_a4d5fd5a1567c874f13daca4b332e3692}\label{store__specific__data__types_8h_a4d5fd5a1567c874f13daca4b332e3692}} 
+\#define {\bfseries empty\+\_\+item\+\_\+t}~(\mbox{\hyperlink{structitem}{ioopm\+\_\+item\+\_\+t}})\{.desc=\char`\"{}\char`\"{},.llsl=NULL, .name=\char`\"{}\char`\"{}\}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_a95b1852f4dd136aed8d8c7474bbc31d9}\label{store__specific__data__types_8h_a95b1852f4dd136aed8d8c7474bbc31d9}} 
+typedef struct \mbox{\hyperlink{structitem}{item}} {\bfseries ioopm\+\_\+item\+\_\+t}
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_a2ec4fa7ed095ad508de68d845d8f59c1}\label{store__specific__data__types_8h_a2ec4fa7ed095ad508de68d845d8f59c1}} 
+typedef struct \mbox{\hyperlink{structwarehouse}{warehouse}} {\bfseries ioopm\+\_\+warehouse\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_a9279be1a19a7a597aeed656edf889831}\label{store__specific__data__types_8h_a9279be1a19a7a597aeed656edf889831}} 
+bool {\bfseries ioopm\+\_\+elem\+\_\+item\+\_\+eq} (\mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem1, \mbox{\hyperlink{unionelem}{elem\+\_\+t}} elem2)
+\item 
+\mbox{\Hypertarget{store__specific__data__types_8h_ab93dcbcca491bbb1e1a660c91d4f831b}\label{store__specific__data__types_8h_ab93dcbcca491bbb1e1a660c91d4f831b}} 
+int {\bfseries cmpstringp} (const void $\ast$p1, const void $\ast$p2)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Common datatypes for the store program. 
+
+\begin{DoxyAuthor}{Author}
+Loran Daqouri och Viktor Bakken 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+32 Nov 2022 
+\end{DoxyDate}

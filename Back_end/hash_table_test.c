@@ -19,6 +19,7 @@
 //functions to test ioopm_hash_table_any / ioopm_hash_table_all / ioopm_hash_table_apply_to_all
 bool key_int_equiv(elem_t key, elem_t value_ignored, void *x)
 {
+  (void) value_ignored;
   int *int_ptr = x;
   int i = *int_ptr;
 
@@ -28,6 +29,7 @@ bool key_int_equiv(elem_t key, elem_t value_ignored, void *x)
 
 bool value_str_equiv(elem_t key_ignored, elem_t value, void *x)
 {
+  (void) key_ignored;
   char *value_str = value.s;
   char *other_value_ptr = x;
   return (0 == strcmp(value_str, other_value_ptr));
@@ -35,7 +37,7 @@ bool value_str_equiv(elem_t key_ignored, elem_t value, void *x)
 
 static void fun_string_changer(elem_t value_ignored, elem_t *value, void *extra)
 {
-  // char *value_str = value->p;
+  (void) value_ignored;
   char *other_value_ptr = extra;
   value->p = other_value_ptr;
 }

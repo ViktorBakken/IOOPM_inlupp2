@@ -1,0 +1,6 @@
+<map id="items_db.h" name="items_db.h">
+<area shape="rect" id="node1" title="Simple database for items." alt="" coords="158,5,253,32"/>
+<area shape="rect" id="node2" href="$items__db__back__end_8h.html" title="The backend for items_db, this file is mainly used by shopping_cart_test.c." alt="" coords="5,80,192,121"/>
+<area shape="rect" id="node3" href="$shopping__cart_8h.html" title="Simple shopping cart module." alt="" coords="216,87,408,114"/>
+<area shape="rect" id="node4" href="$store_8h.html" title="our store code" alt="" coords="345,169,412,196"/>
+</map>

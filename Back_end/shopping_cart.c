@@ -30,7 +30,7 @@ bool ioopm_elem_cart_item_eq(elem_t elem1, elem_t elem2)
     return (0 == strcmp(item1->item->name, item2->item->name));
 }
 
-ioopm_shopping_cart_t *create_cart(int id)
+ioopm_shopping_cart_t *ioopm_create_cart(int id)
 {
     ioopm_shopping_cart_t *new_cart = calloc(1, sizeof(ioopm_shopping_cart_t));
     ioopm_hash_table_t *hash_table_cart = ioopm_hash_table_create(ioopm_elem_str_eq, ioopm_elem_cart_item_eq, ioopm_string_hash);
@@ -48,7 +48,7 @@ static cart_item_t *create_cart_item(size_t amount, ioopm_item_t *item)
     return cart_item;
 }
 
-void *choose_cart(ioopm_hash_table_t *all_carts, int id)
+void *ioopm_choose_cart(ioopm_hash_table_t *all_carts, int id)
 {
     if (ioopm_hash_table_has_key(all_carts, ioopm_int_to_elem(id)))
     {
@@ -210,7 +210,7 @@ bool ioopm_remove_from_cart(ioopm_shopping_cart_t *cart, ioopm_item_t *item_rem)
     return false;
 }
 
-int calculate_cost(ioopm_shopping_cart_t *cart)
+int ioopm_calculate_cost(ioopm_shopping_cart_t *cart)
 {
     if (cart) // Handeling NULL cart case
     {
@@ -229,14 +229,14 @@ int calculate_cost(ioopm_shopping_cart_t *cart)
     return -1;
 }
 
-bool checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
+bool ioopm_checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl)
 {
     if (cart) // Handeling cart is NULL
     {
         printf("Your total is ");
         if (ioopm_hash_table_size(cart->cart) > 0) // Handeling cart is empty
         {
-            printf("%d kr\nThanks for shopping with us!\n", calculate_cost(cart));
+            printf("%d kr\nThanks for shopping with us!\n", ioopm_calculate_cost(cart));
 
             ioopm_list_t *values = ioopm_hash_table_values(cart->cart);
             ioopm_list_iterator_t *cart_iter = ioopm_list_iterator(values);
@@ -298,16 +298,16 @@ bool ioopm_destroy_cart_list(ioopm_hash_table_t *all_carts)
     }
 }
 
-bool cart_unique(ioopm_hash_table_t *all_cart, int id)
+bool ioopm_cart_unique(ioopm_hash_table_t *all_cart, int id)
 {
     return !ioopm_hash_table_has_key(all_cart, ioopm_int_to_elem(id));
 }
 
-bool create_cart_in_cart_list(ioopm_hash_table_t *all_carts, int id)
+bool ioopm_create_cart_in_cart_list(ioopm_hash_table_t *all_carts, int id)
 {
-    if (all_carts != NULL && cart_unique(all_carts, id))
+    if (all_carts != NULL && ioopm_cart_unique(all_carts, id))
     {
-        ioopm_shopping_cart_t *new_cart = create_cart(id);
+        ioopm_shopping_cart_t *new_cart = ioopm_create_cart(id);
         ioopm_hash_table_insert(all_carts, ioopm_int_to_elem(new_cart->id), ioopm_ptr_to_elem(new_cart));
         return true;
     }

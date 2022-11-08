@@ -8,6 +8,13 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+/**
+ * @file utils.h
+ * @author Loran Daqouri och Simon Petterson
+ * @date 13 Sep 2022
+ * @brief util functions for user input.
+ */
+
 typedef union { 
   int   int_value;
   float float_value;

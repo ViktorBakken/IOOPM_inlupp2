@@ -1,9 +1,16 @@
-#pragma once /// @brief Insert at the end of a linked list in O(1) time
+#pragma once 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+
+/**
+ * @file common.h
+ * @author Egon Henriksen och Viktor Bakken
+ * @date 13 Sep 2022
+ * @brief Common data types for hash_table, linked_list and iterator.
+ */
 
 // elem_t def
 typedef union elem elem_t;

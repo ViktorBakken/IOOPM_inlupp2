@@ -1,0 +1,7 @@
+<map id="Back_end/Generic_func_Data_types/store_specific_data_types.h" name="Back_end/Generic_func_Data_types/store_specific_data_types.h">
+<area shape="rect" id="node1" title="Common datatypes for the store program." alt="" coords="157,5,353,61"/>
+<area shape="rect" id="node2" href="$items__db__back__end_8h.html" title="The backend for items_db, this file is mainly used by shopping_cart_test.c." alt="" coords="5,109,192,151"/>
+<area shape="rect" id="node3" href="$items__db_8h.html" title="Simple database for items." alt="" coords="51,199,146,225"/>
+<area shape="rect" id="node4" href="$shopping__cart_8h.html" title="Simple shopping cart module." alt="" coords="119,273,311,300"/>
+<area shape="rect" id="node5" href="$store_8h.html" title="our store code" alt="" coords="181,348,248,375"/>
+</map>

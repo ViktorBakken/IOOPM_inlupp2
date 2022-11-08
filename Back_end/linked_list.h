@@ -1,8 +1,13 @@
-#pragma once/// @brief Insert at the end of a linked list in O(1) time
+#pragma once
 #include <stdbool.h>
 #include "Generic_func_Data_types/common.h"
 
-
+/**
+ * @file linked_list.h
+ * @author Egon Henriksen och Viktor Bakken
+ * @date 13 Sep 2022
+ * @brief Simple linked list.
+ */
 
 
 /// @brief Fills a linked list with an array of values 

@@ -1,28 +1,82 @@
-// #include "store.h"
-#include "Back_end/db_back_end.h"
-#include "db.h"
-#include "Back_end/Generic_func_Data_types/store_specific_data_types.h"
-#include "Back_end/shopping_cart.h"
+#include "store.h"
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <assert.h>
+static void ioopm_edit_item(ioopm_warehouse_t *warehouse, ioopm_item_t *item)
+{
 
-// använder
+    char *answername = ask_question_string("Do you wish to change the name? (write yes): ");
+    char to_lower;
+    for (size_t i = 0; i < strlen(answername); i++)
+    {
+        to_lower = tolower(answername[i]);
+        answername[i] = to_lower;
+    }
 
-ioopm_item_t *ioopm_input_item()
+    if (strstr("yes", answername))
+    {
+        char *answername2 = ask_question_string("What name would you like to name it?: ");
+        if (ioopm_item_name_unique(warehouse->HTn, answername2))
+        {
+            ioopm_hash_table_remove(warehouse->HTn, ioopm_str_to_elem(item->name));
+            char *tmp_name = item->name;
+            // void *tmp = tmp_name;
+            item->name = answername2;
+            free(tmp_name);
+            ioopm_hash_table_insert(warehouse->HTn, ioopm_str_to_elem(item->name), ioopm_ptr_to_elem(item));
+        }
+        else
+        {
+            puts("That name of a item already exists!");
+        }
+        // free(answername2);
+    }
+
+    char *answerdesc = ask_question_string("Do you wish to change the description? (write yes): ");
+    for (size_t i = 0; i < strlen(answerdesc); i++)
+    {
+        to_lower = tolower(answerdesc[i]);
+        answerdesc[i] = to_lower;
+    }
+
+    if (strstr("yes", answerdesc))
+    {
+        char *newdesc2 = ask_question_string("What shall the new description be?: ");
+        char *tmp_desc = item->desc;
+        item->desc = newdesc2;
+        free(tmp_desc);
+    }
+
+    char *answerprice = ask_question_string("Would you like to change the price? (write yes): ");
+    for (size_t i = 0; i < strlen(answerprice); i++)
+    {
+        to_lower = tolower(answerprice[i]);
+        answerprice[i] = to_lower;
+    }
+
+    if (strstr("yes", answerprice))
+    {
+        size_t newprice = ask_question_int("What would you like the new price to be?: ");
+        item->price = newprice;
+    }
+
+    free(answerprice);
+    free(answerdesc);
+    free(answername);
+}
+
+static ioopm_item_t *ioopm_input_item()
 {
     string name = ask_question_string("What is the name of the item? ");
     string desc = ask_question_string("Give a description of the item: ");
-    int price = ask_question_int("What is the items price? ");
-
-    return make_item_backend(name, desc, price);
+    int price = ask_question_int("What is the items price?: ");
+    while (price < 0)
+    {
+        price = ask_question_int("Negative price input!");
+    }
+    
+    return ioopm_make_item_backend(name, desc, price);
 }
 
-bool is_menu_char(char *c)
+static bool is_menu_char(char *c)
 {
     if (strstr("LliTtsVRgkuncoA", c) == NULL || strlen(c) > 1)
     {
@@ -34,31 +88,25 @@ bool is_menu_char(char *c)
     }
 }
 // använder
-string print_menu()
+static string print_menu()
 {
-    return "[L]ägga till en vara        \n"
-           "[T]a bort en vara           \n"
-           "[V]isa alla stocks          \n"
-           "[R]edigera en vara          \n"
-           "Lägg til[l] stock           \n"
-           "Ån[g]ra senaste ändringen   \n"
-           "Skappa [k]undvagn           \n"
-           "Lägg till i k[u]ndvagnen    \n"
-           "Ta bor[t] kundvagnen        \n"
-           "Ta bort från kundvagne[n]   \n"
-           "Che[c]kout                  \n"
-           "T[o]tala kostnad            \n"
-           "Lista alla [i]tems          \n"
-           "[A]vsluta                   \n";
-}
-
-answer_t str_to_answer_t(string s)
-{
-    return (answer_t){.string_value = s};
+    return "[L]ägga till en vara        (Create item)\n"
+           "[T]a bort en vara           (Remove item)\n"
+           "[V]isa alla stocks          (Show item stock)\n"
+           "[R]edigera en vara          (Edit an item)\n"
+           "Lägg til[l] stock           (Increase stock)\n"
+           "Skappa [k]undvagn           (Create cart)\n"
+           "Lägg till i k[u]ndvagnen    (Add to cart)\n"
+           "Ta bor[t] kundvagnen        (Remove cart)\n"
+           "Ta bort från kundvagne[n]   (Remove from cart)\n"
+           "Che[c]kout                  (Checkout)\n"
+           "T[o]tala kostnad            (Total cost of cart)\n"
+           "Lista alla [i]tems          (List all items)\n"
+           "[A]vsluta                   (Quit)\n";
 }
 
 // använder
-char ask_question_menu() // TODO Free answer.
+static char ask_question_menu() // Need to free answer after use
 {
     answer_t answer = ask_question(print_menu(), is_menu_char, (convert_func)conv_str_answer);
     char answ = *answer.string_value;
@@ -73,7 +121,7 @@ static void quit(ioopm_warehouse_t *warehouse, ioopm_hash_table_t *all_carts)
     exit(0);
 }
 
-void event_loop(int no_items, ioopm_warehouse_t warehouse)
+static void event_loop(int no_items, ioopm_warehouse_t warehouse)
 {
     ioopm_hash_table_t *all_carts = ioopm_create_cart_list();
     ioopm_item_t *item;
@@ -87,7 +135,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         if (avaliable_shopping_cart)
         {
             puts("\nshoppingcart:");
-            ioopm_list_items_in_cart(cart_choice); // TODO not working
+            ioopm_list_items_in_cart(cart_choice);
         }
 
         char choice = ask_question_menu();
@@ -97,6 +145,10 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (ioopm_add_item(warehouse.HTn, new_item))
             {
                 no_items++;
+            }
+            else
+            {
+                free(new_item);
             }
         }
         else if (choice == 'T')
@@ -126,7 +178,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                show_stock_db(*item);
+                ioopm_show_stock_items(*item);
             }
             else
             {
@@ -138,7 +190,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
             if (no_items != 0)
             {
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                edit_item(&warehouse, item);
+                ioopm_edit_item(&warehouse, item);
             }
             else
             {
@@ -156,24 +208,20 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
                     amount = ask_question_int("Invalid amount!!");
                 }
 
-                replenish_stock(&warehouse, item, (size_t)amount);
+                ioopm_replenish_stock(&warehouse, item, (size_t)amount);
             }
             else
             {
                 puts("No items to add!\n");
             }
         }
-        else if (choice == 'g')
-        {
-            puts("Not implemented!");
-        }
         else if (choice == 'k')
         {
             if (cart_choice == NULL)
             {
                 int id = ask_question_int("What shall the id of your cart be");
-                create_cart_in_cart_list(all_carts, id);
-                cart_choice = choose_cart(all_carts, id);
+                ioopm_create_cart_in_cart_list(all_carts, id);
+                cart_choice = ioopm_choose_cart(all_carts, id);
                 avaliable_shopping_cart = true;
             }
             else
@@ -185,14 +233,20 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (cart_choice != NULL && no_items != 0)
             {
-
                 item = ioopm_choose_item_from_list(warehouse.HTn);
-                int amount = ask_question_int("How many?");
-                while (amount > (int)item->llsl->size || amount <= 0)
+                if (item->llsl->size > 0)
                 {
-                    amount = ask_question_int("Invalid input!");
+                    int amount = ask_question_int("How many?");
+                    while (amount > (int)item->llsl->size || amount <= 0)
+                    {
+                        amount = ask_question_int("Not enough in stock or invalid input!");
+                    }
+                    ioopm_add_to_cart(cart_choice, item, amount);
                 }
-                ioopm_add_to_cart(cart_choice, item, amount);
+                else
+                {
+                    puts("Item not in stock!");
+                }
             }
             else
             {
@@ -231,10 +285,10 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (cart_choice != NULL)
             {
-                checkout(cart_choice, warehouse.HTsl);
-                // ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
-                // ioopm_destroy_cart(cart_choice);
-                quit(&warehouse, all_carts);
+                ioopm_checkout(cart_choice, warehouse.HTsl);
+                ioopm_hash_table_remove(all_carts, ioopm_int_to_elem(ioopm_cart_id(cart_choice)));
+                ioopm_destroy_cart(cart_choice);
+                // quit(&warehouse, all_carts);
                 cart_choice = NULL;
                 avaliable_shopping_cart = false;
             }
@@ -245,9 +299,9 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         }
         else if (choice == 'o')
         {
-            if (/*TODO no_items != 0 && ger inga items 0?*/ cart_choice != NULL)
+            if (no_items != 0 && cart_choice != NULL)
             {
-                printf("%d cents\n", calculate_cost(cart_choice));
+                printf("%d cents\n", ioopm_calculate_cost(cart_choice));
             }
             else
             {
@@ -258,7 +312,7 @@ void event_loop(int no_items, ioopm_warehouse_t warehouse)
         {
             if (no_items != 0)
             {
-                list_db(warehouse.HTn, no_items);
+                ioopm_list_item(warehouse.HTn, no_items);
             }
             else
             {

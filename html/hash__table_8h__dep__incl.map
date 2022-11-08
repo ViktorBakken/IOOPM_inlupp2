@@ -1,0 +1,7 @@
+<map id="Back_end/hash_table.h" name="Back_end/hash_table.h">
+<area shape="rect" id="node1" title="Simple hash table that maps integer keys to string values." alt="" coords="82,5,254,32"/>
+<area shape="rect" id="node2" href="$shopping__cart_8h.html" title="Simple shopping cart module." alt="" coords="5,162,197,189"/>
+<area shape="rect" id="node4" href="$items__db_8h.html" title="Simple database for items." alt="" coords="187,80,282,107"/>
+<area shape="rect" id="node3" href="$store_8h.html" title="our store code" alt="" coords="135,244,201,271"/>
+<area shape="rect" id="node5" href="$items__db__back__end_8h.html" title="The backend for items_db, this file is mainly used by shopping_cart_test.c." alt="" coords="272,155,459,196"/>
+</map>

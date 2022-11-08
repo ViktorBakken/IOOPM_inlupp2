@@ -1,8 +1,13 @@
-#pragma once/// @brief Insert at the end of a linked list in O(1) time
+#pragma once
 #include "linked_list.h"
 #include "Generic_func_Data_types/common.h"
 
-
+/**
+ * @file iterator.h
+ * @author Egon Henriksen och Viktor Bakken
+ * @date 13 Sep 2022
+ * @brief Simple iterator.
+ */
 
 
 /// @brief Checks if there are more elements to iterate over
