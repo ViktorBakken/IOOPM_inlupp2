@@ -1,5 +1,5 @@
 cc = gcc
-flag = -g -Wall -Wextra --coverage -pg
+flag = -g -Wall -Wextra #--coverage -pg
 flagExtra = --coverage -pg
 CUnit = -lcunit
 

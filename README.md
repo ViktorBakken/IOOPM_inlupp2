@@ -15,9 +15,10 @@ Build and run:
 
     run program with valgrind: make valgr
     run program with gdb: make gdb
+    lcov: make clear & make lcov_all   (to use lcov, you need to first of all go into both makefile (and Back_end/makefile) and uncomment the flags --coverage -pg in the flag variable)
 
 
-(Stats taken from Lcov)
+(Stats taken from lcov)
 Files             Line Coverage (%)      Function Coverage(%)
 item_db.c:            83.3%                    94.1%
 item_db_back_end.c:   90.5%                    100%
