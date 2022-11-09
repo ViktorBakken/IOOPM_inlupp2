@@ -82,11 +82,7 @@ a: hash_table_test linked_test iterator_test
 
 	echo "iterator_test"
 	valgrind --leak-check=full  --track-origins=yes ./iterator_test
-	echo ""
-
-	echo "linked_list_test"
-	valgrind --leak-check=full  --track-origins=yes ./linked_test
-	echo ""
+	echo """
 
 	echo "Done!!"
 	# make clr $(clr_flags)
