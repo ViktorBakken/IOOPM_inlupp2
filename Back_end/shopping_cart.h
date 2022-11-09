@@ -19,11 +19,12 @@ typedef struct cart ioopm_shopping_cart_t;
 
 /// @brief obtains the id of a shopping cart
 /// @param cart a given shopping cart
-/// @return The id
+/// @return The id for the cart
 int ioopm_cart_id(ioopm_shopping_cart_t *cart);
 
 /// @brief creates a new empty cart
 /// @param id the identification of that cart
+/// @warning the returned cart needs to be freed
 ioopm_shopping_cart_t *ioopm_create_cart(int id);
 
 /// @brief removes a cart from the list of all carts
@@ -75,6 +76,7 @@ bool ioopm_checkout(ioopm_shopping_cart_t *cart, ioopm_hash_table_t *HTsl);
 
 /// @brief makes a  of all carts
 /// @return a representation of a list of all the carts
+/// @warning the returned cart_list needs to be freed
 ioopm_hash_table_t *ioopm_create_cart_list(void);
 
 /// @brief destroy the list of carts(free:ing all allocations)

@@ -1,6 +1,3 @@
-Updatera alla headers!!!!
-
-
 Earlier assignment libraries:
 Name:               From:
 Common.c/.h         Viktor B./Egon H.
@@ -16,10 +13,31 @@ Build and run:
     store: make run
     tests: make test_all
 
+    run program with valgrind: make valgr
+    run program with gdb: make gdb
+
+
 (Stats taken from Lcov)
 Files             Line Coverage (%)      Function Coverage(%)
 item_db.c:            83.3%                    94.1%
-shopping_cart.c:      75.7%                    84.2%
 item_db_back_end.c:   90.5%                    100%
+shopping_cart.c:      75.7%                    84.2%
 
-How to use program();
+
+How to use program:
+    To start the program you enter "make run"
+
+    Files needed to run program:
+        store.c /.h
+
+        items_db.c /.h
+        items_db_back_end.c /.h
+        shopping_cart.c /.h
+
+        hash_table.c /.h
+        linked_list.c /.h
+        iterator.c /.h
+
+        common.c /.h
+        utils.c /.h
+        store_specific_data_types.c /.h

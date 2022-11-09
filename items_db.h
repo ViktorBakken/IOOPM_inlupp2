@@ -39,7 +39,6 @@ void ioopm_destroy_item(ioopm_item_t *item_Destr);
 /// @param warehouse is the warehouse where the item is removed
 /// @param key the name of the item to be removed
 /// @return the item that is removed
-/// @warning the returend item needs to be freed
 bool ioopm_remove_item(ioopm_warehouse_t *warehouse, ioopm_item_t *item);
 
 /// @brief Creates a warehouse
@@ -66,11 +65,6 @@ void ioopm_list_item(ioopm_hash_table_t *HTn, size_t no_items);
 /// @param item the item
 void ioopm_show_stock_items(ioopm_item_t item);
 
-/// @brief asks a question where the expectation of the answer is a valid shelf location
-/// @param question is the asked question
-/// @return return the answered shelf location as a string
-char *ioopm_ask_question_shelf(char *question);
-
 /// @brief obtains ability to pick a specific item based on a list of all items
 /// @param HTn are all the items in the warehouse
 /// @return the choosen item of the list of items
@@ -79,6 +73,7 @@ ioopm_item_t *ioopm_choose_item_from_list(ioopm_hash_table_t *HTn);
 /// @brief convert a hash table to an array
 /// @param HTn is the hashtable to be converted
 /// @return array containing the keys of the hash table
+/// @warning the returned string needs to be freed
 string *ioopm_item_array(ioopm_hash_table_t *HTn);
 
 /// @brief Destroys a mechandice list
@@ -89,4 +84,5 @@ void ioopm_item_list_destroy(string *item, size_t size);
 /// @brief convert a hash table to an array
 /// @param llsl is the linked list to be converted
 /// @return array containing the converted linked list
+/// @warning the returned string
 string *ioopm_llsl_array(ioopm_list_t *llsl);
