@@ -1,5 +1,5 @@
 cc = gcc
-flag = -g -Wall -Wextra # --coverage -pg
+flag = -g -Wall -Wextra --coverage -pg
 flagExtra = --coverage -pg
 CUnit = -lcunit
 
@@ -74,6 +74,10 @@ i: iterator_test
 a: hash_table_test linked_test iterator_test
 	echo "hash_table_test"
 	valgrind --leak-check=full  --track-origins=yes ./hash_table_test 
+	echo ""
+
+	echo "linked_list_test"
+	valgrind --leak-check=full  --track-origins=yes ./linked_test
 	echo ""
 
 	echo "iterator_test"
